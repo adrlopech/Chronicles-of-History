@@ -60,6 +60,7 @@ everything is SVG drawn in code (`src/chronicle/art/`), so it is free, always on
 - **On-screen design: a documentary title sequence.** The picture fills the whole frame (zoomed in, heroes large) and the words are secondary: a bold capitals headline as a lower third, the key phrase on a strip of torn paper stuck onto the picture
   (`TornLabel`), years and figures in solid gold lettering with a stamped relief, data scenes (timeline, map, versus, list, quote) in dark "dossier" panels with ornamental gold corners, gold corner marks around the frame, a chronology rail, and bold capital
   captions whose spoken word glows. Each era has its own headline typeface (`modernLook` in `looks.ts`: Cinzel, Playfair Display, Abril Fatface, Anton, Bebas Neue) and a bright accent pair.
+- **Subtitles are always on.** The bold captions never disappear: a line stays until the next starts, they show from frame 0, they also appear over `flash` scenes, and when a render has no voice timing they are built from each scene's narration (`fallbackCaptions` in `captions.tsx`). Only the very last line fades out after the end.
 - **Atmosphere** (`Atmosphere` in `Diorama.tsx`): haze at the horizon, a bloom around the sun, rays of light, rising embers near fire and battle, a vignette and film grain. `fix_art_for_era` removes anachronisms (no tank in ancient Rome) once the look is known.
 
 ## Files

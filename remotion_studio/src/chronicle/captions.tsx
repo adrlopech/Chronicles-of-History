@@ -26,16 +26,34 @@ export const chunkCaptions = (words: CaptionWord[], maxWords = 4, maxChars = 24)
   return out;
 };
 
+/** Captions for a video that arrives without voice timing (the Studio preview, a render with no narration yet): each scene's narration, or its own text, spread over the scene at a natural pace. */
+export const fallbackCaptions = (scenes: { type: string; text?: string; accentText?: string; narration?: string; durationInFrames: number }[]): CaptionWord[] => {
+  const out: CaptionWord[] = [];
+  let at = 0;
+  for (const sc of scenes) {
+    const line = (sc.narration || [sc.text, sc.accentText].filter(Boolean).join('. ')).trim();
+    const toks = line.split(/\s+/).filter(Boolean);
+    if (toks.length) {
+      const span = Math.max(30, sc.durationInFrames - 20);
+      const step = span / toks.length;
+      toks.forEach((w, i) => out.push({ w, s: Math.round(at + 10 + i * step), e: Math.round(at + 10 + (i + 1) * step) - 1 }));
+    }
+    at += sc.durationInFrames;
+  }
+  return out;
+};
+
 export const Captions: React.FC<{ chunks: Chunk[] }> = ({ chunks }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const look = useLook();
   if (!chunks.length) return null;
-  let chunk: Chunk | undefined;
-  for (const c of chunks) if (frame >= c.s - 2 && frame <= c.e + 10) chunk = c;
-  if (!chunk) return null;
-  const pop = spring({ frame: frame - chunk.s, fps, config: { damping: 15, stiffness: 220, mass: 0.6 } });
-  const fade = interpolate(frame, [chunk.e + 4, chunk.e + 10], [1, 0], clamp);
+  // Subtitles are always on: a line stays until the next one starts (the first shows from frame 0), and only the very last one fades out.
+  let chunk: Chunk = chunks[0];
+  for (const c of chunks) if (frame >= c.s - 2) chunk = c;
+  const isLast = chunk === chunks[chunks.length - 1];
+  const pop = spring({ frame: Math.max(0, frame - chunk.s), fps, config: { damping: 15, stiffness: 220, mass: 0.6 } });
+  const fade = isLast ? interpolate(frame, [chunk.e + 20, chunk.e + 30], [1, 0], clamp) : 1;
   const edge = '#050814';
   return (
     <div style={{ position: 'absolute', left: 60, right: 60, bottom: SAFE_BOTTOM + 8, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 22px', opacity: fade, transform: `translateY(${(1 - pop) * 18}px) scale(${0.94 + 0.06 * pop})` }}>

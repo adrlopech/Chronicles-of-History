@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { AbsoluteFill, Sequence, interpolate, useCurrentFrame } from 'remotion';
-import { Captions, chunkCaptions } from './captions';
+import { Captions, chunkCaptions, fallbackCaptions } from './captions';
 import { Corners, clamp, EASE_OUT, InkWords, fit } from './ink';
 import { Look, LookCtx, lookFor, modernLook, useLook } from './looks';
 import { ModernBackdrop } from './paper';
@@ -86,7 +86,7 @@ export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, loo
   const frame = useCurrentFrame();
   const era = lookFor(lookName);
   const look = modernLook(era);
-  const chunks = useMemo(() => chunkCaptions(captions ?? []), [captions]);
+  const chunks = useMemo(() => chunkCaptions(captions?.length ? captions : fallbackCaptions(scenes)), [captions, scenes]);
   const { starts, total } = useMemo(() => {
     let at = 0;
     const s: number[] = [];
@@ -113,7 +113,7 @@ export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, loo
           })}
           {!flash && <Rail starts={starts} scenes={scenes} total={total} />}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}><Corners color={look.accent2} size={64} inset={26} weight={5} /></div>
-          {!flash && <Captions chunks={chunks} />}
+          <Captions chunks={chunks} />
           <LoopTease scene={scenes[0]} total={total} />
         </AbsoluteFill>
       </LookCtx.Provider>
