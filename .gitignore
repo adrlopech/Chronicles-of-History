@@ -71,3 +71,16 @@ data/analytics_report.json
 
 # Batch manifests and slot log (local state)
 data/batches/
+
+# Web portal assets
+!docs/logo.png
+!docs/og-image.png
+!docs/favicon-32.png
+!docs/icon-192.png
+!docs/apple-touch-icon.png
+!docs/assets/covers/*.jpg
+!assets/brand/*.png
+
+# Local helpers
+.venv
+scratch_gen/
