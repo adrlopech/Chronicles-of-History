@@ -8,82 +8,93 @@ interface PersonProps extends Drawn {
   c: Colors; hat?: Hat; robe?: string; body?: string; cloak?: string; hold?: Hold; walk?: boolean; cheer?: boolean; scale?: number; face?: boolean;
 }
 
-/** One standing or walking figure, 110 px tall with its feet at the origin. Legs swing when it walks, the cloak and the flame move, arms rise when it cheers. */
+/** One standing or walking figure in the flat storybook style: a big friendly head seen from the front, 112 px tall with its feet at the origin. Legs swing when it walks, it breathes, blinks and talks, the cloak and flame move, both arms rise when it cheers. */
 export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, body, cloak, hold = 'none', walk = false, cheer = false, scale = 1, face = true }) => {
   const p = t * 7 + seed;
   const sw = walk ? Math.sin(p) : 0;
   const bob = walk ? -Math.abs(Math.sin(p)) * 4 : -Math.sin(t * 2 + seed) * 1.2 - (cheer ? Math.abs(Math.sin(t * 6 + seed)) * 10 : 0);
   const cloth = body ?? c.mid;
-  const skin = face ? c.skin : cloth;
-  const handX = 15 + sw * 7;
-  const handY = -60 + Math.cos(p) * (walk ? 3 : 0);
-  const armUp = cheer ? Math.sin(t * 8 + seed) * 8 : 0;
-  const ol = mix(c.shadow, cloth, 0.35);
-  const blink = Math.sin(t * 1.3 + seed * 5) > 0.97 ? 0.2 : 1;
-  const talk = Math.max(0, Math.sin(t * 9 + seed)) * 2.2;
-  const bearded = Math.floor(seed * 10) % 3 === 0 && hat !== 'crown' ? true : hat === 'crown' || hat === 'turban' ? seed % 2 > 1 : false;
-  const hair = [c.shadow, mix(c.shadow, c.gold, 0.4), mix(c.shadow, c.light, 0.45)][Math.floor(seed * 7) % 3];
-  const farX = -6 - sw * 6;
-  const farY = -58 - Math.cos(p) * (walk ? 3 : 0) + (cheer ? armUp * -2 : 0);
+  const dark = mix(cloth, c.shadow, 0.35);
+  const ol = mix(c.shadow, cloth, 0.3);
+  const k = Math.floor(seed * 13) % 4;
+  const skin = mix(c.skin, k % 2 ? c.shadow : c.light, [0, 0.14, 0.08, 0.2][k] * 0.8);
+  const skinD = mix(skin, c.shadow, 0.3);
+  const hair = [mix(c.shadow, '#000000', 0.4), mix(c.shadow, c.gold, 0.35), mix(c.shadow, c.light, 0.5), mix(c.shadow, c.accent, 0.3)][(k + 1) % 4];
+  const beard = (k === 0 || k === 3) && hat !== 'crown' ? true : hat === 'crown';
+  const blink = Math.sin(t * 1.3 + seed * 5) > 0.97 ? 0.15 : 1;
+  const talk = Math.max(0, Math.sin(t * 9 + seed * 3)) * (walk ? 0 : 1);
+  const lift = cheer ? Math.abs(Math.sin(t * 8 + seed)) : 0;
+  const HY = -92;
+  const nearX = 21 + sw * 6, nearY = cheer ? -92 - lift * 18 : -52 + Math.cos(p) * (walk ? 3 : 0);
+  const farX = -21 - sw * 6, farY = cheer ? -94 - (1 - lift) * 12 : -52 - Math.cos(p) * (walk ? 3 : 0);
+  const sleeve = (x1: number, y1: number, x2: number, y2: number, col: string) => <path d={`M${x1} ${y1} L${x2} ${y2}`} stroke={col} strokeWidth={8.5} strokeLinecap="round" />;
+  const hand = (x: number, y: number) => <circle cx={x} cy={y} r={4.4} fill={skin} stroke={skinD} strokeWidth={0.8} />;
   return (
     <g transform={`scale(${scale})`}>
-      <ellipse cx={0} cy={1} rx={robe ? 22 : 17} ry={3.5} fill={c.shadow} opacity={0.28} />
+      <ellipse cx={0} cy={1} rx={robe ? 23 : 18} ry={3.6} fill={c.shadow} opacity={0.3} />
       <g transform={`translate(0 ${bob})`}>
-        {cloak && <path d={`M-12 -84 L12 -84 L${26 + sw * 3} -8 L${-26 + sw * 3} -8Z`} fill={cloak} stroke={ol} strokeWidth={1.2} transform={`translate(${-10 - sw * 3} 0)`} opacity={0.96} />}
-        {/* far arm, behind the body */}
-        <path d={`M-7 -80 L${farX} ${farY}`} stroke={mix(cloth, c.shadow, 0.3)} strokeWidth={6} strokeLinecap="round" />
-        <circle cx={farX} cy={farY} r={3.6} fill={mix(c.skin, c.shadow, 0.2)} />
+        {cloak && <path d={`M-14 -78 Q-22 -40 ${-28 + sw * 3} -6 L${28 + sw * 3} -6 Q22 -40 14 -78Z`} fill={cloak} stroke={ol} strokeWidth={1.3} />}
+        {/* far arm */}
+        {sleeve(-13, -74, farX, farY, dark)}
+        {hand(farX, farY)}
         {robe ? (
           <>
-            <path d={`M-12 -84 Q-16 -40 ${-21 + sw * 2} 0 L${21 + sw * 2} 0 Q15 -40 12 -84Z`} fill={robe} stroke={ol} strokeWidth={1.3} />
-            <path d={`M0 -80 L${2 + sw} -2`} stroke={mix(robe, c.shadow, 0.3)} strokeWidth={1.5} />
-            <path d="M-13 -58 L13 -58" stroke={c.gold} strokeWidth={3} opacity={0.85} />
+            <path d={`M-14 -78 Q-18 -38 ${-23 + sw * 2} 0 L${23 + sw * 2} 0 Q18 -38 14 -78 Q0 -84 -14 -78Z`} fill={robe} stroke={ol} strokeWidth={1.4} />
+            <path d={`M0 -74 L${sw * 2} -2`} stroke={mix(robe, c.shadow, 0.3)} strokeWidth={1.6} />
+            <path d="M-15 -56 Q0 -50 15 -56 L15 -50 Q0 -44 -15 -50Z" fill={c.gold} stroke={ol} strokeWidth={0.8} />
+            <path d="M-5 -78 L0 -68 L5 -78Z" fill={mix(skin, robe, 0.3)} />
           </>
         ) : (
           <>
-            <path d={`M-3 -48 L${-sw * 18} -3`} stroke={mix(cloth, c.shadow, 0.3)} strokeWidth={9} strokeLinecap="round" />
-            <path d={`M3 -48 L${sw * 18} -3`} stroke={cloth} strokeWidth={9} strokeLinecap="round" />
-            <ellipse cx={-sw * 18 + 3} cy={-1} rx={8} ry={3.4} fill={c.shadow} />
-            <ellipse cx={sw * 18 + 3} cy={-1} rx={8} ry={3.4} fill={c.shadow} />
-            <path d="M-13 -86 Q-14 -66 -11 -44 L11 -44 Q14 -66 13 -86 Q0 -92 -13 -86Z" fill={cloth} stroke={ol} strokeWidth={1.3} />
-            <rect x={-11} y={-52} width={22} height={5} fill={c.shadow} opacity={0.5} />
-            <rect x={-3} y={-53} width={6} height={7} rx={1.5} fill={c.gold} />
+            <path d={`M-5 -44 L${-sw * 8 - 6} -4`} stroke={dark} strokeWidth={10} strokeLinecap="round" />
+            <path d={`M5 -44 L${sw * 8 + 6} -4`} stroke={cloth} strokeWidth={10} strokeLinecap="round" />
+            <ellipse cx={-sw * 8 - 7} cy={-1.5} rx={8} ry={3.6} fill={mix(c.shadow, '#000000', 0.3)} />
+            <ellipse cx={sw * 8 + 7} cy={-1.5} rx={8} ry={3.6} fill={mix(c.shadow, '#000000', 0.3)} />
+            <path d="M-14 -78 Q-17 -60 -14 -42 L14 -42 Q17 -60 14 -78 Q0 -84 -14 -78Z" fill={cloth} stroke={ol} strokeWidth={1.4} />
+            <path d="M-6 -80 L0 -68 L6 -80Z" fill={skin} />
+            <rect x={-14} y={-52} width={28} height={6} fill={c.shadow} opacity={0.55} />
+            <rect x={-4.5} y={-53} width={9} height={8} rx={2} fill={c.gold} stroke={ol} strokeWidth={0.8} />
           </>
         )}
-        {hold === 'shield' && <g transform={`translate(-15 -62)`}><circle r={19} fill={c.accent2} stroke={c.shadow} strokeWidth={2.5} /><circle r={6} fill={c.gold} /></g>}
-        {/* near arm, hand and what it holds */}
-        <path d={`M8 -80 L${handX} ${handY - armUp * 2}`} stroke={cloth} strokeWidth={7.5} strokeLinecap="round" />
-        <g transform={`translate(${handX} ${handY - armUp * 2})`}>
+        {hold === 'shield' && <g transform="translate(-22 -50)"><circle r={19} fill={c.accent2} stroke={c.shadow} strokeWidth={2.5} /><circle r={6} fill={c.gold} /></g>}
+        {/* near arm and what it holds */}
+        {sleeve(13, -74, nearX, nearY, cloth)}
+        <g transform={`translate(${nearX} ${nearY})`}>
           {hold === 'spear' && <><path d="M0 70 L0 -88" stroke={c.shadow} strokeWidth={3.5} /><path d="M-6 -86 L0 -108 L6 -86Z" fill={c.light} stroke={c.shadow} strokeWidth={1.5} /></>}
           {hold === 'sword' && <><path d="M0 4 L-6 -46" stroke={c.light} strokeWidth={5} strokeLinecap="round" /><path d="M-9 -2 L7 -4" stroke={c.gold} strokeWidth={4} /></>}
           {hold === 'tool' && <><path d="M0 40 L-6 -56" stroke={c.shadow} strokeWidth={4} /><path d="M-6 -56 L-26 -50" stroke={c.light} strokeWidth={5} /></>}
           {hold === 'scroll' && <rect x={-7} y={-14} width={14} height={22} rx={3} fill={c.light} stroke={c.shadow} strokeWidth={1.5} transform="rotate(-18)" />}
           {hold === 'sack' && <path d="M-12 8 Q-16 -14 -4 -20 Q8 -22 14 -6 Q16 8 8 10Z" fill={mix(c.light, c.shadow, 0.35)} stroke={c.shadow} strokeWidth={1.5} />}
           {hold === 'torch' && <><path d="M0 8 L0 -32" stroke={c.shadow} strokeWidth={4} /><path d={`M0 -32 Q${-9 + Math.sin(t * 14 + seed) * 3} -48 0 -64 Q${9 + Math.sin(t * 12 + seed) * 3} -48 0 -32Z`} fill={c.glow} /></>}
-          <circle r={4.2} fill={c.skin} stroke={ol} strokeWidth={0.8} />
+          {hand(0, 0)}
         </g>
-        {cheer && <><path d={`M-8 -80 L${-18} ${-100 + armUp}`} stroke={cloth} strokeWidth={6.5} strokeLinecap="round" /><circle cx={-18} cy={-100 + armUp} r={4} fill={c.skin} /></>}
-        {/* neck, head and face */}
-        <rect x={-4} y={-92} width={8} height={9} fill={skin} />
-        {face && hat !== 'hood' && <path d="M-12 -99 Q-13 -112 0 -111 Q10 -110 11 -102 Q4 -108 -4 -104 Z" fill={hair} />}
-        <circle cx={0} cy={-98} r={11} fill={skin} stroke={face ? ol : 'none'} strokeWidth={0.9} />
-        {face && (
-          <>
-            {hat !== 'hood' && hat !== 'helmet' && <path d="M-11 -100 Q-12 -111 0 -110 Q9 -110 11 -102 Q6 -106 1 -105 Q-6 -105 -11 -100Z" fill={hair} />}
-            {bearded && <path d="M-9 -95 Q-8 -83 2 -83 Q10 -84 9 -96 Q4 -90 -2 -92 Q-6 -92 -9 -95Z" fill={hair} />}
-            <path d="M0 -105.5 L7 -106.5" stroke={hair} strokeWidth={1.5} strokeLinecap="round" />
-            <ellipse cx={4} cy={-101} rx={2.6} ry={2.4 * blink} fill="#f4ecd8" />
-            <circle cx={5} cy={-101} r={1.4 * blink} fill={c.shadow} />
-            <path d="M8 -99 L11 -97 L8 -96" stroke={mix(c.skin, c.shadow, 0.45)} strokeWidth={1} fill="none" strokeLinecap="round" />
-            <path d={`M2 -93.5 Q5 ${-93 + talk * 0.4} 8 -94`} stroke={bearded ? c.light : c.shadow} strokeWidth={1.1} fill="none" strokeLinecap="round" />
-            <circle cx={5} cy={-96} r={2.4} fill="#ff8a7a" opacity={0.18} />
-          </>
-        )}
-        {hat === 'helmet' && <><path d="M-12 -98 A12 12 0 0 1 12 -98Z" fill={c.light} stroke={c.shadow} strokeWidth={1.5} /><path d="M-12 -98 L12 -98" stroke={c.shadow} strokeWidth={2} /><path d={`M0 -110 Q${6 + Math.sin(t * 5 + seed) * 2} -122 14 -112`} stroke={c.accent} strokeWidth={5} fill="none" strokeLinecap="round" /></>}
-        {hat === 'crown' && <path d="M-11 -106 L-12 -120 L-5 -112 L0 -122 L5 -112 L12 -120 L11 -106Z" fill={c.gold} stroke={c.shadow} strokeWidth={1.2} />}
-        {hat === 'hood' && <path d="M-14 -88 Q-15 -116 0 -115 Q15 -114 14 -88 Q8 -96 4 -100 L-6 -100Z" fill={robe ?? cloth} />}
-        {hat === 'cap' && <ellipse cx={0} cy={-106} rx={13} ry={5} fill={c.accent2} />}
-        {hat === 'turban' && <ellipse cx={0} cy={-105} rx={13} ry={9} fill={c.light} stroke={c.shadow} strokeWidth={1.2} />}
+        {/* head */}
+        <rect x={-5} y={-82} width={10} height={9} fill={skinD} />
+        {hat !== 'hood' && <path d={`M-15 ${HY - 2} Q-17 ${HY - 20} 0 ${HY - 19} Q17 ${HY - 20} 15 ${HY - 2} L12 ${HY - 5} Q0 ${HY - 13} -12 ${HY - 5}Z`} fill={hair} />}
+        <ellipse cx={-15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} stroke={skinD} strokeWidth={0.8} />
+        <ellipse cx={15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} stroke={skinD} strokeWidth={0.8} />
+        <ellipse cx={0} cy={HY} rx={15} ry={16} fill={skin} stroke={skinD} strokeWidth={1} />
+        {hat !== 'hood' && <path d={`M-15 ${HY - 3} Q-14 ${HY - 17} 0 ${HY - 17} Q14 ${HY - 17} 15 ${HY - 3} Q9 ${HY - 12} 0 ${HY - 11} Q-9 ${HY - 12} -15 ${HY - 3}Z`} fill={hair} />}
+        {beard && face && <path d={`M-14 ${HY + 3} Q-13 ${HY + 20} 0 ${HY + 20} Q13 ${HY + 20} 14 ${HY + 3} Q8 ${HY + 8} 0 ${HY + 8} Q-8 ${HY + 8} -14 ${HY + 3}Z`} fill={hair} />}
+        {/* eyes, brows, nose, mouth */}
+        <ellipse cx={-5.5} cy={HY} rx={2.3} ry={2.9 * blink} fill="#fffaf0" />
+        <ellipse cx={5.5} cy={HY} rx={2.3} ry={2.9 * blink} fill="#fffaf0" />
+        <circle cx={-5.2} cy={HY + 0.3} r={1.7 * blink} fill="#2a1d18" />
+        <circle cx={5.8} cy={HY + 0.3} r={1.7 * blink} fill="#2a1d18" />
+        <circle cx={-4.7} cy={HY - 0.4} r={0.6} fill="#fff" />
+        <circle cx={6.3} cy={HY - 0.4} r={0.6} fill="#fff" />
+        <path d={`M-9 ${HY - 5.5 - (cheer ? 1.5 : 0)} Q-5.5 ${HY - 7.5} -2.5 ${HY - 5.5}`} stroke={hair} strokeWidth={1.6} fill="none" strokeLinecap="round" />
+        <path d={`M2.5 ${HY - 5.5} Q5.5 ${HY - 7.5 - (cheer ? 1.5 : 0)} 9 ${HY - 5.5}`} stroke={hair} strokeWidth={1.6} fill="none" strokeLinecap="round" />
+        <path d={`M0 ${HY + 1.5} Q2.6 ${HY + 5.5} -0.6 ${HY + 6}`} stroke={skinD} strokeWidth={1.4} fill="none" strokeLinecap="round" />
+        {cheer || talk > 0.3 ? <ellipse cx={0} cy={HY + 10.5} rx={3.4} ry={1.3 + (cheer ? 2.2 : talk * 2)} fill="#5a1f1f" /> : <path d={`M-4 ${HY + 9.5} Q0 ${HY + 13} 4 ${HY + 9.5}`} stroke={beard ? c.light : '#7a2c2c'} strokeWidth={1.5} fill="none" strokeLinecap="round" />}
+        <circle cx={-9} cy={HY + 6} r={2.8} fill="#ff7a6a" opacity={0.22} />
+        <circle cx={9} cy={HY + 6} r={2.8} fill="#ff7a6a" opacity={0.22} />
+        {/* headwear */}
+        {hat === 'helmet' && <><path d={`M-16 ${HY - 3} A16 15 0 0 1 16 ${HY - 3}Z`} fill={c.light} stroke={c.shadow} strokeWidth={1.6} /><path d={`M-16 ${HY - 3} L16 ${HY - 3}`} stroke={c.shadow} strokeWidth={2.4} /><path d={`M0 ${HY - 17} Q${8 + Math.sin(t * 5 + seed) * 2} ${HY - 32} 18 ${HY - 20}`} stroke={c.accent} strokeWidth={6} fill="none" strokeLinecap="round" /><path d={`M-4 ${HY - 3} L-4 ${HY + 8} M4 ${HY - 3} L4 ${HY + 8}`} stroke={c.shadow} strokeWidth={0} /></>}
+        {hat === 'crown' && <path d={`M-13 ${HY - 14} L-15 ${HY - 31} L-7 ${HY - 22} L0 ${HY - 34} L7 ${HY - 22} L15 ${HY - 31} L13 ${HY - 14}Z`} fill={c.gold} stroke={c.shadow} strokeWidth={1.4} />}
+        {hat === 'hood' && <path d={`M-18 ${HY + 18} Q-22 ${HY - 22} 0 ${HY - 21} Q22 ${HY - 22} 18 ${HY + 18} Q15 ${HY + 4} 12 ${HY - 6} Q0 ${HY - 14} -12 ${HY - 6} Q-15 ${HY + 4} -18 ${HY + 18}Z`} fill={robe ?? cloth} stroke={ol} strokeWidth={1.2} />}
+        {hat === 'cap' && <path d={`M-16 ${HY - 8} Q-14 ${HY - 24} 0 ${HY - 23} Q14 ${HY - 24} 16 ${HY - 8} Q0 ${HY - 14} -16 ${HY - 8}Z`} fill={c.accent2} stroke={ol} strokeWidth={1.2} />}
+        {hat === 'turban' && <><ellipse cx={0} cy={HY - 14} rx={17} ry={11} fill={c.light} stroke={c.shadow} strokeWidth={1.3} /><path d={`M-14 ${HY - 12} Q0 ${HY - 22} 14 ${HY - 12}`} stroke={c.shadow} strokeWidth={1.2} fill="none" /><circle cx={0} cy={HY - 15} r={2.6} fill={c.accent} /></>}
       </g>
     </g>
   );
@@ -97,7 +108,7 @@ export const Soldiers: React.FC<Drawn & { c: Colors; n?: number }> = ({ c, t, se
       {slots.map((s, i) => (
         <g key={i} transform={`translate(${s.x} ${s.y})`}>
           <Person c={c} t={t} seed={seed + i * 0.35} hat="helmet" hold={i % 3 === 1 ? 'sword' : 'spear'} body={i % 2 ? c.near : c.mid} cloak={i === 0 ? c.accent : undefined} walk />
-          {i === 0 && <g transform="translate(18 -98)"><path d="M0 0 L0 -110" stroke={c.shadow} strokeWidth={3.5} /><g transform="translate(0 -108)"><Cloth len={54} h={36} t={t} seed={seed} fill={c.accent} stroke={c.shadow} /></g></g>}
+          {i === 0 && <g transform="translate(18 -98)"><path d="M0 0 L0 -84" stroke={c.shadow} strokeWidth={3.5} /><g transform="translate(0 -82)"><Cloth len={38} h={25} t={t} seed={seed} fill={c.accent} stroke={c.shadow} /></g></g>}
         </g>
       ))}
     </g>

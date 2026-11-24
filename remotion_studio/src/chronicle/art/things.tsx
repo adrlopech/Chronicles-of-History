@@ -375,7 +375,7 @@ export const Torch: React.FC<P> = ({ c, t, seed }) => (
 );
 
 export const Banner: React.FC<P> = ({ c, t, seed }) => (
-  <g>
+  <g transform="scale(0.55)">
     <path d="M0 0 L0 -300" stroke={c.shadow} strokeWidth={7} />
     <circle cx={0} cy={-304} r={9} fill={c.gold} />
     <g transform="translate(0 -290)"><Cloth len={170} h={110} t={t} seed={seed} fill={c.accent} stroke={c.shadow} speed={4} /></g>
