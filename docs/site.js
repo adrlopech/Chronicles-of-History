@@ -79,6 +79,13 @@
     secs.forEach(function (s) { if (s) spy.observe(s); });
   }
 
+  // table of contents of the legal pages
+  var tocs = $$('.toc a');
+  if (tocs.length && 'IntersectionObserver' in window) {
+    var tspy = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) tocs.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id); }); }); }, { rootMargin: '-20% 0px -70% 0px' });
+    $$('.doc h2[id]').forEach(function (h) { tspy.observe(h); });
+  }
+
   // menu
   var bg = $('.burger'), menu = $('#menu');
   if (bg) { bg.addEventListener('click', function () { var o = menu.classList.toggle('open'); bg.setAttribute('aria-expanded', o); }); $$('#menu a').forEach(function (a) { a.addEventListener('click', function () { menu.classList.remove('open'); }); }); }

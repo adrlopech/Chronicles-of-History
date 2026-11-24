@@ -2,6 +2,7 @@
 
 Run: python3 scripts/build_portal.py   (then python3 docs/check_portal.py). The portal is plain static files for GitHub Pages: no cookies, no analytics, nothing loaded from other hosts.
 """
+import re
 from pathlib import Path
 
 D = Path(__file__).resolve().parent.parent / "docs"
@@ -177,6 +178,10 @@ STEP_ART = [S_PICK, S_WRITE, S_CHECK, S_NARRATE, S_DRAW, S_PUBLISH]
 
 def head(title: str, desc: str, fname: str) -> str:
     canon = f"{BASE}/" + ("" if fname == "index.html" else fname)
+    jsonld = ""
+    if fname == "index.html":
+        jsonld = ('\n<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"The Chronicles of History","url":"' + BASE + '/","logo":"' + BASE + '/logo.png",'
+                  '"description":"Narrated, hand-drawn history shorts of just over a minute.","sameAs":["' + YT + '","' + TT + '","' + REPO + '"]}</script>')
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -188,6 +193,7 @@ def head(title: str, desc: str, fname: str) -> str:
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="{canon}">
+<link rel="manifest" href="manifest.webmanifest">{jsonld}
 <meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:image" content="{BASE}/og-image.png"><meta property="og:type" content="website"><meta property="og:url" content="{canon}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="site.css">
@@ -203,7 +209,7 @@ def head(title: str, desc: str, fname: str) -> str:
 
 def foot() -> str:
     return f'''<footer><div class="container foot"><div class="fbrand"><img src="logo.png" alt="" width="54" height="54"><div>&copy; 2026 The Chronicles of History. All rights reserved.<br><small>Narrated, hand-drawn history. Facts first.</small></div></div>
-<ul><li><a href="index.html">Home</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="{REPO}/issues" target="_blank" rel="noopener">Contact</a></li><li><a href="{REPO}" target="_blank" rel="noopener">GitHub</a></li><li><a href="{TT}" target="_blank" rel="noopener">TikTok</a></li><li><a href="{YT}" target="_blank" rel="noopener">YouTube</a></li></ul></div></footer>
+<ul><li><a href="index.html">Home</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="{REPO}/issues" target="_blank" rel="noopener">Contact</a></li><li><a href="{REPO}" target="_blank" rel="noopener">GitHub</a></li><li><a href="{TT}" target="_blank" rel="noopener">TikTok</a></li><li><a href="{YT}" target="_blank" rel="noopener">YouTube</a></li><li><a href="https://adrlopech.github.io/Silicon-Verdict/" target="_blank" rel="noopener">Sister channel: Silicon Verdict</a></li></ul></div></footer>
 <button class="backtop" type="button" aria-label="Back to top">&#8593;</button>
 <script src="site.js"></script>
 </body>
@@ -285,9 +291,13 @@ def index() -> str:
 
 
 def legal(fname: str, title: str, desc: str, intro: str, body: str, meta: str) -> str:
+    heads = re.findall(r"<h2><i>(\d+)</i>(.*?)</h2>", body)
+    for n, _ in heads:
+        body = body.replace(f"<h2><i>{n}</i>", f'<h2 id="s{int(n)}"><i>{n}</i>', 1)
+    toc = "".join(f'<li><a href="#s{int(n)}"><i>{n}</i>{h}</a></li>' for n, h in heads)
     return (head(f"{title} | The Chronicles of History", desc, fname)
             + f'<main id="main" class="legalpage"><section class="lhero"><div class="rays small"></div><div class="container narrow"><p class="kicker"><i></i>The fine print<i></i></p><h1>{title}</h1><p class="sub">{intro}</p><p class="meta">{meta}</p></div></section>'
-            + f'<div class="container doc">{body}</div></main>' + foot())
+            + f'<div class="container doclay"><aside class="toc" aria-label="On this page"><h4>On this page</h4><ol>{toc}</ol></aside><div class="doc">{body}</div></div></main>' + foot())
 
 
 CONTACT = f'Contact: open an issue at <a href="{REPO}/issues" target="_blank" rel="noopener">{REPO.replace("https://", "")}/issues</a> or write in the comments of the channel.'
@@ -458,7 +468,8 @@ footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#
 .lhero{position:relative;overflow:hidden;padding:150px 0 50px;text-align:center;background:radial-gradient(900px 400px at 50% 100%,rgba(150,90,30,.45),transparent 70%)}
 .lhero h1{font:900 clamp(38px,7vw,78px)/1.05 var(--disp);text-transform:uppercase;background:linear-gradient(180deg,#FFF3C8,var(--gold) 70%,#9A6B1F);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px;position:relative}
 .lhero .container{position:relative}.lhero .sub{margin-bottom:10px}.meta{font:600 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
-.doc{max-width:820px;padding-bottom:70px;position:relative;z-index:3}.doc section{margin:0 0 18px;padding:26px 30px;border:1px solid var(--line);border-radius:16px;background:rgba(42,28,16,.7)}
+.doclay{display:grid;grid-template-columns:230px minmax(0,820px);gap:40px;justify-content:center;padding-bottom:70px;position:relative;z-index:3}.toc{position:sticky;top:96px;align-self:start;font-size:14px}.toc h4{font:700 12px var(--disp);letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}.toc ol{list-style:none;padding:0;border-left:1px solid var(--line)}.toc a{display:block;padding:6px 12px;color:var(--paper2);text-decoration:none;border-left:2px solid transparent;margin-left:-1px;line-height:1.35;transition:.2s}.toc a i{font:700 11px var(--disp);color:var(--brick);font-style:normal;margin-right:8px}.toc a:hover{color:var(--gold3)}.toc a.on{color:var(--gold3);border-left-color:var(--gold);background:linear-gradient(90deg,rgba(217,164,65,.14),transparent)}
+.doc{position:relative;z-index:3;min-width:0}.doc h2{scroll-margin-top:90px}.doc section{margin:0 0 18px;padding:26px 30px;border:1px solid var(--line);border-radius:16px;background:rgba(42,28,16,.7)}
 .doc h2{text-align:left;font-size:22px;margin:0 0 10px;color:var(--gold2);display:flex;gap:14px;align-items:baseline}.doc h2 i{font:700 14px var(--disp);color:var(--brick);font-style:normal}
 .doc p,.doc li{color:#E8D8B2;margin:8px 0}.doc ul{padding-left:22px}
 .e404{min-height:100vh;display:grid;place-items:center;text-align:center;padding:120px 24px}
@@ -466,10 +477,11 @@ footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#
  .steps{grid-template-columns:repeat(2,1fr)}.step:nth-child(3n):after{display:block}.step:nth-child(2n):after{display:none}
  nav ul{position:fixed;left:0;right:0;top:62px;flex-direction:column;background:rgba(16,11,7,.97);padding:16px;border-bottom:1px solid var(--gold);transform:translateY(-130%);transition:.35s;margin:0}nav ul.open{transform:none}nav .btn.sm{display:none}.burger{display:flex}}
 @media(max-width:860px){
+ .doclay{grid-template-columns:1fr}.toc{display:none}
  .brand span{font-size:14px}.block{padding:80px 0}.two{grid-template-columns:1fr;gap:30px}.two.rev .copy{order:0}.two .copy .kicker{justify-content:center}.two .copy h2,.two .copy .sub{text-align:center}
  .pin{height:auto}.stick{position:static;height:auto;display:block;padding:100px 0 40px}.fan{height:auto;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:20px 24px 30px}
  .phone{position:static;flex:none;width:200px;margin:0;transform:none!important;scroll-snap-align:center}.cap{position:static;opacity:1;width:auto;margin:12px 0 0;background:none;border:0}.fanhint{display:none}
- .steps{grid-template-columns:1fr;max-width:520px}.era .pic{width:46%}.era h3{font-size:19px}.era p{font-size:14px}.step:after{display:none!important}.era+.era{margin-top:0}.tl .line{left:18px}.era,.era.r{width:100%;margin-left:0;padding:0 0 22px 48px}.era .dot,.era.r .dot{left:9px;right:auto}.rv.l:not(.in),.rv.r:not(.in){transform:translateY(34px)}
+ .era small{letter-spacing:.12em;white-space:nowrap}.mapsec .two{grid-template-columns:1fr}.era.r .card{flex-direction:row}.era.r .pic{margin:-6px 0 -6px -4px}.era.r .txt{text-align:left;padding:14px 12px 18px 6px}.era .txt{padding:14px 12px 18px 6px}.steps{grid-template-columns:1fr;max-width:520px}.era .pic{width:46%}.era h3{font-size:19px}.era p{font-size:14px}.step:after{display:none!important}.era+.era{margin-top:0}.tl .line{left:18px}.era,.era.r{width:100%;margin-left:0;padding:0 0 22px 48px}.era .dot,.era.r .dot{left:9px;right:auto}.rv.l:not(.in),.rv.r:not(.in){transform:translateY(34px)}
  .skyline{height:34vh}.ribbon{margin-top:-14px}.sun{width:360px;height:360px;margin:-180px 0 0 -180px;opacity:.5}.kicker{letter-spacing:.18em;font-size:11px}.kicker i{width:22px}.track{font-size:17px}h2{overflow-wrap:anywhere}.btn{padding:14px 24px}.cta .btn{width:100%;max-width:340px;text-align:center}.fanhint2{display:block}}
 @media(hover:none){.glow{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.title .w{opacity:1;transform:none}.rays,.sun{animation:none}#embers{display:none}}
@@ -554,6 +566,13 @@ JS = r'''(function () {
   if (secs.some(Boolean) && 'IntersectionObserver' in window) {
     var spy = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) links.forEach(function (a, i) { a.classList.toggle('on', secs[i] === e.target); }); }); }, { rootMargin: '-45% 0px -50% 0px' });
     secs.forEach(function (s) { if (s) spy.observe(s); });
+  }
+
+  // table of contents of the legal pages
+  var tocs = $$('.toc a');
+  if (tocs.length && 'IntersectionObserver' in window) {
+    var tspy = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) tocs.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id); }); }); }, { rootMargin: '-20% 0px -70% 0px' });
+    $$('.doc h2[id]').forEach(function (h) { tspy.observe(h); });
   }
 
   // menu
