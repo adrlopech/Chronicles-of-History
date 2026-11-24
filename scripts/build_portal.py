@@ -72,19 +72,7 @@ def skyline() -> str:
 
 
 # ---------------------------------------------------------------- content
-ICONS = {
-    "Prehistory": '<path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 2 2 1-1-2-1-3 0-5z"/><path d="M6 21h12"/>',
-    "Antiquity": '<path d="M3 8l9-5 9 5zM5 8v10M9.5 8v10M14.5 8v10M19 8v10M3 21h18"/>',
-    "Middle Ages": '<path d="M5 21V9h3V6h3v3h2V6h3v3h3v12zM10 21v-5h4v5"/>',
-    "The Orient": '<path d="M12 2v3M5 8h14l-2-3H7zM7 13h10l-2-3H9zM8 18h8l-1.5-2h-5zM6 21h12"/>',
-    "Renaissance": '<path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v13c-3-1-6-1-8 1-2-2-5-2-8-1zM12 6v13"/>',
-    "Age of Sail": '<path d="M12 3v14M12 4l7 9h-7M12 7l-5 6h5M3 17h18l-3 4H6z"/>',
-    "Empires": '<path d="M3 18l1-10 5 5 3-8 3 8 5-5 1 10zM3 21h18"/>',
-    "Industrial Age": '<circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
-    "The Frontier": '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.5 6.8 19.2l1-5.9L3.5 9.2l5.9-.8z"/>',
-    "World Wars": '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM12 8v8M8.5 12h7"/>',
-    "Space Age": '<path d="M12 2c3 3 4 7 4 11l-4 3-4-3c0-4 1-8 4-11zM8 14l-3 4 4-1M16 14l3 4-4-1M12 17v4"/><circle cx="12" cy="10" r="1.6"/>',
-}
+SLUG = {'Prehistory': 'prehistory', 'Antiquity': 'antiquity', 'Middle Ages': 'manuscript', 'The Orient': 'orient', 'Renaissance': 'renaissance', 'Age of Sail': 'seachart', 'Empires': 'empire', 'Industrial Age': 'industrial', 'The Frontier': 'frontier', 'World Wars': 'wartime', 'Space Age': 'spaceage'}
 
 ERAS = [
     ("Prehistory", "before 3000 BC", "Cave painters, mammoth hunters and the first fires.", "#E4693A", "#F0C27A"),
@@ -126,6 +114,65 @@ FAQ = [
     ("Where do the maps come from?", "They are drawn from real coastlines (Natural Earth, public domain) in the style of an old treasure map, with the real position of every place in the story."),
     ("Do you collect data about me?", "No. This site has no cookies, no analytics and loads nothing from other companies. Read the Privacy Policy."),
 ]
+
+
+
+def _fig(inner: str) -> str:
+    return (f'<svg viewBox="0 0 480 300" role="img" aria-hidden="true"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A2614"/><stop offset="1" stop-color="#1A100A"/></linearGradient>'
+            '<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#C08A2A"/></linearGradient>'
+            '<linearGradient id="par" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6E7BF"/><stop offset="1" stop-color="#DCC089"/></linearGradient></defs>'
+            f'<rect width="480" height="300" fill="url(#fg)"/><circle cx="240" cy="150" r="170" fill="#D9A441" opacity=".07"/>{inner}</svg>')
+
+
+def _lines(x, y, w, n, gap=14, col="#8A6A34", op=".75"):
+    return "".join(f'<rect x="{x}" y="{y + k * gap}" width="{w - (k % 3) * 22}" height="4" rx="2" fill="{col}" opacity="{op}"/>' for k in range(n))
+
+
+def _card(x, y, rot, title, tint):
+    return (f'<g transform="translate({x} {y}) rotate({rot})"><rect width="104" height="148" rx="10" fill="url(#par)" stroke="#8A6420" stroke-width="2"/><rect x="8" y="8" width="88" height="60" rx="6" fill="{tint}" opacity=".85"/>'
+            f'<circle cx="52" cy="38" r="14" fill="#F6E7BF" opacity=".85"/><text x="52" y="94" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="12" fill="#3b2411">{title}</text>{_lines(14, 106, 76, 3, 11)}</g>')
+
+
+S_PICK = _fig(
+    _card(40, 84, -12, "UNSOLVED", "#B8533A") + _card(96, 70, -2, "TURNING POINT", "#D9A441") + _card(152, 82, 9, "THE ROUTE", "#8A5A24")
+    + '<g transform="translate(290 62)"><rect width="170" height="176" rx="12" fill="#150E08" stroke="#5A4126" stroke-width="2"/><text x="14" y="24" font-family="Georgia,serif" font-size="12" fill="#C9B38A" letter-spacing="2">VIEWERS WATCHING</text>'
+      + "".join(f'<rect x="{18 + k * 24}" y="{150 - h}" width="16" height="{h}" rx="3" fill="url(#gold)" opacity="{0.45 + k * 0.1}"/>' for k, h in enumerate([40, 58, 52, 84, 96, 118]))
+      + '<path d="M22 118 L46 98 L70 106 L94 70 L118 56 L142 36" fill="none" stroke="#FF8A55" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="142" cy="36" r="6" fill="#FF8A55"/></g>'
+    + '<path d="M270 150 H292" stroke="#F0CB7A" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><path d="M286 142 l10 8 -10 8" fill="none" stroke="#F0CB7A" stroke-width="3" stroke-linecap="round"/>'
+)
+S_WRITE = _fig(
+    '<g transform="translate(70 36) rotate(-3)"><rect width="250" height="230" rx="8" fill="url(#par)" stroke="#8A6420" stroke-width="2"/><rect x="20" y="20" width="140" height="10" rx="3" fill="#3b2411"/><rect x="20" y="38" width="90" height="6" rx="3" fill="#9A2D1F"/>'
+    + "".join(f'<g transform="translate(20 {64 + k * 30})"><rect width="44" height="16" rx="8" fill="#D9A441" opacity=".85"/><text x="22" y="12" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#2a1a08">{lab}</text>{_lines(54, 4, 160, 2, 8)}</g>' for k, lab in enumerate(["HOOK", "DATE", "MAP", "TWIST", "VOTE"]))
+    + '<text x="230" y="216" text-anchor="end" font-family="Georgia,serif" font-style="italic" font-size="12" fill="#6b4521">172 words</text></g>'
+    + '<g transform="translate(300 40) rotate(28)"><path d="M0 0 C40 30 60 90 70 190 C50 150 20 90 -6 30 Z" fill="#F2E3BF" stroke="#8A6420" stroke-width="2"/><path d="M70 190 L60 214 L74 200Z" fill="#3b2411"/><path d="M0 0 C10 -10 20 -4 6 30Z" fill="#B8533A"/></g>'
+    + '<circle cx="372" cy="240" r="7" fill="#150E08" opacity=".9"/><path d="M372 250 c-6 12 6 12 0 22" stroke="#150E08" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>'
+)
+S_CHECK = _fig(
+    '<g transform="translate(46 34)"><rect width="250" height="232" rx="8" fill="url(#par)" stroke="#8A6420" stroke-width="2"/>'
+    + _lines(22, 28, 200, 3, 14) + '<g transform="translate(22 82)"><text font-family="Georgia,serif" font-weight="700" font-size="22" fill="#3b2411">1066</text><path d="M72 -8 l8 10 18 -22" fill="none" stroke="#B07F22" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>'
+    + _lines(22, 112, 200, 2, 14) + '<g transform="translate(22 156)"><text font-family="Georgia,serif" font-weight="700" font-size="22" fill="#3b2411">1666</text><path d="M72 -20 l22 22 M94 -20 l-22 22" fill="none" stroke="#9A2D1F" stroke-width="5" stroke-linecap="round"/><text x="112" y="0" font-family="Georgia,serif" font-style="italic" font-size="13" fill="#9A2D1F">&#8594; 1066</text></g>'
+    + _lines(22, 190, 200, 2, 14) + '</g>'
+    + '<g transform="translate(290 70)"><circle cx="70" cy="70" r="56" fill="#F0CB7A" fill-opacity=".14" stroke="url(#gold)" stroke-width="10"/><path d="M110 112 L158 166" stroke="url(#gold)" stroke-width="14" stroke-linecap="round"/><path d="M44 72 l18 18 34 -38" fill="none" stroke="#F0CB7A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></g>'
+    + '<g transform="translate(404 226) rotate(-14)"><circle r="40" fill="none" stroke="#D9A441" stroke-width="3" stroke-dasharray="3 5"/><circle r="32" fill="#D9A441" fill-opacity=".14" stroke="#D9A441" stroke-width="2"/><text y="-2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="11" fill="#F0CB7A" letter-spacing="1">VERIFIED</text><text y="12" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#F0CB7A">FACTS FIRST</text></g>'
+)
+S_NARRATE = _fig(
+    '<g transform="translate(60 34)"><rect x="52" y="0" width="52" height="96" rx="26" fill="url(#gold)" stroke="#8A6420" stroke-width="3"/>' + "".join(f'<path d="M58 {16 + k * 14} H98" stroke="#8A6420" stroke-width="2" opacity=".6"/>' for k in range(5))
+    + '<path d="M28 70 C28 116 128 116 128 70" fill="none" stroke="#F0CB7A" stroke-width="6" stroke-linecap="round"/><path d="M78 112 V142 M52 142 H104" stroke="#F0CB7A" stroke-width="6" stroke-linecap="round"/></g>'
+    + '<g transform="translate(236 56)">' + "".join(f'<rect x="{k * 14}" y="{70 - h / 2}" width="8" height="{h}" rx="4" fill="url(#gold)" opacity="{0.35 + (h / 140)}"/>' for k, h in enumerate([20, 44, 70, 98, 60, 120, 82, 46, 108, 70, 34, 56, 24, 12]))
+    + '</g><g transform="translate(60 214)"><rect width="360" height="56" rx="12" fill="#0E0805" stroke="#5A4126" stroke-width="2"/><text x="180" y="35" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="22" fill="#F2E3BF" letter-spacing="1">THE LEGIONS <tspan fill="#FF8A55">MARCHED</tspan> NORTH</text></g>'
+)
+S_DRAW = ('<svg viewBox="0 0 480 300" role="img" aria-hidden="true"><defs><clipPath id="dc"><rect width="480" height="300" rx="0"/></clipPath></defs><g clip-path="url(#dc)"><image href="assets/eras/draw.svg" x="0" y="0" width="480" height="338" preserveAspectRatio="xMidYMid slice"/>'
+          '<path d="M20 20 h34 M20 20 v34 M460 20 h-34 M460 20 v34 M20 280 h34 M20 280 v-34 M460 280 h-34 M460 280 v-34" stroke="#F0CB7A" stroke-width="3" fill="none" opacity=".9"/>'
+          '<g transform="translate(300 262)">' + "".join(f'<circle cx="{k * 24}" cy="0" r="9" fill="{c}" stroke="#100B07" stroke-width="2"/>' for k, c in enumerate(["#D9A441", "#C8642A", "#FF6A3D", "#B8433A", "#A8793A", "#F4EAD2", "#E39A3B"])) + '</g></g></svg>')
+S_PUBLISH = _fig(
+    '<g transform="translate(34 38)"><rect width="186" height="224" rx="12" fill="#150E08" stroke="#5A4126" stroke-width="2"/>'
+    + "".join(f'<g transform="translate(16 {20 + k * 48})"><rect width="26" height="26" rx="7" fill="url(#gold)"/><path d="M6 14 l6 6 10 -12" fill="none" stroke="#2a1a08" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><text x="38" y="12" font-family="Georgia,serif" font-weight="700" font-size="14" fill="#F2E3BF">{a}</text><text x="38" y="28" font-family="Georgia,serif" font-size="11" fill="#C9B38A">{b}</text></g>' for k, (a, b) in enumerate([("Length", "62 to 90 seconds"), ("Format", "1080 x 1920"), ("Sound", "voice, music, mix"), ("Subtitles", "every word")])) + '</g>'
+    + '<path d="M232 150 H270" stroke="#F0CB7A" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><path d="M262 141 l12 9 -12 9" fill="none" stroke="#F0CB7A" stroke-width="3" stroke-linecap="round"/>'
+    + '<g transform="translate(290 36)"><rect width="110" height="196" rx="18" fill="url(#gold)"/><rect x="6" y="6" width="98" height="184" rx="13" fill="#1A100A"/><rect x="14" y="16" width="82" height="130" rx="7" fill="#7A4A1E"/><circle cx="55" cy="82" r="24" fill="#100B07" opacity=".72"/><path d="M47 70 L47 94 L68 82Z" fill="#F0CB7A"/><rect x="14" y="156" width="64" height="6" rx="3" fill="#D9A441"/><rect x="14" y="170" width="40" height="5" rx="2.5" fill="#8A6A34"/></g>'
+    + '<g transform="translate(414 74)"><rect width="52" height="38" rx="10" fill="#B8433A"/><path d="M21 11 L21 27 L35 19Z" fill="#F6E7BF"/></g><g transform="translate(414 128)"><rect width="52" height="38" rx="10" fill="#2A1C10" stroke="#D9A441" stroke-width="2"/><path d="M28 9 v16 a5 5 0 1 1 -5 -5 M28 9 c1 5 5 7 8 7" fill="none" stroke="#F0CB7A" stroke-width="3.2" stroke-linecap="round"/></g>'
+)
+STEP_ART = [S_PICK, S_WRITE, S_CHECK, S_NARRATE, S_DRAW, S_PUBLISH]
+
 
 
 def head(title: str, desc: str, fname: str) -> str:
@@ -197,32 +244,26 @@ def index() -> str:
 <div class="fmts rv">{"".join(f"<div><b>{a}</b><span>{b}</span></div>" for a, b in FORMATS)}</div></div></section>'''
 
     eras = "".join(
-        f'<article class="era rv {"l" if i % 2 == 0 else "r"}" style="--a:{a};--b:{b}"><span class="dot"></span><div class="card"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">{ICONS[n]}</svg><small>{yrs}</small><h3>{n}</h3><p>{d}</p><i class="bar"></i></div></article>'
+        f'<article class="era rv {"l" if i % 2 == 0 else "r"}" style="--a:{a};--b:{b}"><span class="dot"></span><div class="card"><div class="pic"><img src="assets/eras/{SLUG[n]}.svg" alt="Drawing of {n}: {d}" loading="lazy" width="1280" height="1000"><em>{yrs}</em></div><div class="txt"><h3>{n}</h3><p>{d}</p></div><i class="bar"></i></div></article>'
         for i, (n, yrs, d, a, b) in enumerate(ERAS)
     )
     era_sec = f'''<section class="block" id="eras"><div class="container">{kicker("III", "Eleven eras")}<h2 class="rv">Travel through <em>time</em></h2>
 <p class="sub rv">Each story is drawn in the look of its own age: its typefaces, frames and buildings, with every anachronism removed.</p>
 <div class="tl" id="tl"><div class="line"><i id="tlfill"></i></div>{eras}</div></div></section>'''
 
-    steps = "".join(f'<li class="step rv" style="--d:.05s"><span class="n">{i + 1}</span><div><b>{t}</b><p>{d}</p></div></li>' for i, (t, d) in enumerate(STEPS))
+    steps = "".join(
+        f'<li class="step rv" style="--d:{(i % 3) * .1}s"><div class="fig">{STEP_ART[i]}<span class="n">{i + 1}</span></div><div class="stxt"><b>{ti}</b><p>{d}</p></div></li>'
+        for i, (ti, d) in enumerate(STEPS)
+    )
     how = f'''<section class="block" id="how"><div class="container">{kicker("IV", "How it&rsquo;s made")}<h2 class="rv">From a spark to a <em>scroll</em></h2>
 <p class="sub rv">One person, a pipeline of software and a strict editor: no story leaves without passing every gate.</p>
-<ol class="steps" id="steps"><div class="sline"><i id="sfill"></i></div>{steps}</ol></div></section>'''
+<ol class="steps">{steps}</ol></div></section>'''
 
-    mapsec = '''<section class="block mapsec" id="maps"><div class="container two"><div class="copy">''' + kicker("V", "The maps") + '''
-<h2 class="rv">Maps like <em>buried treasure</em></h2><p class="sub rv">Journeys are inked on parchment over real coastlines: a dashed trail walks from place to place, X marks the spot and the compass keeps its watch.</p>
-<ul class="ticks rv"><li>Real coastlines from public-domain Natural Earth data</li><li>Every place at its true latitude and longitude</li><li>Aged paper, red trail, hand-lettered labels</li></ul></div>
-<div class="map rv zoom"><svg viewBox="0 0 560 460" aria-label="Illustration of a treasure map with a dashed route"><defs>
-<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="16"/></filter>
-<radialGradient id="pap" cx=".5" cy=".45" r=".75"><stop offset="0" stop-color="#F6E7BF"/><stop offset=".7" stop-color="#E2C990"/><stop offset="1" stop-color="#B98F4F"/></radialGradient></defs>
-<g filter="url(#rough)"><rect x="24" y="24" width="512" height="412" fill="url(#pap)"/></g>
-<g fill="#D8BB84" stroke="#8A6A34" stroke-width="2" stroke-linejoin="round" opacity=".95"><path d="M70,120 C90,80 150,70 190,96 C230,120 210,170 170,190 C130,210 120,250 80,240 C50,220 50,160 70,120z"/><path d="M300,90 C350,60 430,80 450,130 C470,180 420,200 400,240 C380,280 330,260 320,220 C310,180 270,130 300,90z"/><path d="M150,330 C200,300 270,320 290,360 C300,400 240,410 190,400 C150,390 120,350 150,330z"/><path d="M400,320 C440,300 500,320 500,360 C490,400 430,410 410,380 C396,360 388,336 400,320z"/></g>
-<mask id="rm"><path id="rmask" pathLength="1" d="M120,170 C170,230 230,230 260,190 C300,150 360,170 370,230 C378,290 330,300 270,340 C230,370 280,330 440,350" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-dasharray="1 1" stroke-dashoffset="1"/></mask>
-<path pathLength="1" mask="url(#rm)" d="M120,170 C170,230 230,230 260,190 C300,150 360,170 370,230 C378,290 330,300 270,340 C230,370 280,330 440,350" fill="none" stroke="#9B2D1F" stroke-width="4" stroke-linecap="round" stroke-dasharray=".012 .02"/>
-<g class="x" transform="translate(440,350)"><path d="M-14,-14 L14,14 M14,-14 L-14,14" stroke="#9B2D1F" stroke-width="7" stroke-linecap="round"/></g>
-<g fill="#6A4A20" font-family="Georgia,serif" font-style="italic" font-size="15"><text x="80" y="108">Start</text><text x="330" y="82">Port Royal</text><text x="170" y="388">Lost Isle</text><text x="410" y="316">Treasure</text></g>
-<g transform="translate(86,370)" class="compass"><circle r="34" fill="none" stroke="#6A4A20" stroke-width="2"/><path d="M0,-44 L7,0 L0,44 L-7,0z" fill="#9B2D1F"/><path d="M-44,0 L0,-7 L44,0 L0,7z" fill="#6A4A20"/><text y="-50" text-anchor="middle" font-size="14" fill="#6A4A20" font-family="Georgia,serif">N</text></g>
-</svg></div></div></section>'''
+    mapsvg = (D / "assets" / "map.svg").read_text(encoding="utf-8")
+    mapsec = f'''<section class="block mapsec" id="maps"><div class="container two"><div class="copy">{kicker("V", "The maps")}
+<h2 class="rv">Maps like <em>buried treasure</em></h2><p class="sub rv">Journeys are inked on parchment over real coastlines: a dashed trail walks from place to place, X marks the spot and the compass keeps its watch. This is the very map our software draws.</p>
+<ul class="ticks rv"><li>Real coastlines from public-domain Natural Earth data</li><li>Every place at its true latitude and longitude</li><li>Aged paper, burnt edges, ships, palms and a sea serpent</li></ul></div>
+<figure class="map rv zoom">{mapsvg}<figcaption>Veracruz &rarr; Havana &rarr; Port Royal &rarr; Tortuga</figcaption></figure></div></section>'''
 
     thumbs = "".join(f'<img src="assets/themes/{k}.jpg" alt="Cover in the {n} colour theme" class="tsl{" on" if i == 0 else ""}" data-k="{k}" loading="lazy" width="540" height="960">' for i, (k, n) in enumerate(THEMES))
     btns = "".join(f'<button type="button" class="tb{" on" if i == 0 else ""}" data-k="{k}"><i style="background:{THEME_DOT[k]}"></i>{n}</button>' for i, (k, n) in enumerate(THEMES))
@@ -364,27 +405,30 @@ h2 em{font-style:normal;background:linear-gradient(180deg,#FFF3C8,var(--gold) 70
 /* timeline */
 .tl{position:relative;max-width:980px;margin:60px auto 0}.tl .line{position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--line);border-radius:2px}
 .tl .line i{display:block;width:100%;height:0;background:linear-gradient(180deg,var(--gold3),var(--gold),var(--brick));box-shadow:0 0 16px var(--gold);border-radius:2px}
-.era{position:relative;width:50%;padding:0 46px 30px 0;margin-bottom:4px}.era.r{margin-left:50%;padding:0 0 30px 46px}
-.era .dot{position:absolute;top:26px;right:-9px;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid var(--b);box-shadow:0 0 0 0 var(--b);transition:.5s}.era.r .dot{right:auto;left:-9px}
+.era{position:relative;width:50%;padding:0 46px 30px 0;margin-bottom:4px}.era+.era{margin-top:-190px}.era.r{margin-left:50%;padding:0 0 30px 46px}
+.era .dot{position:absolute;top:34px;right:-9px;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid var(--b);box-shadow:0 0 0 0 var(--b);transition:.5s}.era.r .dot{right:auto;left:-9px}
 .era.in .dot{background:var(--a);box-shadow:0 0 22px 4px var(--b)}
-.era .card{position:relative;padding:22px 24px;border-radius:16px;border:1px solid color-mix(in srgb,var(--b) 45%,transparent);background:linear-gradient(145deg,rgba(42,28,16,.95),rgba(24,15,8,.95));overflow:hidden;transition:transform .35s,box-shadow .35s}
+.era .card{position:relative;padding:0;border-radius:16px;border:1px solid color-mix(in srgb,var(--b) 45%,transparent);background:linear-gradient(145deg,rgba(42,28,16,.95),rgba(24,15,8,.95));overflow:hidden;transition:transform .35s,box-shadow .35s}
 .era .card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 18px 50px color-mix(in srgb,var(--b) 30%,transparent)}
-.era .ico{position:absolute;right:18px;top:18px;width:38px;height:38px;fill:none;stroke:var(--b);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.75;transition:.4s}.era .card:hover .ico{opacity:1;transform:rotate(-8deg) scale(1.12)}
-.era small{font:700 12px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--b)}.era h3{font:800 28px/1.1 var(--disp);letter-spacing:.03em;margin:4px 0 6px;color:var(--paper);text-transform:uppercase}.era p{color:var(--paper2);font-size:16px;line-height:1.5}
+.era .pic{position:relative;overflow:hidden;aspect-ratio:1280/1000;border-bottom:2px solid var(--b)}.era .pic img{display:block;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}.era .card:hover .pic img{transform:scale(1.08)}.era .pic:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(16,11,7,.7))}.era .pic em{position:absolute;z-index:2;left:14px;bottom:10px;font:700 12px var(--disp);font-style:normal;letter-spacing:.22em;text-transform:uppercase;color:var(--gold3);text-shadow:0 2px 8px #000}.era .txt{padding:16px 22px 22px}
+.era small{font:700 12px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--b)}.era h3{font:800 26px/1.1 var(--disp);letter-spacing:.03em;margin:0 0 6px;color:var(--paper);text-transform:uppercase}.era p{color:var(--paper2);font-size:16px;line-height:1.5}
 .era .bar{position:absolute;left:0;bottom:0;height:4px;width:100%;background:linear-gradient(90deg,var(--a),var(--b));transform:scaleX(0);transform-origin:left;transition:transform 1.2s .3s}.era.in .bar{transform:scaleX(1)}
 .rv.l:not(.in){transform:translateX(-70px)}.rv.r:not(.in){transform:translateX(70px)}
 /* steps */
-.steps{position:relative;list-style:none;max-width:760px;margin:50px auto 0;padding:0}.sline{position:absolute;left:25px;top:20px;bottom:20px;width:3px;background:var(--line)}.sline i{display:block;width:100%;height:0;background:linear-gradient(180deg,var(--gold3),var(--gold));box-shadow:0 0 14px var(--gold)}
-.step{position:relative;display:flex;gap:26px;padding:0 0 38px;align-items:flex-start}.step .n{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;border:2px solid var(--line);background:var(--ink);font:800 20px var(--disp);color:var(--paper2);z-index:2;transition:.5s}
-.step.in .n{background:linear-gradient(180deg,var(--gold3),var(--gold));color:#2a1a08;border-color:var(--gold2);box-shadow:0 0 26px rgba(240,203,122,.65)}
-.step b{display:block;font:800 22px var(--disp);letter-spacing:.05em;text-transform:uppercase;color:var(--gold2)}.step p{color:var(--paper2);margin-top:2px}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:1120px;margin:56px auto 0;padding:0}
+.step{position:relative;border:1px solid var(--line);border-radius:18px;background:linear-gradient(160deg,rgba(42,28,16,.95),rgba(20,13,8,.95));overflow:hidden;transition:transform .35s,box-shadow .35s,border-color .35s}
+.step:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 22px 60px rgba(217,164,65,.22)}
+.step .fig{position:relative;aspect-ratio:480/300;overflow:hidden;border-bottom:1px solid var(--line)}.step .fig svg{display:block;width:100%;height:100%;transition:transform 1s cubic-bezier(.2,.7,.2,1)}.step:hover .fig svg{transform:scale(1.06)}
+.step .n{position:absolute;left:14px;top:14px;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:linear-gradient(180deg,var(--gold3),var(--gold));color:#2a1a08;font:900 20px var(--disp);box-shadow:0 0 22px rgba(240,203,122,.6),0 0 0 4px rgba(16,11,7,.55)}
+.stxt{padding:18px 22px 24px}.step b{display:block;font:800 22px var(--disp);letter-spacing:.05em;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}.step p{color:var(--paper2);font-size:16px;line-height:1.55}
+.step:not(:last-child):after{content:"";position:absolute;right:-26px;top:18%;width:26px;height:2px;background:repeating-linear-gradient(90deg,var(--gold) 0 4px,transparent 4px 9px);opacity:.6}.step:nth-child(3n):after{display:none}
 /* map */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}.two.rev .copy{order:2}
 .two .copy .kicker{justify-content:flex-start}.two .copy h2,.two .copy .sub{text-align:left;margin-left:0}
 .ticks{list-style:none;padding:0}.ticks li{padding:8px 0 8px 34px;position:relative;color:var(--paper)}.ticks li:before{content:"\2726";position:absolute;left:0;color:var(--gold);font-size:20px}
-.map{filter:drop-shadow(0 30px 40px #000c);transform-style:preserve-3d}.map svg{width:100%;display:block}
-.map .x{opacity:var(--xo,0);transform-origin:center;transform-box:fill-box;animation:throb 1.4s ease-in-out infinite}@keyframes throb{50%{transform:scale(1.25)}}
-.compass{animation:wob 8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes wob{50%{transform:rotate(14deg)}}
+.mapsec .two{grid-template-columns:.8fr 1.35fr}.map{filter:drop-shadow(0 30px 40px #000c)}.map svg{width:100%;height:auto;display:block;overflow:visible}.map figcaption{text-align:center;margin-top:16px;font:italic 15px var(--body);color:var(--paper2);letter-spacing:.04em}
+.map .pl{opacity:0;transition:opacity .5s}.map .pl.on{opacity:1}.map .xm{opacity:0;transition:opacity .4s}.map .xm.on{opacity:1;animation:throb 1.6s ease-in-out infinite}
+@keyframes throb{50%{filter:drop-shadow(0 0 10px #ff6a3d)}}
 /* colour */
 .colour .phone.big{position:relative;left:auto;top:auto;margin:0 auto;width:min(320px,70vw);transform:none}
 .stack{position:relative;width:100%;height:100%;border-radius:19px;overflow:hidden}.stack img{position:absolute;inset:0;opacity:0;transform:scale(1.06);transition:opacity .7s,transform 1.2s}.stack img.on{opacity:1;transform:none}
@@ -413,12 +457,13 @@ footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#
 .doc p,.doc li{color:#E8D8B2;margin:8px 0}.doc ul{padding-left:22px}
 .e404{min-height:100vh;display:grid;place-items:center;text-align:center;padding:120px 24px}
 @media(max-width:1020px){
+ .steps{grid-template-columns:repeat(2,1fr)}.step:nth-child(3n):after{display:block}.step:nth-child(2n):after{display:none}
  nav ul{position:fixed;left:0;right:0;top:62px;flex-direction:column;background:rgba(16,11,7,.97);padding:16px;border-bottom:1px solid var(--gold);transform:translateY(-130%);transition:.35s;margin:0}nav ul.open{transform:none}nav .btn.sm{display:none}.burger{display:flex}}
 @media(max-width:860px){
  .brand span{font-size:14px}.block{padding:80px 0}.two{grid-template-columns:1fr;gap:30px}.two.rev .copy{order:0}.two .copy .kicker{justify-content:center}.two .copy h2,.two .copy .sub{text-align:center}
  .pin{height:auto}.stick{position:static;height:auto;display:block;padding:100px 0 40px}.fan{height:auto;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:20px 24px 30px}
  .phone{position:static;flex:none;width:200px;margin:0;transform:none!important;scroll-snap-align:center}.cap{position:static;opacity:1;width:auto;margin:12px 0 0;background:none;border:0}.fanhint{display:none}
- .tl .line{left:18px}.era,.era.r{width:100%;margin-left:0;padding:0 0 22px 48px}.era .dot,.era.r .dot{left:9px;right:auto}.rv.l:not(.in),.rv.r:not(.in){transform:translateY(34px)}
+ .steps{grid-template-columns:1fr;max-width:520px}.step:after{display:none!important}.era+.era{margin-top:0}.tl .line{left:18px}.era,.era.r{width:100%;margin-left:0;padding:0 0 22px 48px}.era .dot,.era.r .dot{left:9px;right:auto}.rv.l:not(.in),.rv.r:not(.in){transform:translateY(34px)}
  .skyline{height:34vh}.ribbon{margin-top:-14px}.sun{width:360px;height:360px;margin:-180px 0 0 -180px;opacity:.5}.kicker{letter-spacing:.18em;font-size:11px}.kicker i{width:22px}.track{font-size:17px}h2{overflow-wrap:anywhere}.btn{padding:14px 24px}.cta .btn{width:100%;max-width:340px;text-align:center}.fanhint2{display:block}}
 @media(hover:none){.glow{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.title .w{opacity:1;transform:none}.rays,.sun{animation:none}#embers{display:none}}
@@ -472,8 +517,13 @@ JS = r'''(function () {
     if (pin && fan && window.innerWidth > 860) { var r = pin.getBoundingClientRect(); var p = clamp(-r.top / (r.height - vh()) * 1.3, 0, 1); fan.parentNode.style.setProperty('--p', reduce ? 1 : p.toFixed(3)); }
     else if (fan) fan.parentNode.style.setProperty('--p', 1);
     if (tl && tlf) tlf.style.height = (frac(tl, 0.65, 0.35) * 100) + '%';
-    if (st && stf) { var f = frac(st, 0.7, 0.4); stf.style.height = (f * 100) + '%'; }
-    if (map && trail) { var q = clamp(frac(map, 0.85, 0.35) * 1.15, 0, 1); trail.setAttribute('stroke-dashoffset', (1 - q).toFixed(3)); map.querySelector('.x').style.opacity = q > 0.97 ? 1 : 0; }
+    
+    if (map && trail) {
+      var q = clamp(frac(map, 0.85, 0.3) * 1.2, 0, 1);
+      trail.setAttribute('stroke-dasharray', q.toFixed(3) + ' 2');
+      $$('.pl', map).forEach(function (g) { g.classList.toggle('on', q >= +g.dataset.at - 0.02); });
+      var xm = $('.xm', map); if (xm) xm.classList.toggle('on', q > 0.98);
+    }
   }
   function req() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
   window.addEventListener('scroll', req, { passive: true });

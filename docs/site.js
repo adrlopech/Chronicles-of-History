@@ -46,8 +46,13 @@
     if (pin && fan && window.innerWidth > 860) { var r = pin.getBoundingClientRect(); var p = clamp(-r.top / (r.height - vh()) * 1.3, 0, 1); fan.parentNode.style.setProperty('--p', reduce ? 1 : p.toFixed(3)); }
     else if (fan) fan.parentNode.style.setProperty('--p', 1);
     if (tl && tlf) tlf.style.height = (frac(tl, 0.65, 0.35) * 100) + '%';
-    if (st && stf) { var f = frac(st, 0.7, 0.4); stf.style.height = (f * 100) + '%'; }
-    if (map && trail) { var q = clamp(frac(map, 0.85, 0.35) * 1.15, 0, 1); trail.setAttribute('stroke-dashoffset', (1 - q).toFixed(3)); map.querySelector('.x').style.opacity = q > 0.97 ? 1 : 0; }
+    
+    if (map && trail) {
+      var q = clamp(frac(map, 0.85, 0.3) * 1.2, 0, 1);
+      trail.setAttribute('stroke-dasharray', q.toFixed(3) + ' 2');
+      $$('.pl', map).forEach(function (g) { g.classList.toggle('on', q >= +g.dataset.at - 0.02); });
+      var xm = $('.xm', map); if (xm) xm.classList.toggle('on', q > 0.98);
+    }
   }
   function req() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
   window.addEventListener('scroll', req, { passive: true });

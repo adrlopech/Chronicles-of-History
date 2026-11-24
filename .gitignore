@@ -85,3 +85,7 @@ data/batches/
 .venv
 scratch_gen/
 !docs/assets/themes/*.jpg
+
+# web art: regenerate with scripts/web_art.tsx (see README of scripts/build_portal.py)
+!docs/assets/eras/*.svg
+!docs/assets/map.svg
