@@ -193,13 +193,8 @@ export const Banner: React.FC = () => {
         <path d="M0 1338 Q640 1314 1280 1334 T2560 1326" stroke="#f0c25e" strokeWidth={3} fill="none" opacity={0.5} />
         <rect width={2560} height={1440} fill="url(#vig)" />
       </svg>
-      {/* a compass rose, a flock of birds, long clouds and a caravan: the small stories of the panorama */}
+      {/* a flock of birds, long clouds and a caravan: the small stories of the panorama */}
       <svg width={2560} height={1440} viewBox="0 0 2560 1440" style={{ position: 'absolute', inset: 0 }}>
-        <g transform="translate(2230 300)" opacity={0.55} fill="none" stroke="#f0c25e" strokeWidth={3}>
-          <circle r={118} /><circle r={96} strokeWidth={1.5} />
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <path key={a} d={a % 90 === 0 ? 'M0 -150 L16 -16 L0 0 L-16 -16Z' : 'M0 -104 L9 -9 L0 0 L-9 -9Z'} transform={`rotate(${a})`} fill={a % 90 === 0 ? '#f0c25e' : 'none'} fillOpacity={0.55} />)}
-          <text x={0} y={-160} textAnchor="middle" fill="#f0c25e" stroke="none" fontFamily={CINZEL_DECO} fontWeight={900} fontSize={40}>N</text>
-        </g>
         {[[520, 300, 1.7], [650, 240, 1.3], [750, 330, 1.1], [1800, 400, 1.5], [1930, 340, 1.1], [2020, 430, 0.9]].map(([x, y, s], i) => (
           <path key={i} d={`M${x - 26 * s} ${y} Q${x - 12 * s} ${y - 16 * s} ${x} ${y + 2 * s} Q${x + 12 * s} ${y - 16 * s} ${x + 26 * s} ${y}`} stroke="#2a170a" strokeWidth={5 * s} fill="none" strokeLinecap="round" opacity={0.8} />
         ))}
@@ -222,8 +217,7 @@ export const Banner: React.FC = () => {
           <ellipse cx={262} cy={211} rx={26} ry={150} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={262} cy={211} rx={10} ry={74} fill="none" stroke="#9a7440" strokeWidth={3} />
           <path d="M1370 26 Q1412 18 1428 64 L1428 359 Q1412 405 1370 397Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
           <ellipse cx={1416} cy={211} rx={26} ry={150} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={1416} cy={211} rx={10} ry={74} fill="none" stroke="#9a7440" strokeWidth={3} />
-          {/* a wax seal and two laurel sprigs */}
-          <circle cx={1352} cy={352} r={34} fill="#b3202a" stroke="#6a0f16" strokeWidth={4} /><circle cx={1352} cy={352} r={24} fill="none" stroke="#e05a5a" strokeWidth={2} opacity={0.7} /><text x={1352} y={366} textAnchor="middle" fontFamily={CINZEL_DECO} fontWeight={900} fontSize={38} fill="#f4d58a">C</text>
+          {/* two laurel sprigs */}
           {[-1, 1].map((s) => Array.from({ length: 7 }, (_, i) => <ellipse key={`${s}${i}`} cx={s < 0 ? 372 + i * 38 : 1306 - i * 38} cy={410 + Math.sin(i * 0.5) * 8} rx={8} ry={20} transform={`rotate(${s < 0 ? 70 - i * 6 : -70 + i * 6} ${s < 0 ? 372 + i * 38 : 1306 - i * 38} 410)`} fill={GOLD.mid} stroke={GOLD.deep} strokeWidth={2} opacity={0.95} />))}
         </svg>
         <div style={{ position: 'absolute', left: 300, top: 36, width: 1010, height: 350, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
