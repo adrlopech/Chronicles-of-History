@@ -1,11 +1,12 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
 import { Aqueduct, Cathedral, Colosseum, GreatWall, Obelisk, Pagoda } from '../chronicle/art/structures2';
-import { Castle, Pyramids, Temple, Windmill } from '../chronicle/art/things';
+import { Pyramids, Temple, Windmill } from '../chronicle/art/things';
 import { Caravan } from '../chronicle/art/people';
 import { Colors, mix } from '../chronicle/art/palette';
 import { CINZEL_DECO, CORMORANT } from '../chronicle/fonts';
 import { Corners } from '../chronicle/ink';
+import { Engraving } from '../chronicle/icons';
 
 /**
  * The brand of The Chronicles of History, in the spirit of the sister channel's: a bold emblem that glows, on a deep gradient with sparkles and a fine grid, glass tiles around it,
@@ -156,10 +157,14 @@ const sepia = (): Colors => ({
 });
 
 const SKYLINE: { C: React.FC<any>; x: number; s: number; layer: 'far' | 'near' }[] = [
-  { C: Obelisk, x: 120, s: 1.7, layer: 'near' }, { C: Pyramids, x: 470, s: 1.15, layer: 'far' }, { C: Temple, x: 700, s: 1.0, layer: 'near' }, { C: Aqueduct, x: 1010, s: 0.85, layer: 'far' },
-  { C: Colosseum, x: 1230, s: 0.78, layer: 'near' }, { C: GreatWall, x: 1550, s: 1.0, layer: 'far' }, { C: Cathedral, x: 1700, s: 0.85, layer: 'near' }, { C: Windmill, x: 1960, s: 0.9, layer: 'far' },
-  { C: Pagoda, x: 2150, s: 1.5, layer: 'near' }, { C: Castle, x: 2470, s: 0.9, layer: 'near' },
+  { C: Obelisk, x: 64, s: 1.7, layer: 'near' }, { C: Pyramids, x: 470, s: 1.15, layer: 'far' }, { C: Temple, x: 700, s: 1.0, layer: 'near' }, { C: Aqueduct, x: 1010, s: 0.85, layer: 'far' },
+  { C: Colosseum, x: 1230, s: 0.78, layer: 'near' }, { C: GreatWall, x: 1550, s: 1.0, layer: 'far' }, { C: Cathedral, x: 1700, s: 0.85, layer: 'near' }, { C: Windmill, x: 1900, s: 0.9, layer: 'far' },
+  { C: Pagoda, x: 2420, s: 1.45, layer: 'near' },
 ];
+
+const PLATE = 'polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px), calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px)';
+const YT_PATH = 'M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z';
+const TT_PATH = 'M16.6 5.82A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z';
 
 /** A sheet of torn paper: a rectangle whose four edges wander and bite, with a few deep tears. Deterministic. */
 const torn = (x0: number, y0: number, x1: number, y1: number, seed: number, amp: number): string => {
@@ -228,6 +233,31 @@ export const Banner: React.FC = () => {
       <div style={{ position: 'absolute', left: 34, top: 34, right: 34, bottom: 34, border: `5px solid ${GOLD.mid}`, boxShadow: `inset 0 0 0 10px #1c1008, inset 0 0 0 13px ${GOLD.lo}`, borderRadius: 6 }} />
       <div style={{ position: 'absolute', inset: 0 }}><Corners color={GOLD.hi} size={110} inset={46} weight={7} /></div>
       {[[1280, 34], [1280, 1406]].map(([x, y], i) => <div key={i} style={{ position: 'absolute', left: x - 170, top: y - 14, width: 340, height: 28, display: 'flex', alignItems: 'center', gap: 14, background: '#1c1008' }}><div style={{ flex: 1, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid})` }} /><div style={{ width: 16, height: 16, background: GOLD.hi, transform: 'rotate(45deg)' }} /><div style={{ flex: 1, height: 3, background: `linear-gradient(270deg, transparent, ${GOLD.mid})` }} /></div>)}
+      {/* two narrow leather plaques either side of the title, inside the band tablets show (x 352 to 2207) and just outside the phone band: what the channel offers, and where to find it */}
+      {[{ x: 430, side: 'left' }, { x: 2130, side: 'right' }].map((pl) => (
+        <div key={pl.side} style={{ position: 'absolute', left: pl.x - 74, top: 548, width: 148, height: 344, filter: 'drop-shadow(0 14px 20px rgba(0,0,0,0.55))' }}>
+          <div style={{ width: '100%', height: '100%', clipPath: PLATE, background: `linear-gradient(145deg, ${GOLD.hi}, ${GOLD.lo})`, padding: 4 }}>
+            <div style={{ width: '100%', height: '100%', clipPath: PLATE, background: 'linear-gradient(180deg, #4a2c14 0%, #2a170a 100%)', padding: 6 }}>
+              <div style={{ width: '100%', height: '100%', clipPath: PLATE, border: `2px solid ${GOLD.mid}88`, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, textAlign: 'center' }}>
+                {pl.side === 'left' ? (
+                  <>
+                    <div style={{ filter: `drop-shadow(0 0 8px ${GOLD.mid}aa)` }}><Engraving name="hourglass" size={66} color={GOLD.hi} accent={GOLD.mid} at={0} len={1} thick={4.4} /></div>
+                    <div style={{ width: 70, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid}, transparent)` }} />
+                    <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 27, lineHeight: 1.12, color: GOLD.mid, textShadow: `0 2px 0 ${GOLD.deep}`, whiteSpace: 'nowrap' }}>A NEW<br />STORY<br />EVERY<br />DAY</div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 25, lineHeight: 1.1, color: GOLD.mid, textShadow: `0 2px 0 ${GOLD.deep}` }}>FIND<br />US ON</div>
+                    <div style={{ width: 70, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid}, transparent)` }} />
+                    <svg width={72} height={72} viewBox="0 0 24 24" style={{ filter: `drop-shadow(0 0 7px ${GOLD.mid}aa)` }}><path fill={GOLD.mid} d={YT_PATH} /></svg>
+                    <svg width={62} height={62} viewBox="0 0 24 24" style={{ filter: `drop-shadow(0 0 7px ${GOLD.mid}aa)` }}><path fill={GOLD.mid} d={TT_PATH} /></svg>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
       {/* the phone box: YouTube shows phones only the centre 1546 x 423 of the art, so the badge and the scroll are centred in it and scaled to stay clear of its edges */}
       <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423, transform: 'translateX(103px) translateY(-6px) scale(0.85)', transformOrigin: '670px 211px' }}>
         <svg width={1546} height={423} viewBox="0 0 1546 423" style={{ position: 'absolute', inset: 0, overflow: 'visible', filter: 'drop-shadow(0 18px 26px rgba(0,0,0,0.55))' }}>
