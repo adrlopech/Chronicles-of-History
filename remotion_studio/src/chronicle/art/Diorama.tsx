@@ -5,10 +5,10 @@ import { Look } from '../looks';
 import { Backdrop } from './places';
 import { Cavalry, Caravan, Crowd, Elephants, Farmer, King, Merchant, Monk, Scholar, Soldiers } from './people';
 import { Banner, Birds, Bridge, Cannon, Castle, Chest, Comet, Crown, Eclipse, Factory, Fire, Fleet, Galley, Gate, Lighthouse, MapTable, Plane, Ruins, Scroll, Ship, Smoke, Sword, Tank, Temple, Tents, Throne, Torch, Tower, Train, Volcano, Windmill, Pyramids } from './things';
-import { ArtShot, Subject, kindOf } from './vocab';
+import { Action, ArtShot, Subject, View, kindOf } from './vocab';
 import { hash, rng } from '../ink';
 
-type Dr = { c: Colors; t: number; seed: number; dir: 1 | -1 };
+type Dr = { c: Colors; t: number; seed: number; dir: 1 | -1; act?: Action; view?: View };
 const DRAW: Record<Subject, React.FC<Dr>> = {
   castle: Castle, temple: Temple, pyramids: Pyramids, tower: Tower, gate: Gate, windmill: Windmill, factory: Factory, lighthouse: Lighthouse, tents: Tents, bridge: Bridge, ruins: Ruins,
   soldiers: Soldiers, cavalry: Cavalry, king: King, crowd: Crowd, caravan: Caravan, scholar: Scholar, monk: Monk, farmer: Farmer, merchant: Merchant,
@@ -16,6 +16,7 @@ const DRAW: Record<Subject, React.FC<Dr>> = {
   scroll: Scroll, crown: Crown, sword: Sword, chest: Chest, torch: Torch, banner: Banner, throne: Throne, map: MapTable, cannon: Cannon,
   fire: Fire, smoke: Smoke, birds: Birds, comet: Comet, eclipse: Eclipse, volcano: Volcano,
 };
+const MOVES = new Set(['walk', 'run', 'carry', 'push', 'sneak']);
 const SPEED: Partial<Record<Subject, number>> = { soldiers: 46, cavalry: 150, caravan: 38, elephants: 30, ship: 26, fleet: 22, galley: 34, train: 190, tank: 80, plane: 230, farmer: 20 };
 const WATER = new Set(['ship', 'fleet', 'galley']);
 
@@ -97,13 +98,13 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     const D = DEPTH[slot.d];
     const C = DRAW[sj];
     const dir: 1 | -1 = (seed + k) % 3 === 0 ? -1 : 1;
-    const sp = travel ? SPEED[sj] ?? 0 : 0;
+    const sp = travel && (!shot.action || MOVES.has(shot.action)) ? SPEED[sj] ?? 0 : 0;
     const x = slot.x + dir * sp * (t - dur / 60) * (sp > 100 ? 1 : 0.6);
     let y = D.y;
     if (WATER.has(sj)) y = GY + (place === 'sea' || place === 'coast' ? 300 : 260);
     if (sj === 'plane') y = GY - 230 + Math.sin(t) * 14;
     const lx = -260 + cam * 200 * D.f;
-    items.push({ z: y + (slot.d === 'far' ? -500 : 0), key: `${sj}${k}`, node: <g transform={`translate(${x + lx} ${y}) scale(${slot.s * D.s})`}><C c={c} t={t} seed={seed + k * 3} dir={dir} /></g> });
+    items.push({ z: y + (slot.d === 'far' ? -500 : 0), key: `${sj}${k}`, node: <g transform={`translate(${x + lx} ${y}) scale(${slot.s * D.s})`}><C c={c} t={t} seed={seed + k * 3} dir={dir} act={shot.action} view={shot.view} /></g> });
   };
   structures.slice(0, 2).forEach((sj, i) => put(sj, sS[i], i, false));
   actors.slice(0, 3).forEach((sj, i) => put(sj, aS[i], 10 + i, true));

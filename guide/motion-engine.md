@@ -48,6 +48,9 @@ everything is SVG drawn in code (`src/chronicle/art/`), so it is free, always on
 - A **shot** = `place` (desert, sea, coast, plains, mountains, forest, snow, city, plaza, interior, battlefield) + `time` (dawn, day, dusk, night) + optional `weather` (clear, rain, snow, storm, smoke) + 1-4 `subjects` (the first is the hero).
   The script writer picks them from the closed lists in `art/vocab.ts` (42 subjects: castle, temple, pyramids, soldiers, cavalry, king, crowd, caravan, elephants, ship, fleet, galley, train, tank, plane, sword, crown, scroll, fire, volcano, comet, eclipse...).
   `services/motion_generator.py` repeats the lists; a test keeps both identical.
+- **People can act.** A shot may also carry `action` (what the people in it are doing) and `view` (`front`, `side` or `back`). The 37 actions are in `ACTIONS` of `art/vocab.ts`: stand walk run sit point wave cheer
+  kneel bow pray salute slash stab fall lie crouch carry push dig hammer write read think shout plead threaten shrug lift throw shoot drink dance sneak surrender cower lean watch. They apply to soldiers, king, crowd, scholar, monk, farmer and merchant;
+  without a view the action picks the natural one (profile for fighting, digging, walking...). The faces change too (eyes closed or wide, brows angry or sad, mouth flat, open or shouting). `Person` in `people.tsx` draws them all.
 - `Diorama.tsx` lays the subjects out in depth (far, mid, near, foreground), slides the layers at different speeds with the camera (parallax), moves marching armies, ships and trains across the shot and adds weather.
   `places.tsx` draws the sky, sun or moon, stars, clouds and the layered ground of each place; `people.tsx` and `things.tsx` draw and animate the subjects (legs that walk, sails that billow, oars, flags, smoke, flames, a cannon that fires).
   `palette.ts` grades a time-of-day sky toward the era's colours and makes silhouettes darker toward the viewer.

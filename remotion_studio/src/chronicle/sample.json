@@ -1,240 +1,249 @@
 {
- "title": "How Rome fell",
- "look": "antiquity",
- "scenes": [
-  {
-   "type": "statement",
-   "kicker": "Rome",
-   "text": "Rome never fell in a day.",
-   "accentText": "It faded over 300 years.",
-   "icon": "column",
-   "durationInFrames": 120,
-   "art": [
+  "title": "How Rome fell",
+  "look": "antiquity",
+  "scenes": [
     {
-     "place": "plaza",
-     "time": "dusk",
-     "subjects": [
-      "temple",
-      "soldiers",
-      "banner"
-     ]
+      "type": "statement",
+      "kicker": "Rome",
+      "text": "Rome never fell in a day.",
+      "accentText": "It faded over 300 years.",
+      "icon": "column",
+      "durationInFrames": 120,
+      "art": [
+        {
+          "place": "plaza",
+          "time": "dusk",
+          "subjects": [
+            "temple",
+            "soldiers",
+            "banner"
+          ],
+          "action": "salute",
+          "view": "side"
+        },
+        {
+          "place": "city",
+          "time": "dusk",
+          "weather": "smoke",
+          "subjects": [
+            "gate",
+            "crowd",
+            "fire"
+          ],
+          "action": "plead"
+        }
+      ]
     },
     {
-     "place": "city",
-     "time": "dusk",
-     "weather": "smoke",
-     "subjects": [
-      "gate",
-      "crowd",
-      "fire"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "date",
-   "kicker": "Rome, Western Empire",
-   "text": "476",
-   "value": 476,
-   "unit": "AD",
-   "accentText": "The last emperor is deposed",
-   "durationInFrames": 120,
-   "art": [
-    {
-     "place": "interior",
-     "time": "night",
-     "subjects": [
-      "throne",
-      "king",
-      "torch"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "timeline",
-   "text": "The long fall",
-   "items": [
-    "117|Greatest extent",
-    "235|Crisis begins",
-    "410|Rome is sacked",
-    "476|Last emperor falls"
-   ],
-   "durationInFrames": 180,
-   "art": [
-    {
-     "place": "plains",
-     "time": "dawn",
-     "subjects": [
-      "castle",
-      "cavalry",
-      "birds"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "map",
-   "text": "Where the empire shrank",
-   "items": [
-    "Rome|52|55",
-    "Constantinople|82|35",
-    "Carthage|40|78",
-    "Londinium|22|14"
-   ],
-   "accentText": "Borders pulled back, province by province",
-   "durationInFrames": 160,
-   "art": [
-    {
-     "place": "sea",
-     "time": "day",
-     "subjects": [
-      "fleet",
-      "lighthouse"
-     ]
+      "type": "date",
+      "kicker": "Rome, Western Empire",
+      "text": "476",
+      "value": 476,
+      "unit": "AD",
+      "accentText": "The last emperor is deposed",
+      "durationInFrames": 120,
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "subjects": [
+            "throne",
+            "king",
+            "torch"
+          ],
+          "action": "write"
+        }
+      ]
     },
     {
-     "place": "coast",
-     "time": "dusk",
-     "subjects": [
-      "galley",
-      "tower"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "ledger",
-   "text": "Years the empire lasted in the West",
-   "value": 500,
-   "unit": "years",
-   "accentText": "longer than most nations exist",
-   "durationInFrames": 120,
-   "art": [
-    {
-     "place": "desert",
-     "time": "day",
-     "subjects": [
-      "caravan",
-      "pyramids"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "versus",
-   "text": "Legions at their peak",
-   "left": "Rome",
-   "right": "Carthage",
-   "leftValue": 450000,
-   "rightValue": 120000,
-   "durationInFrames": 130,
-   "art": [
-    {
-     "place": "battlefield",
-     "time": "dusk",
-     "weather": "smoke",
-     "subjects": [
-      "soldiers",
-      "cannon",
-      "tents"
-     ]
+      "type": "timeline",
+      "text": "The long fall",
+      "items": [
+        "117|Greatest extent",
+        "235|Crisis begins",
+        "410|Rome is sacked",
+        "476|Last emperor falls"
+      ],
+      "durationInFrames": 180,
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "subjects": [
+            "castle",
+            "cavalry",
+            "birds"
+          ]
+        }
+      ]
     },
     {
-     "place": "mountains",
-     "time": "day",
-     "subjects": [
-      "elephants",
-      "sword"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "quote",
-   "text": "The fall of Rome is the greatest, perhaps the most awful, scene in the history of mankind.",
-   "accentText": "Edward Gibbon",
-   "durationInFrames": 150,
-   "art": [
-    {
-     "place": "snow",
-     "time": "night",
-     "weather": "snow",
-     "subjects": [
-      "monk",
-      "windmill",
-      "comet"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "list",
-   "text": "Why it collapsed",
-   "items": [
-    "Endless civil wars",
-    "A broken economy",
-    "Pressure on the borders"
-   ],
-   "durationInFrames": 150,
-   "art": [
-    {
-     "place": "city",
-     "time": "day",
-     "weather": "storm",
-     "subjects": [
-      "factory",
-      "train"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "verdict",
-   "verdict": "myth",
-   "text": "Barbarians destroyed Rome overnight.",
-   "accentText": "It was a slow decline.",
-   "durationInFrames": 120,
-   "art": [
-    {
-     "place": "forest",
-     "time": "day",
-     "subjects": [
-      "merchant",
-      "scroll",
-      "bridge"
-     ]
+      "type": "map",
+      "text": "Where the empire shrank",
+      "items": [
+        "Rome|52|55",
+        "Constantinople|82|35",
+        "Carthage|40|78",
+        "Londinium|22|14"
+      ],
+      "accentText": "Borders pulled back, province by province",
+      "durationInFrames": 160,
+      "art": [
+        {
+          "place": "sea",
+          "time": "day",
+          "subjects": [
+            "fleet",
+            "lighthouse"
+          ]
+        },
+        {
+          "place": "coast",
+          "time": "dusk",
+          "subjects": [
+            "galley",
+            "tower"
+          ]
+        }
+      ]
     },
     {
-     "place": "plaza",
-     "time": "night",
-     "subjects": [
-      "scholar",
-      "map",
-      "eclipse"
-     ]
-    }
-   ]
-  },
-  {
-   "type": "outro",
-   "text": "Which fall surprised you most?",
-   "items": [
-    "The sack of Rome",
-    "The last emperor"
-   ],
-   "durationInFrames": 120,
-   "art": [
+      "type": "ledger",
+      "text": "Years the empire lasted in the West",
+      "value": 500,
+      "unit": "years",
+      "accentText": "longer than most nations exist",
+      "durationInFrames": 120,
+      "art": [
+        {
+          "place": "desert",
+          "time": "day",
+          "subjects": [
+            "caravan",
+            "pyramids"
+          ]
+        }
+      ]
+    },
     {
-     "place": "plains",
-     "time": "night",
-     "subjects": [
-      "volcano",
-      "ruins",
-      "chest"
-     ]
+      "type": "versus",
+      "text": "Legions at their peak",
+      "left": "Rome",
+      "right": "Carthage",
+      "leftValue": 450000,
+      "rightValue": 120000,
+      "durationInFrames": 130,
+      "art": [
+        {
+          "place": "battlefield",
+          "time": "dusk",
+          "weather": "smoke",
+          "subjects": [
+            "soldiers",
+            "cannon",
+            "tents"
+          ],
+          "action": "slash",
+          "view": "side"
+        },
+        {
+          "place": "mountains",
+          "time": "day",
+          "subjects": [
+            "elephants",
+            "sword"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "quote",
+      "text": "The fall of Rome is the greatest, perhaps the most awful, scene in the history of mankind.",
+      "accentText": "Edward Gibbon",
+      "durationInFrames": 150,
+      "art": [
+        {
+          "place": "snow",
+          "time": "night",
+          "weather": "snow",
+          "subjects": [
+            "monk",
+            "windmill",
+            "comet"
+          ],
+          "action": "pray"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "text": "Why it collapsed",
+      "items": [
+        "Endless civil wars",
+        "A broken economy",
+        "Pressure on the borders"
+      ],
+      "durationInFrames": 150,
+      "art": [
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "storm",
+          "subjects": [
+            "factory",
+            "train"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "verdict",
+      "verdict": "myth",
+      "text": "Barbarians destroyed Rome overnight.",
+      "accentText": "It was a slow decline.",
+      "durationInFrames": 120,
+      "art": [
+        {
+          "place": "forest",
+          "time": "day",
+          "subjects": [
+            "merchant",
+            "scroll",
+            "bridge"
+          ],
+          "action": "shrug"
+        },
+        {
+          "place": "plaza",
+          "time": "night",
+          "subjects": [
+            "scholar",
+            "map",
+            "eclipse"
+          ],
+          "action": "read"
+        }
+      ]
+    },
+    {
+      "type": "outro",
+      "text": "Which fall surprised you most?",
+      "items": [
+        "The sack of Rome",
+        "The last emperor"
+      ],
+      "durationInFrames": 120,
+      "art": [
+        {
+          "place": "plains",
+          "time": "night",
+          "subjects": [
+            "volcano",
+            "ruins",
+            "chest"
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

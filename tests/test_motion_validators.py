@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from services.motion_generator import ACTORS, EFFECTS, PLACES, PROPS, STRUCTURES, SUBJECTS, TIMES, WEATHERS, ArtShot, fix_art_for_era
+from services.motion_generator import ACTIONS, ACTORS, EFFECTS, PLACES, PROPS, STRUCTURES, SUBJECTS, TIMES, WEATHERS, ArtShot, fix_art_for_era
 from services.looks import AVOID_LAST, LOOKS, choose_look, era_look
 from services.motion_generator import (FORMAT_NEEDS, FORMAT_RULES, FORMAT_WEIGHTS, FORMATS, SCENE_TYPES, TOPIC_HINTS, CaptionWord, MotionProject, MotionSceneModel, add_vote_items,
                                        fix_duplicate_accents, looks_english, make_validator, retention_problems, vote_options)
@@ -447,6 +447,20 @@ def test_the_python_art_vocabulary_matches_the_remotion_one():
         m = re.search(rf"export const {name} = \[(.*?)\] as const", ts, re.S)
         assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == values, name
     assert len(SUBJECTS) == 42
+    m = re.search(r"export const ACTIONS = \[(.*?)\] as const", ts, re.S)
+    assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == ACTIONS
+    assert len(ACTIONS) == 37
+
+
+def test_a_shot_can_carry_an_action_and_a_view_but_only_from_the_lists():
+    shot = ArtShot(place="plains", time="day", subjects=["soldiers", "banner"], action="surrender", view="back")
+    assert shot.action == "surrender" and shot.view == "back"
+    assert ArtShot(place="plains", time="day", subjects=["soldiers"]).action is None
+    import pytest
+    with pytest.raises(Exception):
+        ArtShot(place="plains", time="day", subjects=["soldiers"], action="moonwalk")
+    with pytest.raises(Exception):
+        ArtShot(place="plains", time="day", subjects=["soldiers"], view="up")
 
 
 def test_every_scene_but_flash_map_and_outro_needs_illustration_shots():

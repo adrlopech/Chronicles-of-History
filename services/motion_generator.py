@@ -35,9 +35,15 @@ ACTORS = ("soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", 
 PROPS = ("scroll", "crown", "sword", "chest", "torch", "banner", "throne", "map", "cannon")
 EFFECTS = ("fire", "smoke", "birds", "comet", "eclipse", "volcano")
 SUBJECTS = STRUCTURES + ACTORS + PROPS + EFFECTS
+# What the people in a shot can be doing (7 everyday + 30 more), and which way they face
+ACTIONS = ("stand", "walk", "run", "sit", "point", "wave", "cheer", "kneel", "bow", "pray", "salute", "slash", "stab", "fall", "lie", "crouch", "carry", "push", "dig", "hammer", "write", "read", "think", "shout", "plead", "threaten", "shrug", "lift", "throw", "shoot", "drink", "dance", "sneak", "surrender", "cower", "lean", "watch")
+VIEWS = ("front", "side", "back")
+HUMANS = ("soldiers", "king", "crowd", "scholar", "monk", "farmer", "merchant")  # the actors an action applies to
 PlaceT = Literal["desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield"]
 TimeT = Literal["dawn", "day", "dusk", "night"]
 WeatherT = Literal["clear", "rain", "snow", "storm", "smoke"]
+ActionT = Literal["stand", "walk", "run", "sit", "point", "wave", "cheer", "kneel", "bow", "pray", "salute", "slash", "stab", "fall", "lie", "crouch", "carry", "push", "dig", "hammer", "write", "read", "think", "shout", "plead", "threaten", "shrug", "lift", "throw", "shoot", "drink", "dance", "sneak", "surrender", "cower", "lean", "watch"]
+ViewT = Literal["front", "side", "back"]
 SubjectT = Literal["castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins", "soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", "farmer", "merchant",
                    "ship", "fleet", "galley", "elephants", "train", "tank", "plane", "scroll", "crown", "sword", "chest", "torch", "banner", "throne", "map", "cannon", "fire", "smoke", "birds", "comet", "eclipse", "volcano"]
 # Subjects that did not exist in every era: the looks where each may be drawn (an anachronistic one is dropped, see fix_art_for_era)
@@ -62,6 +68,8 @@ class ArtShot(BaseModel):
     time: TimeT = Field(..., description="Time of day: sets the sky and the light")
     weather: WeatherT = Field(default="clear", description="clear, rain, snow, storm (rain and lightning) or smoke")
     subjects: List[SubjectT] = Field(..., description="1-4 DIFFERENT things drawn in the picture, the first is the hero: " + ", ".join(SUBJECTS))
+    action: Optional[ActionT] = Field(default=None, description="What the PEOPLE in the picture are doing (only when the shot has soldiers, king, crowd, scholar, monk, farmer or merchant): " + ", ".join(ACTIONS) + ". Optional, but vary it from shot to shot")
+    view: Optional[ViewT] = Field(default=None, description="Which way those people face: front (toward the viewer), side (in profile) or back (we see their backs, as they look at what is ahead). Optional: the action picks the natural one")
 
 
 class MotionSceneModel(BaseModel):
@@ -183,6 +191,8 @@ props (scroll crown sword chest torch banner throne map cannon) and effects (fir
 "the army crossed the Alps" = mountains, dawn, [elephants, soldiers]; "the city burned" = city, dusk, smoke, [crowd, fire, gate]; "the king grew afraid" = interior, night, [throne, king, torch]. A scene with two ideas gets two shots in the order of the narration.
 Vary place, time and hero from scene to scene so the picture keeps changing; a night scene after a day scene, a wide landscape after an interior. Depict the period faithfully: tank and plane only in 20th-century stories, train and factory only in the industrial age and later,
 cannon only after 1300, castle and windmill never in antiquity (anachronistic subjects are removed). Never repeat the same shot twice in a video.
+PEOPLE ACT. When a shot has soldiers, king, crowd, scholar, monk, farmer or merchant, add `action` (what they are doing) and, when it helps, `view` (front, side or back). The 37 actions: stand walk run sit point wave cheer kneel bow pray salute slash stab fall lie crouch carry push dig hammer write read think shout plead threaten shrug lift throw shoot drink dance sneak surrender cower lean watch.
+Match the action to the narration: "the army charged" = soldiers + run; "they begged for mercy" = crowd + plead; "he signed the decree" = king + write; "the soldiers laid down their arms" = soldiers + surrender; "she studied the stars" = scholar + read or think; "the crowd roared" = crowd + shout; "the city fell asleep" = crowd + lie. A view of `back` shows people facing the thing the viewer is looking at (an army of backs walking to a gate). Use at least five different actions across the video and never the same action in two shots in a row. Actions are ignored on shots with no people.
 Rules: never repeat the same scene type back to back (except versus and verdict); on-screen text is short and readable in 2 seconds; no emojis.
 Metadata: title <= 80 characters + 2-3 hashtags (#history first, then one-word tags such as #ancientrome); the title is a specific question, a claim or a duel ("What If Rome Never Fell?", "The Day Rome Fell"), never a catalogue line;
 description 2 sentences; 6-8 tags; pinned_comment = the two-option vote of the outro. screen_title <= 24 characters."""

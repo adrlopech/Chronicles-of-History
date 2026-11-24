@@ -1,12 +1,14 @@
 import React from 'react';
 import { hash, rng } from '../ink';
+import type { Action, View } from './vocab';
 
 /** Shared drawing helpers for the vector illustrations. Everything is a function of time `t` (seconds), so it can be animated by frame. */
 export const W = 1600; // the virtual canvas is wider than the 1080 px window so the camera can pan and the layers can slide at different speeds
 export const H = 1920;
 export const GY = 700; // the ground line (the horizon of land scenes)
 
-export interface Drawn { t: number; seed: number; dir?: 1 | -1 }
+/** `act` and `view` come from the shot (art/vocab.ts): what the people in it are doing and which way they face. */
+export interface Drawn { t: number; seed: number; dir?: 1 | -1; act?: Action; view?: View }
 
 /** A ridge line across the whole canvas, filled down to the bottom: hills, dunes, mountains. `peaky` makes sharp mountains, otherwise smooth rolling lines. */
 export const ridge = (seed: number, y: number, amp: number, freq: number, peaky = false, bottom = H): string => {
