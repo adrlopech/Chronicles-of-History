@@ -159,3 +159,9 @@ export const PersonGroup: React.FC<Drawn & { c: Colors; who: PersonId }> = ({ c,
   );
 };
 export { PEOPLE };
+
+/** One costumed figure alone (no companions), for branding and posters. */
+export const Costumed: React.FC<Drawn & { c: Colors; who: PersonId; scale?: number }> = ({ c, t, seed, act, view, who, scale = 1 }) => {
+  const B = (k: string) => mix(HEX[k] ?? k, c.mid, 0.2);
+  return <Person c={c} t={t} seed={seed} scale={scale} pose={act} view={view} {...COSTUMES[who](c, B)} />;
+};

@@ -3,6 +3,7 @@ import { AbsoluteFill, Easing, Img, interpolate, spring, staticFile, useCurrentF
 import { Engraving, pickIcon } from './icons';
 import { Corners, EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Seal, Stamp, TornLabel, Underline, clamp, fit, foilText, hash, lines, rng, smoothClosed } from './ink';
 import { useLook } from './looks';
+import { Seal as BrandSeal } from '../brand/Brand';
 import { CAPTION_SPACE, CHANNEL, FPS, HEIGHT, MotionScene, SAFE_BOTTOM, SAFE_TOP, WIDTH } from './types';
 
 /** Content area: below the platform's top bar, above the caption strip and the platform's bottom bar. */
@@ -391,7 +392,7 @@ export const Outro: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const opts = (scene.items ?? []).slice(0, 2);
   return (
     <Page gap={34}>
-      <Seal size={330} label="C" at={4} />
+      <div style={{ width: 300, height: 300, opacity: interpolate(frame, [4, 20], [0, 1], clamp), transform: `scale(${0.8 + 0.2 * interpolate(frame, [4, 24], [0, 1], { ...clamp, easing: EASE_OUT })}) rotate(${(1 - interpolate(frame, [4, 24], [0, 1], clamp)) * -12}deg)`, filter: 'drop-shadow(0 14px 30px rgba(0,0,0,0.6))' }}><BrandSeal id="outro" /></div>
       <InkWords text={scene.text} size={fit(scene.text, 92, W, 3, look.k, 46)} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={14} />
       {scene.accentText && <InkWords text={scene.accentText} size={fit(scene.accentText, 62, W, 2, 0.46, 36)} color={look.accent} font={look.italic} weight={400} delay={24} />}
       {opts.length > 0 && (

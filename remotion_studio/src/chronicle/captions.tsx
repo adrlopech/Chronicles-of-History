@@ -66,7 +66,7 @@ export const Captions: React.FC<{ chunks: Chunk[] }> = ({ chunks }) => {
         <div style={{ width: 14, height: 14, background: rule, transform: 'rotate(45deg)', boxShadow: `0 0 14px ${rule}` }} />
         <div style={{ height: 3, flex: 1, background: `linear-gradient(270deg, transparent, ${rule})` }} />
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 14px', transform: `scale(${0.95 + 0.05 * pop})` }}>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 26px', transform: `scale(${0.95 + 0.05 * pop})` }}>
         {chunk.words.map((w, i) => {
           const on = frame >= w.s - 1 && frame <= w.e + 2;
           return (
