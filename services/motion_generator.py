@@ -30,28 +30,166 @@ SCENE_TYPES = ("statement", "chapter", "date", "timeline", "map", "quote", "ledg
 PLACES = ("desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield")
 TIMES = ("dawn", "day", "dusk", "night")
 WEATHERS = ("clear", "rain", "snow", "storm", "smoke")
-STRUCTURES = ("castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins")
+STRUCTURES = ("castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins", "ziggurat", "colosseum", "aqueduct", "obelisk", "sphinx", "great_wall", "triumphal_arch", "stonehenge", "hut", "palisade", "harbor", "market", "well", "library", "theater", "adobe", "tomb", "palace", "cathedral", "church", "mosque", "pagoda", "monastery", "longhouse", "fortress", "siege_tower", "catapult", "trebuchet", "forge", "tavern", "village", "tipi", "yurt", "igloo", "torii", "japanese_castle", "star_fort", "observatory", "printing_press", "gallows", "guillotine", "clocktower", "mine", "skyscraper", "derrick", "barn", "telegraph", "bunker", "radiotower", "rocket")
 ACTORS = ("soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", "farmer", "merchant", "ship", "fleet", "galley", "elephants", "train", "tank", "plane")
+# A hundred historical characters (costumes of one figure; leaders alone, the rest with two companions) and twenty animals
+PEOPLE = ("caveman", "pharaoh", "egyptian_priest", "scribe", "pyramid_builder", "gladiator", "legionary", "centurion", "senator", "roman_emperor", "vestal", "hoplite", "philosopher", "athlete", "persian_immortal", "babylonian", "celt", "carthaginian", "oracle", "druid", "qin_warrior", "knight", "crusader", "templar", "viking", "jarl", "bishop", "pope", "friar", "peasant", "blacksmith", "longbowman", "crossbowman", "castle_guard", "queen", "princess", "jester", "executioner", "alchemist", "plague_doctor", "samurai", "ninja", "shogun", "mongol_horseman", "khan", "saracen", "sultan", "byzantine_emperor", "aztec_warrior", "aztec_priest", "inca_noble", "maya_priest", "silk_trader", "mandarin", "chinese_emperor", "conquistador", "explorer", "navigator", "pirate", "buccaneer", "sailor", "admiral", "native_chief", "missionary", "renaissance_artist", "inventor", "astronomer", "merchant_prince", "musketeer", "redcoat", "grenadier", "minuteman", "general", "nobleman", "revolutionary", "frontiersman", "cowboy", "factory_worker", "miner", "engineer", "gentleman", "lady", "surgeon", "tycoon", "suffragette", "ww1_infantry", "ww1_officer", "ww2_soldier", "paratrooper", "pilot", "nurse", "resistance_fighter", "spy", "codebreaker", "factory_woman", "navy_sailor", "tank_commander", "field_marshal", "refugee", "astronaut")
+ANIMALS = ("dog", "wolf", "fox", "lion", "tiger", "bear", "deer", "boar", "pig", "cow", "ox", "sheep", "goat", "donkey", "rat", "eagle", "raven", "snake", "crocodile", "whale")
 PROPS = ("scroll", "crown", "sword", "chest", "torch", "banner", "throne", "map", "cannon")
 EFFECTS = ("fire", "smoke", "birds", "comet", "eclipse", "volcano")
-SUBJECTS = STRUCTURES + ACTORS + PROPS + EFFECTS
+SUBJECTS = STRUCTURES + ACTORS + PEOPLE + ANIMALS + PROPS + EFFECTS
 # What the people in a shot can be doing (7 everyday + 30 more), and which way they face
 ACTIONS = ("stand", "walk", "run", "sit", "point", "wave", "cheer", "kneel", "bow", "pray", "salute", "slash", "stab", "fall", "lie", "crouch", "carry", "push", "dig", "hammer", "write", "read", "think", "shout", "plead", "threaten", "shrug", "lift", "throw", "shoot", "drink", "dance", "sneak", "surrender", "cower", "lean", "watch")
 VIEWS = ("front", "side", "back")
-HUMANS = ("soldiers", "king", "crowd", "scholar", "monk", "farmer", "merchant")  # the actors an action applies to
+HUMANS = ("soldiers", "king", "crowd", "scholar", "monk", "farmer", "merchant") + PEOPLE  # the actors an action applies to
 PlaceT = Literal["desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield"]
 TimeT = Literal["dawn", "day", "dusk", "night"]
 WeatherT = Literal["clear", "rain", "snow", "storm", "smoke"]
 ActionT = Literal["stand", "walk", "run", "sit", "point", "wave", "cheer", "kneel", "bow", "pray", "salute", "slash", "stab", "fall", "lie", "crouch", "carry", "push", "dig", "hammer", "write", "read", "think", "shout", "plead", "threaten", "shrug", "lift", "throw", "shoot", "drink", "dance", "sneak", "surrender", "cower", "lean", "watch"]
 ViewT = Literal["front", "side", "back"]
-SubjectT = Literal["castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins", "soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", "farmer", "merchant",
-                   "ship", "fleet", "galley", "elephants", "train", "tank", "plane", "scroll", "crown", "sword", "chest", "torch", "banner", "throne", "map", "cannon", "fire", "smoke", "birds", "comet", "eclipse", "volcano"]
+SubjectT = Literal[SUBJECTS]  # type: ignore[valid-type]
 # Subjects that did not exist in every era: the looks where each may be drawn (an anachronistic one is dropped, see fix_art_for_era)
 ERA_ONLY = {
     "tank": {"wartime"}, "plane": {"wartime"}, "train": {"industrial", "wartime"}, "factory": {"industrial", "wartime"},
     "cannon": {"manuscript", "seachart", "empire", "industrial", "wartime"}, "windmill": {"manuscript", "seachart", "empire", "industrial"}, "castle": {"manuscript", "empire", "seachart"},
     "galley": {"antiquity", "manuscript", "seachart"},
 }
+# Eras of the new subjects (A antiquity, M middle ages, S age of exploration, E age of empires, I industrial, W 20th century): only those NOT drawn in every era are listed
+ERA_ONLY.update({
+    "caveman": {"antiquity"},
+    "pharaoh": {"antiquity"},
+    "egyptian_priest": {"antiquity"},
+    "scribe": {"antiquity", "manuscript"},
+    "pyramid_builder": {"antiquity"},
+    "gladiator": {"antiquity"},
+    "legionary": {"antiquity"},
+    "centurion": {"antiquity"},
+    "senator": {"antiquity"},
+    "roman_emperor": {"antiquity"},
+    "vestal": {"antiquity"},
+    "hoplite": {"antiquity"},
+    "philosopher": {"antiquity", "manuscript"},
+    "athlete": {"antiquity"},
+    "persian_immortal": {"antiquity"},
+    "babylonian": {"antiquity"},
+    "celt": {"antiquity", "manuscript"},
+    "carthaginian": {"antiquity"},
+    "oracle": {"antiquity"},
+    "druid": {"antiquity", "manuscript"},
+    "qin_warrior": {"antiquity"},
+    "knight": {"manuscript"},
+    "crusader": {"manuscript"},
+    "templar": {"manuscript"},
+    "viking": {"manuscript"},
+    "jarl": {"manuscript"},
+    "bishop": {"manuscript", "seachart", "empire"},
+    "pope": {"manuscript", "seachart", "empire"},
+    "friar": {"manuscript", "seachart", "empire"},
+    "peasant": {"antiquity", "manuscript", "seachart", "empire", "industrial"},
+    "blacksmith": {"antiquity", "manuscript", "seachart", "empire", "industrial"},
+    "longbowman": {"manuscript", "seachart"},
+    "crossbowman": {"manuscript", "seachart"},
+    "castle_guard": {"manuscript", "seachart"},
+    "queen": {"manuscript", "seachart", "empire", "industrial"},
+    "princess": {"manuscript", "seachart", "empire", "industrial"},
+    "jester": {"manuscript", "seachart"},
+    "executioner": {"manuscript", "seachart", "empire"},
+    "alchemist": {"manuscript", "seachart"},
+    "plague_doctor": {"manuscript", "seachart"},
+    "samurai": {"manuscript", "seachart", "empire"},
+    "ninja": {"manuscript", "seachart"},
+    "shogun": {"manuscript", "seachart", "empire"},
+    "mongol_horseman": {"manuscript"},
+    "khan": {"manuscript"},
+    "saracen": {"manuscript"},
+    "sultan": {"manuscript", "seachart", "empire"},
+    "byzantine_emperor": {"manuscript"},
+    "aztec_warrior": {"manuscript", "seachart"},
+    "aztec_priest": {"manuscript", "seachart"},
+    "inca_noble": {"manuscript", "seachart"},
+    "maya_priest": {"antiquity", "manuscript"},
+    "silk_trader": {"antiquity", "manuscript", "seachart"},
+    "mandarin": {"manuscript", "seachart", "empire", "industrial"},
+    "chinese_emperor": {"antiquity", "manuscript", "seachart", "empire", "industrial"},
+    "conquistador": {"seachart"},
+    "explorer": {"seachart", "empire", "industrial"},
+    "navigator": {"seachart", "empire"},
+    "pirate": {"seachart", "empire"},
+    "buccaneer": {"seachart", "empire"},
+    "sailor": {"seachart", "empire", "industrial", "wartime"},
+    "admiral": {"seachart", "empire", "industrial", "wartime"},
+    "native_chief": {"seachart", "empire", "industrial"},
+    "missionary": {"seachart", "empire", "industrial"},
+    "renaissance_artist": {"seachart"},
+    "inventor": {"seachart", "empire", "industrial"},
+    "astronomer": {"manuscript", "seachart", "empire"},
+    "merchant_prince": {"seachart"},
+    "musketeer": {"seachart", "empire"},
+    "redcoat": {"empire"},
+    "grenadier": {"empire"},
+    "minuteman": {"empire"},
+    "general": {"empire", "industrial"},
+    "nobleman": {"seachart", "empire"},
+    "revolutionary": {"empire"},
+    "frontiersman": {"empire", "industrial"},
+    "cowboy": {"empire", "industrial"},
+    "factory_worker": {"industrial", "wartime"},
+    "miner": {"industrial", "wartime"},
+    "engineer": {"industrial", "wartime"},
+    "gentleman": {"industrial"},
+    "lady": {"industrial"},
+    "surgeon": {"industrial", "wartime"},
+    "tycoon": {"industrial", "wartime"},
+    "suffragette": {"industrial", "wartime"},
+    "ww1_infantry": {"wartime"},
+    "ww1_officer": {"wartime"},
+    "ww2_soldier": {"wartime"},
+    "paratrooper": {"wartime"},
+    "pilot": {"wartime"},
+    "nurse": {"wartime"},
+    "resistance_fighter": {"wartime"},
+    "spy": {"wartime"},
+    "codebreaker": {"wartime"},
+    "factory_woman": {"wartime"},
+    "navy_sailor": {"wartime"},
+    "tank_commander": {"wartime"},
+    "field_marshal": {"wartime"},
+    "refugee": {"wartime"},
+    "astronaut": {"wartime"},
+    "ziggurat": {"antiquity"},
+    "colosseum": {"antiquity", "manuscript"},
+    "aqueduct": {"antiquity", "manuscript"},
+    "sphinx": {"antiquity"},
+    "palisade": {"antiquity", "manuscript", "seachart", "empire"},
+    "library": {"antiquity", "manuscript", "seachart", "empire", "industrial"},
+    "cathedral": {"manuscript", "seachart", "empire", "industrial", "wartime"},
+    "church": {"manuscript", "seachart", "empire", "industrial", "wartime"},
+    "mosque": {"manuscript", "seachart", "empire", "industrial", "wartime"},
+    "pagoda": {"manuscript", "seachart", "empire", "industrial"},
+    "monastery": {"manuscript", "seachart", "empire"},
+    "longhouse": {"antiquity", "manuscript"},
+    "fortress": {"manuscript", "seachart", "empire", "industrial"},
+    "siege_tower": {"antiquity", "manuscript"},
+    "catapult": {"antiquity", "manuscript"},
+    "trebuchet": {"manuscript"},
+    "tavern": {"manuscript", "seachart", "empire", "industrial"},
+    "torii": {"manuscript", "seachart", "empire", "industrial", "wartime"},
+    "japanese_castle": {"manuscript", "seachart", "empire"},
+    "star_fort": {"seachart", "empire"},
+    "observatory": {"seachart", "empire", "industrial", "wartime"},
+    "printing_press": {"seachart", "empire", "industrial"},
+    "gallows": {"manuscript", "seachart", "empire", "industrial"},
+    "guillotine": {"empire"},
+    "clocktower": {"manuscript", "seachart", "empire", "industrial", "wartime"},
+    "mine": {"manuscript", "seachart", "empire", "industrial", "wartime"},
+    "skyscraper": {"industrial", "wartime"},
+    "derrick": {"industrial", "wartime"},
+    "barn": {"manuscript", "seachart", "empire", "industrial", "wartime"},
+    "telegraph": {"industrial", "wartime"},
+    "bunker": {"wartime"},
+    "radiotower": {"wartime"},
+    "rocket": {"wartime"},
+})
 ART_OPTIONAL = ("flash", "map", "outro")  # every other scene carries 1-2 illustration shots
 
 ICONS = ("column", "laurel", "sword", "ship", "crown", "scroll", "hourglass", "castle", "quill", "key", "coin", "compass", "pyramid", "book", "gear", "sun")
@@ -186,12 +324,18 @@ STORY (11 to 19 scenes, aim for 13+, each 60-150 frames at 30 fps), using a vari
 - Last scene: type outro. `text` and `accentText` are replaced by the vote cards (see VOTE).
 ART DIRECTION (the video is mostly ANIMATED VECTOR DRAWINGS): behind every scene a picture is drawn and moves, and it changes as the narration moves on, so the viewer SEES the story. Every scene except flash, map and outro carries `art`:
 one or two SHOTS. A shot = `place` (desert, sea, coast, plains, mountains, forest, snow, city, plaza, interior, battlefield) + `time` (dawn, day, dusk, night) + optional `weather` (clear, rain, snow, storm, smoke) + 1-4 `subjects`:
-structures (castle temple pyramids tower gate windmill factory lighthouse tents bridge ruins), people and vehicles (soldiers cavalry king crowd caravan scholar monk farmer merchant ship fleet galley elephants train tank plane),
+structures (castle temple pyramids tower gate windmill factory lighthouse tents bridge ruins + ziggurat colosseum aqueduct obelisk sphinx great_wall triumphal_arch stonehenge hut palisade harbor market well library theater adobe tomb palace cathedral church mosque pagoda monastery longhouse fortress siege_tower catapult trebuchet forge tavern village tipi yurt igloo torii japanese_castle star_fort observatory printing_press gallows guillotine clocktower mine skyscraper derrick barn telegraph bunker radiotower rocket),
+generic people and vehicles (soldiers cavalry king crowd caravan scholar monk farmer merchant ship fleet galley elephants train tank plane), animals (dog wolf fox lion tiger bear deer boar pig cow ox sheep goat donkey rat eagle raven snake crocodile whale),
+and ONE HUNDRED NAMED HISTORICAL CHARACTERS (a leader alone, the rest with two companions): ancient: caveman pharaoh egyptian_priest scribe pyramid_builder gladiator legionary centurion senator roman_emperor vestal hoplite philosopher athlete persian_immortal babylonian celt carthaginian oracle druid qin_warrior;
+medieval: knight crusader templar viking jarl bishop pope friar peasant blacksmith longbowman crossbowman castle_guard queen princess jester executioner alchemist plague_doctor samurai ninja shogun mongol_horseman khan saracen sultan byzantine_emperor aztec_warrior aztec_priest inca_noble maya_priest silk_trader mandarin chinese_emperor;
+exploration: conquistador explorer navigator pirate buccaneer sailor admiral native_chief missionary renaissance_artist inventor astronomer merchant_prince musketeer; empires: redcoat grenadier minuteman general nobleman revolutionary frontiersman cowboy;
+industrial: factory_worker miner engineer gentleman lady surgeon tycoon suffragette; 20th century: ww1_infantry ww1_officer ww2_soldier paratrooper pilot nurse resistance_fighter spy codebreaker factory_woman navy_sailor tank_commander field_marshal refugee astronaut.
+Pick the character who WAS THERE: "Caesar crossed the Rubicon" = legionary or centurion, "the Vikings raided" = viking, jarl; never a samurai in Rome. Characters, structures and animals of the wrong era are removed automatically, so choose the right ones. `action` and `view` apply to every person (the 100 characters included),
 props (scroll crown sword chest torch banner throne map cannon) and effects (fire smoke birds comet eclipse volcano). The first subject is the hero of the picture. Choose what the narrator is saying AT THAT MOMENT:
 "the army crossed the Alps" = mountains, dawn, [elephants, soldiers]; "the city burned" = city, dusk, smoke, [crowd, fire, gate]; "the king grew afraid" = interior, night, [throne, king, torch]. A scene with two ideas gets two shots in the order of the narration.
 Vary place, time and hero from scene to scene so the picture keeps changing; a night scene after a day scene, a wide landscape after an interior. Depict the period faithfully: tank and plane only in 20th-century stories, train and factory only in the industrial age and later,
 cannon only after 1300, castle and windmill never in antiquity (anachronistic subjects are removed). Never repeat the same shot twice in a video.
-PEOPLE ACT. When a shot has soldiers, king, crowd, scholar, monk, farmer or merchant, add `action` (what they are doing) and, when it helps, `view` (front, side or back). The 37 actions: stand walk run sit point wave cheer kneel bow pray salute slash stab fall lie crouch carry push dig hammer write read think shout plead threaten shrug lift throw shoot drink dance sneak surrender cower lean watch.
+PEOPLE ACT. When a shot has any person (soldiers, king, crowd, scholar, monk, farmer, merchant or one of the hundred characters), add `action` (what they are doing) and, when it helps, `view` (front, side or back). The 37 actions: stand walk run sit point wave cheer kneel bow pray salute slash stab fall lie crouch carry push dig hammer write read think shout plead threaten shrug lift throw shoot drink dance sneak surrender cower lean watch.
 Match the action to the narration: "the army charged" = soldiers + run; "they begged for mercy" = crowd + plead; "he signed the decree" = king + write; "the soldiers laid down their arms" = soldiers + surrender; "she studied the stars" = scholar + read or think; "the crowd roared" = crowd + shout; "the city fell asleep" = crowd + lie. A view of `back` shows people facing the thing the viewer is looking at (an army of backs walking to a gate). Use at least five different actions across the video and never the same action in two shots in a row. Actions are ignored on shots with no people.
 Rules: never repeat the same scene type back to back (except versus and verdict); on-screen text is short and readable in 2 seconds; no emojis.
 Metadata: title <= 80 characters + 2-3 hashtags (#history first, then one-word tags such as #ancientrome); the title is a specific question, a claim or a duel ("What If Rome Never Fell?", "The Day Rome Fell"), never a catalogue line;

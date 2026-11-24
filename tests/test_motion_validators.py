@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from services.motion_generator import ACTIONS, ACTORS, EFFECTS, PLACES, PROPS, STRUCTURES, SUBJECTS, TIMES, WEATHERS, ArtShot, fix_art_for_era
+from services.motion_generator import ACTIONS, ACTORS, ANIMALS, ERA_ONLY, PEOPLE, EFFECTS, PLACES, PROPS, STRUCTURES, SUBJECTS, TIMES, WEATHERS, ArtShot, fix_art_for_era
 from services.looks import AVOID_LAST, LOOKS, choose_look, era_look
 from services.motion_generator import (FORMAT_NEEDS, FORMAT_RULES, FORMAT_WEIGHTS, FORMATS, SCENE_TYPES, TOPIC_HINTS, CaptionWord, MotionProject, MotionSceneModel, add_vote_items,
                                        fix_duplicate_accents, looks_english, make_validator, retention_problems, vote_options)
@@ -443,13 +443,50 @@ def test_generic_closing_vote_is_rejected_by_the_style_check():
 # ------------------------------------------------------------------------------------------------------------------------------------ illustrations
 def test_the_python_art_vocabulary_matches_the_remotion_one():
     ts = (Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "chronicle" / "art" / "vocab.ts").read_text(encoding="utf-8")
-    for name, values in (("PLACES", PLACES), ("TIMES", TIMES), ("WEATHERS", WEATHERS), ("STRUCTURES", STRUCTURES), ("ACTORS", ACTORS), ("PROPS", PROPS), ("EFFECTS", EFFECTS)):
+    for name, values in (("PLACES", PLACES), ("TIMES", TIMES), ("WEATHERS", WEATHERS), ("STRUCTURES", STRUCTURES), ("ACTORS", ACTORS), ("PEOPLE", PEOPLE), ("ANIMALS", ANIMALS), ("PROPS", PROPS), ("EFFECTS", EFFECTS)):
         m = re.search(rf"export const {name} = \[(.*?)\] as const", ts, re.S)
         assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == values, name
-    assert len(SUBJECTS) == 42
+    assert len(PEOPLE) == 100 and len(ANIMALS) == 20 and len(STRUCTURES) == 61
+    assert len(SUBJECTS) == len(set(SUBJECTS)) == 212
     m = re.search(r"export const ACTIONS = \[(.*?)\] as const", ts, re.S)
     assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == ACTIONS
     assert len(ACTIONS) == 37
+
+
+def test_every_subject_has_a_drawing_and_every_era_entry_names_a_real_subject():
+    root = Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "chronicle" / "art"
+    costumes = (root / "costumes.tsx").read_text(encoding="utf-8")
+    structures = (root / "structures2.tsx").read_text(encoding="utf-8")
+    animals = (root / "animals.tsx").read_text(encoding="utf-8")
+    for who in PEOPLE:
+        assert re.search(rf"^  {who}: \(", costumes, re.M), who
+    for s in STRUCTURES[11:]:
+        assert re.search(rf"\b{s}: ", structures), s
+    for a in ANIMALS:
+        assert re.search(rf"\b{a}: ", animals), a
+    for name, looks in ERA_ONLY.items():
+        assert name in SUBJECTS and looks <= {"antiquity", "manuscript", "seachart", "empire", "industrial", "wartime"}, name
+
+
+def test_characters_structures_and_animals_of_the_wrong_era_are_dropped():
+    class P:  # the bare minimum fix_art_for_era reads
+        look = "antiquity"
+        scenes: list = []
+    p = P()
+    class Sh:  # a minimal stand-in for a shot
+        def __init__(self, subjects):
+            self.subjects = subjects
+    class Sc:
+        def __init__(self, shots):
+            self.art = shots
+    sh = Sh(["samurai", "legionary", "skyscraper", "colosseum", "wolf", "plague_doctor"])
+    p.scenes = [Sc([sh])]
+    fix_art_for_era(p)
+    assert sh.subjects == ["legionary", "colosseum", "wolf"]
+    only = Sh(["astronaut"])
+    p.scenes = [Sc([only])]
+    fix_art_for_era(p)
+    assert only.subjects == ["crowd"]
 
 
 def test_a_shot_can_carry_an_action_and_a_view_but_only_from_the_lists():

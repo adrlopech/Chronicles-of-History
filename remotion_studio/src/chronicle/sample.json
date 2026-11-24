@@ -14,23 +14,23 @@
           "place": "plaza",
           "time": "dusk",
           "subjects": [
-            "temple",
-            "soldiers",
+            "colosseum",
+            "gladiator",
             "banner"
           ],
-          "action": "salute",
-          "view": "side"
+          "action": "cheer",
+          "view": "front"
         },
         {
           "place": "city",
           "time": "dusk",
           "weather": "smoke",
           "subjects": [
-            "gate",
-            "crowd",
-            "fire"
+            "aqueduct",
+            "senator",
+            "crowd"
           ],
-          "action": "plead"
+          "action": "shout"
         }
       ]
     },
@@ -47,11 +47,11 @@
           "place": "interior",
           "time": "night",
           "subjects": [
-            "throne",
-            "king",
+            "palace",
+            "roman_emperor",
             "torch"
           ],
-          "action": "write"
+          "action": "stand"
         }
       ]
     },
@@ -119,8 +119,9 @@
           "place": "desert",
           "time": "day",
           "subjects": [
-            "caravan",
-            "pyramids"
+            "sphinx",
+            "pharaoh",
+            "eagle"
           ]
         }
       ]
@@ -139,11 +140,11 @@
           "time": "dusk",
           "weather": "smoke",
           "subjects": [
-            "soldiers",
-            "cannon",
-            "tents"
+            "fortress",
+            "legionary",
+            "catapult"
           ],
-          "action": "slash",
+          "action": "stab",
           "view": "side"
         },
         {

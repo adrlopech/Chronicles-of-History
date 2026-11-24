@@ -5,20 +5,26 @@ import { Look } from '../looks';
 import { Backdrop } from './places';
 import { Cavalry, Caravan, Crowd, Elephants, Farmer, King, Merchant, Monk, Scholar, Soldiers } from './people';
 import { Banner, Birds, Bridge, Cannon, Castle, Chest, Comet, Crown, Eclipse, Factory, Fire, Fleet, Galley, Gate, Lighthouse, MapTable, Plane, Ruins, Scroll, Ship, Smoke, Sword, Tank, Temple, Tents, Throne, Torch, Tower, Train, Volcano, Windmill, Pyramids } from './things';
-import { Action, ArtShot, Subject, View, kindOf } from './vocab';
+import { Action, ArtShot, Subject, View, kindOf, PEOPLE, PersonKind } from './vocab';
+import { PersonGroup } from './costumes';
+import { NEW_ANIMALS } from './animals';
+import { NEW_STRUCTURES } from './structures2';
 import { hash, rng } from '../ink';
 
 type Dr = { c: Colors; t: number; seed: number; dir: 1 | -1; act?: Action; view?: View };
-const DRAW: Record<Subject, React.FC<Dr>> = {
+const DRAW: Record<string, React.FC<Dr>> = {
   castle: Castle, temple: Temple, pyramids: Pyramids, tower: Tower, gate: Gate, windmill: Windmill, factory: Factory, lighthouse: Lighthouse, tents: Tents, bridge: Bridge, ruins: Ruins,
   soldiers: Soldiers, cavalry: Cavalry, king: King, crowd: Crowd, caravan: Caravan, scholar: Scholar, monk: Monk, farmer: Farmer, merchant: Merchant,
   ship: Ship, fleet: Fleet, galley: Galley, elephants: Elephants, train: Train, tank: Tank, plane: Plane,
   scroll: Scroll, crown: Crown, sword: Sword, chest: Chest, torch: Torch, banner: Banner, throne: Throne, map: MapTable, cannon: Cannon,
   fire: Fire, smoke: Smoke, birds: Birds, comet: Comet, eclipse: Eclipse, volcano: Volcano,
 };
+const PEOPLE_DRAW = Object.fromEntries(PEOPLE.map((who) => [who, (p: Dr) => <PersonGroup {...p} who={who as PersonKind} />])) as unknown as Record<PersonKind, React.FC<Dr>>;
+Object.assign(DRAW, PEOPLE_DRAW, NEW_ANIMALS, NEW_STRUCTURES);
+const ANIMAL_SPEED = { dog: 70, wolf: 90, fox: 80, deer: 80, lion: 40, tiger: 45, bear: 25, boar: 60, pig: 20, cow: 12, ox: 12, sheep: 16, goat: 20, donkey: 24, rat: 70, snake: 24, crocodile: 10, eagle: 60, raven: 60, whale: 12 } as Record<string, number>;
 const MOVES = new Set(['walk', 'run', 'carry', 'push', 'sneak']);
 const SPEED: Partial<Record<Subject, number>> = { soldiers: 46, cavalry: 150, caravan: 38, elephants: 30, ship: 26, fleet: 22, galley: 34, train: 190, tank: 80, plane: 230, farmer: 20 };
-const WATER = new Set(['ship', 'fleet', 'galley']);
+const WATER = new Set<string>(['ship', 'fleet', 'galley', 'whale']);
 
 const DEPTH = { far: { y: GY + 70, s: 1.4, f: 0.6 }, mid: { y: GY + 205, s: 2.3, f: 0.85 }, near: { y: GY + 370, s: 2.9, f: 1.1 }, fore: { y: GY + 480, s: 2.3, f: 1.3 } } as const;
 
@@ -98,7 +104,8 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     const D = DEPTH[slot.d];
     const C = DRAW[sj];
     const dir: 1 | -1 = (seed + k) % 3 === 0 ? -1 : 1;
-    const sp = travel && (!shot.action || MOVES.has(shot.action)) ? SPEED[sj] ?? 0 : 0;
+    const isPerson = (PEOPLE as readonly string[]).includes(sj);
+    const sp = !travel ? 0 : isPerson ? (shot.action && MOVES.has(shot.action) ? 40 : 0) : ANIMAL_SPEED[sj] !== undefined ? ANIMAL_SPEED[sj] : (!shot.action || MOVES.has(shot.action)) ? SPEED[sj] ?? 0 : 0;
     const x = slot.x + dir * sp * (t - dur / 60) * (sp > 100 ? 1 : 0.6);
     let y = D.y;
     if (WATER.has(sj)) y = GY + (place === 'sea' || place === 'coast' ? 300 : 260);

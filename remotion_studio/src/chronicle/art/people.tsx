@@ -2,10 +2,9 @@ import React from 'react';
 import { Colors, mix } from './palette';
 import { Cloth, Drawn } from './draw';
 import { Action, View } from './vocab';
+import { Hat, HatShape } from './hats';
+import { Hold, Item, ItemShape } from './items';
 
-type Hat = 'none' | 'helmet' | 'crown' | 'hood' | 'cap' | 'turban';
-type Hold = 'none' | 'spear' | 'sword' | 'torch' | 'scroll' | 'shield' | 'tool' | 'sack';
-type Item = Hold | 'cup' | 'trophy' | 'shovel' | 'hammer' | 'quill' | 'stone';
 export type Pose = Action | 'ride';
 type Legs = 'stand' | 'walk' | 'sit' | 'kneel' | 'crouch' | 'wide';
 type Eyes = 'open' | 'closed' | 'wide' | 'down' | 'up';
@@ -18,6 +17,8 @@ interface PersonProps extends Drawn {
   pose?: Pose;
   /** Sitting figures get a little stool unless this is false. */
   stool?: boolean;
+  /** Costume extras: a breastplate colour, a skin tone (0 light .. 3 dark), a forced beard, long hair, a shield on the far arm, the colour of cloth hats. */
+  armor?: string; skin?: number; beard?: boolean; female?: boolean; shield?: boolean; hatColor?: string;
 }
 
 type XY = [number, number];
@@ -31,6 +32,8 @@ const SIDE_POSES: Action[] = ['walk', 'run', 'point', 'kneel', 'bow', 'slash', '
 
 /** Poses in which the figure keeps carrying its spear, torch or scroll; in the others both hands are busy or the thing would only get in the way. */
 const KEEPS_HOLD: Pose[] = ['stand', 'walk', 'run', 'sit', 'ride', 'point', 'shout', 'watch'];
+
+const NOHAIR: Hat[] = ['hood', 'greathelm', 'nemes', 'wig'];
 
 const specFor = (P: Pose, side: boolean, t: number, seed: number, held: Hold): Spec => {
   const hold: Hold = KEEPS_HOLD.includes(P) ? held : 'none';
@@ -86,7 +89,7 @@ const specFor = (P: Pose, side: boolean, t: number, seed: number, held: Hold): S
 const ease01 = (x: number) => (x < 0.6 ? (x / 0.6) * 0.25 : 0.25 + ((x - 0.6) / 0.4) * 0.75);
 
 /** One figure in the flat storybook style, 112 px tall with its feet at the origin. It can face us, turn to the side or show its back, and it can do any of the 37 actions of art/vocab.ts: stand, walk, run, sit, kneel, bow, pray, fight, fall, lie, dig, hammer, write, read, think, shout, dance, shoot and more. It breathes, blinks and talks; cloaks and flames move. */
-export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, body, cloak, hold = 'none', walk = false, cheer = false, scale = 1, face = true, view, pose, stool = true }) => {
+export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, body, cloak, hold = 'none', walk = false, cheer = false, scale = 1, face = true, view, pose, stool = true, armor, skin: skinIdx, beard: beardProp, female = false, shield = false, hatColor }) => {
   const P: Pose = pose ?? (cheer ? 'cheer' : walk ? 'walk' : 'stand');
   const V: View = view ?? (P === 'ride' || (SIDE_POSES as string[]).includes(P) ? 'side' : 'front');
   const side = V === 'side', back = V === 'back';
@@ -101,10 +104,11 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
   const dark = mix(cloth, c.shadow, 0.35);
   const ol = mix(c.shadow, cloth, 0.3);
   const k = Math.floor(seed * 13) % 4;
-  const skin = mix(c.skin, k % 2 ? c.shadow : c.light, [0, 0.14, 0.08, 0.2][k] * 0.8);
+  const tones = [mix(c.skin, c.light, 0.2), c.skin, mix(c.skin, c.shadow, 0.28), mix(c.skin, c.shadow, 0.5)];
+  const skin = skinIdx !== undefined ? tones[Math.max(0, Math.min(3, skinIdx))] : mix(c.skin, k % 2 ? c.shadow : c.light, [0, 0.14, 0.08, 0.2][k] * 0.8);
   const skinD = mix(skin, c.shadow, 0.3);
   const hair = [mix(c.shadow, '#000000', 0.4), mix(c.shadow, c.gold, 0.35), mix(c.shadow, c.light, 0.5), mix(c.shadow, c.accent, 0.3)][(k + 1) % 4];
-  const beard = (k === 0 || k === 3) && hat !== 'crown' ? true : hat === 'crown';
+  const beard = female ? false : beardProp ?? ((k === 0 || k === 3) && hat !== 'crown' ? true : hat === 'crown');
   const blinking = Math.sin(t * 1.3 + seed * 5) > 0.97;
   const eyes: Eyes = S.eyes === 'open' && blinking ? 'closed' : S.eyes;
   const talk = Math.max(0, Math.sin(t * 9 + seed * 3)) * (S.moving ? 0 : 1);
@@ -172,6 +176,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
         {seat}
         <g transform={`translate(0 ${bob + drop}) rotate(${S.bend} 0 -44)`}>
           {cloak && !back && <path d={`M${side ? -10 : -14} -78 Q-22 -40 ${-28 + sw * 3} -6 L${side ? 6 : 28} -6 Q${side ? 2 : 22} -40 ${side ? 6 : 14} -78Z`} fill={cloak} stroke={ol} strokeWidth={1.3} />}
+          {female && !back && <path d={side ? `M-4 ${HY - 16} Q-26 ${HY - 6} -18 ${HY + 34} L-1 ${HY + 30}Z` : `M-17 ${HY - 6} Q-22 ${HY + 26} -13 ${HY + 36} L13 ${HY + 36} Q22 ${HY + 26} 17 ${HY - 6}Z`} fill={hair} />}
           {sleeve(-sh, -74, farX, farY, dark)}
           {hand(farX, farY)}
           {robe ? (
@@ -190,8 +195,16 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
               {!back && <rect x={side ? 2 : -4.5} y={-53} width={9} height={8} rx={2} fill={c.gold} stroke={ol} strokeWidth={0.8} />}
             </>
           )}
+          {armor && (
+            <g>
+              <path d={side ? 'M-9 -78 Q-11 -62 -9 -46 L9 -46 Q11 -62 9 -78 Q0 -83 -9 -78Z' : 'M-14 -78 Q-17 -62 -14 -46 L14 -46 Q17 -62 14 -78 Q0 -84 -14 -78Z'} fill={armor} stroke={ol} strokeWidth={1.4} />
+              {!back && <path d={side ? 'M-5 -72 Q0 -60 -5 -50' : 'M0 -76 L0 -48 M-9 -66 Q0 -60 9 -66 M-9 -56 Q0 -50 9 -56'} stroke={mix(armor, '#ffffff', 0.45)} strokeWidth={1.6} fill="none" strokeLinecap="round" opacity={0.8} />}
+              <circle cx={-sh} cy={-75} r={5.4} fill={armor} stroke={ol} strokeWidth={1.1} />
+              <circle cx={sh} cy={-75} r={5.4} fill={armor} stroke={ol} strokeWidth={1.1} />
+            </g>
+          )}
           {cloak && back && <path d={`M-14 -80 Q-22 -40 ${-28 + sw * 3} -6 L${28 + sw * 3} -6 Q22 -40 14 -80Z`} fill={cloak} stroke={ol} strokeWidth={1.3} />}
-          {hold === 'shield' && !back && <g transform={`translate(${side ? 8 : -22} -50)`}><circle r={19} fill={c.accent2} stroke={c.shadow} strokeWidth={2.5} /><circle r={6} fill={c.gold} /></g>}
+          {(hold === 'shield' || shield) && !back && <g transform={`translate(${side ? 8 : -22} -50)`}><circle r={15} fill={mix(c.accent2, c.mid, 0.4)} stroke={c.shadow} strokeWidth={2.5} /><circle r={5} fill={c.gold} /><circle r={11} fill="none" stroke={c.light} strokeWidth={1.4} opacity={0.6} /></g>}
           {/* the far hand's own thing: a bow, a sheet, a book */}
           {S.farItem === 'bow' && <g transform={`translate(${farX} ${farY})`}><path d="M0 -26 Q-14 0 0 26" stroke={mix(c.near, c.shadow, 0.3)} strokeWidth={3.5} fill="none" strokeLinecap="round" /><path d="M0 -26 L0 26" stroke={c.light} strokeWidth={0.8} opacity={0.7} /></g>}
           {S.farItem === 'paper' && <rect x={farX - 9} y={farY - 8} width={18} height={14} rx={1.5} fill={c.light} stroke={c.shadow} strokeWidth={1} transform={`rotate(-12 ${farX} ${farY})`} />}
@@ -200,18 +213,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
           {sleeve(sh, -74, nearX, nearY, cloth)}
           <g transform={`translate(${nearX} ${nearY})`}>
             <g transform={`translate(0 ${S.itemDy}) rotate(${S.itemRot})`}>
-              {item === 'spear' && <><path d="M0 70 L0 -88" stroke={c.shadow} strokeWidth={3.5} /><path d="M-6 -86 L0 -108 L6 -86Z" fill={c.light} stroke={c.shadow} strokeWidth={1.5} /></>}
-              {item === 'sword' && <><path d="M0 4 L-6 -46" stroke={c.light} strokeWidth={5} strokeLinecap="round" /><path d="M-9 -2 L7 -4" stroke={c.gold} strokeWidth={4} /></>}
-              {item === 'tool' && <><path d="M0 40 L-6 -56" stroke={c.shadow} strokeWidth={4} /><path d="M-6 -56 L-26 -50" stroke={c.light} strokeWidth={5} /></>}
-              {item === 'scroll' && <rect x={-7} y={-14} width={14} height={22} rx={3} fill={c.light} stroke={c.shadow} strokeWidth={1.5} transform="rotate(-18)" />}
-              {item === 'sack' && <path d="M-12 8 Q-16 -14 -4 -20 Q8 -22 14 -6 Q16 8 8 10Z" fill={mix(c.light, c.shadow, 0.35)} stroke={c.shadow} strokeWidth={1.5} />}
-              {item === 'torch' && <><path d="M0 8 L0 -32" stroke={c.shadow} strokeWidth={4} /><path d={`M0 -32 Q${-9 + Math.sin(t * 14 + seed) * 3} -48 0 -64 Q${9 + Math.sin(t * 12 + seed) * 3} -48 0 -32Z`} fill={c.glow} /></>}
-              {item === 'cup' && <g transform="rotate(-25)"><path d="M-6 -12 L6 -12 L4 2 L-4 2Z" fill={c.gold} stroke={c.shadow} strokeWidth={1.2} /><path d="M-2 2 L-2 6 L2 6 L2 2" fill={c.gold} /></g>}
-              {item === 'trophy' && <g transform="translate(0 -14) scale(1.7)"><path d="M-7 -12 L7 -12 Q6 2 0 3 Q-6 2 -7 -12Z" fill={c.gold} stroke={c.shadow} strokeWidth={1} /><path d="M0 3 L0 8 M-4 9 L4 9" stroke={c.shadow} strokeWidth={2} /><path d="M-7 -10 Q-12 -8 -7 -3 M7 -10 Q12 -8 7 -3" stroke={c.gold} strokeWidth={1.6} fill="none" /></g>}
-              {item === 'shovel' && <><path d="M0 -8 L16 56" stroke={mix(c.near, c.shadow, 0.3)} strokeWidth={4} strokeLinecap="round" /><path d="M10 52 L28 56 L22 70 L6 64Z" fill={c.light} stroke={c.shadow} strokeWidth={1.4} /></>}
-              {item === 'hammer' && <><path d="M0 8 L0 -34" stroke={mix(c.near, c.shadow, 0.3)} strokeWidth={4.5} strokeLinecap="round" /><rect x={-12} y={-46} width={24} height={13} rx={2.5} fill={c.light} stroke={c.shadow} strokeWidth={1.4} /></>}
-              {item === 'quill' && <><path d="M0 4 L10 -22" stroke={c.light} strokeWidth={2.5} strokeLinecap="round" /><path d="M10 -22 Q22 -34 16 -14Z" fill={c.light} stroke={c.shadow} strokeWidth={0.8} /></>}
-              {item === 'stone' && <circle cx={0} cy={-5} r={5} fill={mix(c.light, c.shadow, 0.5)} stroke={c.shadow} strokeWidth={1} />}
+              {item && <ItemShape item={item} c={c} t={t} seed={seed} />}
             </g>
             {hand(0, 0)}
           </g>
@@ -222,16 +224,17 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
             {back ? (
               <>
                 <ellipse cx={0} cy={HY} rx={15} ry={16} fill={hair} stroke={mix(hair, '#000000', 0.3)} strokeWidth={1} />
+                {female && <path d={`M-16 ${HY - 12} Q-22 ${HY + 28} -11 ${HY + 38} L11 ${HY + 38} Q22 ${HY + 28} 16 ${HY - 12}Z`} fill={hair} stroke={mix(hair, '#000000', 0.3)} strokeWidth={1} />}
                 <ellipse cx={-15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} />
                 <ellipse cx={15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} />
                 <path d={`M-9 ${HY - 8} Q0 ${HY - 14} 9 ${HY - 8}`} stroke={mix(hair, '#ffffff', 0.15)} strokeWidth={1.5} fill="none" strokeLinecap="round" />
               </>
             ) : side ? (
               <>
-                {hat !== 'hood' && <ellipse cx={-6} cy={HY - 2} rx={11} ry={14} fill={hair} />}
+                {!NOHAIR.includes(hat) && <ellipse cx={-6} cy={HY - 2} rx={11} ry={14} fill={hair} />}
                 <ellipse cx={hx} cy={HY} rx={13} ry={16} fill={skin} stroke={skinD} strokeWidth={1} />
                 <path d={`M12 ${HY - 1} L18 ${HY + 4} L12 ${HY + 6}`} fill={skin} stroke={skinD} strokeWidth={1} strokeLinejoin="round" />
-                {hat !== 'hood' && <path d={`M-9 ${HY - 14} Q8 ${HY - 22} 14 ${HY - 6} Q8 ${HY - 11} 2 ${HY - 9} Q-4 ${HY - 5} -9 ${HY + 4}Z`} fill={hair} />}
+                {!NOHAIR.includes(hat) && <path d={`M-9 ${HY - 14} Q8 ${HY - 22} 14 ${HY - 6} Q8 ${HY - 11} 2 ${HY - 9} Q-4 ${HY - 5} -9 ${HY + 4}Z`} fill={hair} />}
                 {beard && <path d={`M-4 ${HY + 8} Q-2 ${HY + 20} 8 ${HY + 18} Q15 ${HY + 14} 13 ${HY + 8} Q8 ${HY + 11} 4 ${HY + 7} Q0 ${HY + 3} -4 ${HY + 8}Z`} fill={hair} />}
                 <ellipse cx={-3} cy={HY + 3} rx={2.6} ry={3.4} fill={skin} stroke={skinD} strokeWidth={0.8} />
                 {eyeF(7)}
@@ -241,11 +244,11 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
               </>
             ) : (
               <>
-                {hat !== 'hood' && <path d={`M-15 ${HY - 2} Q-17 ${HY - 20} 0 ${HY - 19} Q17 ${HY - 20} 15 ${HY - 2} L12 ${HY - 5} Q0 ${HY - 13} -12 ${HY - 5}Z`} fill={hair} />}
+                {!NOHAIR.includes(hat) && <path d={`M-15 ${HY - 2} Q-17 ${HY - 20} 0 ${HY - 19} Q17 ${HY - 20} 15 ${HY - 2} L12 ${HY - 5} Q0 ${HY - 13} -12 ${HY - 5}Z`} fill={hair} />}
                 <ellipse cx={-15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} stroke={skinD} strokeWidth={0.8} />
                 <ellipse cx={15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} stroke={skinD} strokeWidth={0.8} />
                 <ellipse cx={0} cy={HY} rx={15} ry={16} fill={skin} stroke={skinD} strokeWidth={1} />
-                {hat !== 'hood' && <path d={`M-15 ${HY - 3} Q-14 ${HY - 17} 0 ${HY - 17} Q14 ${HY - 17} 15 ${HY - 3} Q9 ${HY - 12} 0 ${HY - 11} Q-9 ${HY - 12} -15 ${HY - 3}Z`} fill={hair} />}
+                {!NOHAIR.includes(hat) && <path d={`M-15 ${HY - 3} Q-14 ${HY - 17} 0 ${HY - 17} Q14 ${HY - 17} 15 ${HY - 3} Q9 ${HY - 12} 0 ${HY - 11} Q-9 ${HY - 12} -15 ${HY - 3}Z`} fill={hair} />}
                 {beard && face && <path d={`M-14 ${HY + 3} Q-13 ${HY + 20} 0 ${HY + 20} Q13 ${HY + 20} 14 ${HY + 3} Q8 ${HY + 8} 0 ${HY + 8} Q-8 ${HY + 8} -14 ${HY + 3}Z`} fill={hair} />}
                 {eyeF(-5.5)}{eyeF(5.5)}
                 {browF(-1)}{browF(1)}
@@ -255,13 +258,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
                 <circle cx={9} cy={HY + 6} r={2.8} fill="#ff7a6a" opacity={0.22} />
               </>
             )}
-            <g transform={`translate(${side ? 1 : 0} 0)`}>
-              {hat === 'helmet' && <><path d={`M-16 ${HY - 3} A16 15 0 0 1 16 ${HY - 3}Z`} fill={c.light} stroke={c.shadow} strokeWidth={1.6} /><path d={`M-16 ${HY - 3} L16 ${HY - 3}`} stroke={c.shadow} strokeWidth={2.4} /><path d={`M0 ${HY - 17} Q${8 + Math.sin(t * 5 + seed) * 2} ${HY - 32} 18 ${HY - 20}`} stroke={c.accent} strokeWidth={6} fill="none" strokeLinecap="round" /></>}
-              {hat === 'crown' && <path d={`M-13 ${HY - 14} L-15 ${HY - 31} L-7 ${HY - 22} L0 ${HY - 34} L7 ${HY - 22} L15 ${HY - 31} L13 ${HY - 14}Z`} fill={c.gold} stroke={c.shadow} strokeWidth={1.4} />}
-              {hat === 'hood' && <path d={`M-18 ${HY + 18} Q-22 ${HY - 22} 0 ${HY - 21} Q22 ${HY - 22} 18 ${HY + 18} Q15 ${HY + 4} 12 ${HY - 6} Q0 ${HY - 14} -12 ${HY - 6} Q-15 ${HY + 4} -18 ${HY + 18}Z`} fill={robe ?? cloth} stroke={ol} strokeWidth={1.2} />}
-              {hat === 'cap' && <path d={`M-16 ${HY - 8} Q-14 ${HY - 24} 0 ${HY - 23} Q14 ${HY - 24} 16 ${HY - 8} Q0 ${HY - 14} -16 ${HY - 8}Z`} fill={c.accent2} stroke={ol} strokeWidth={1.2} />}
-              {hat === 'turban' && <><ellipse cx={0} cy={HY - 14} rx={17} ry={11} fill={c.light} stroke={c.shadow} strokeWidth={1.3} /><path d={`M-14 ${HY - 12} Q0 ${HY - 22} 14 ${HY - 12}`} stroke={c.shadow} strokeWidth={1.2} fill="none" />{!back && <circle cx={side ? 8 : 0} cy={HY - 15} r={2.6} fill={c.accent} />}</>}
-            </g>
+            <g transform={`translate(${side ? 1 : 0} 0)`}><HatShape hat={hat} c={c} t={t} seed={seed} HY={HY} side={side} back={back} color={hatColor} cloth={robe ?? cloth} /></g>
           </g>
         </g>
       </g>
