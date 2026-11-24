@@ -161,6 +161,27 @@ const SKYLINE: { C: React.FC<any>; x: number; s: number; layer: 'far' | 'near' }
   { C: Pagoda, x: 2150, s: 1.5, layer: 'near' }, { C: Castle, x: 2470, s: 0.9, layer: 'near' },
 ];
 
+/** A sheet of torn paper: a rectangle whose four edges wander and bite, with a few deep tears. Deterministic. */
+const torn = (x0: number, y0: number, x1: number, y1: number, seed: number, amp: number): string => {
+  let s = seed;
+  const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+  const edge = (ax: number, ay: number, bx: number, by: number, bite: number) => {
+    const n = Math.max(8, Math.round(Math.hypot(bx - ax, by - ay) / 26));
+    const nx = -(by - ay) / Math.hypot(bx - ax, by - ay), ny = (bx - ax) / Math.hypot(bx - ax, by - ay);
+    const pts: string[] = [];
+    for (let i = 1; i <= n; i++) {
+      const t = i / n;
+      const deep = rnd() < 0.14 ? 2.6 : 1;
+      const o = (rnd() - 0.45) * amp * deep * bite + Math.sin(t * 9 + seed) * amp * 0.35;
+      pts.push(`L${(ax + (bx - ax) * t + nx * o).toFixed(1)} ${(ay + (by - ay) * t + ny * o).toFixed(1)}`);
+    }
+    return pts.join(' ');
+  };
+  return `M${x0} ${y0} ${edge(x0, y0, x1, y0, 1)} ${edge(x1, y0, x1, y1, 1.3)} ${edge(x1, y1, x0, y1, 1)} ${edge(x0, y1, x0, y0, 1.3)}Z`;
+};
+const TORN = torn(262, 30, 1416, 404, 11, 17);
+const TORN_BACK = torn(276, 42, 1432, 416, 5, 22);
+
 /** The YouTube channel art (2560 x 1440): an illuminated panorama of history. Monuments of every age stand in a row under a gold sun, in sepia and bronze; the title is inked on a parchment scroll held at the centre
  *  with the Chronicler's badge. Badge, scroll and tagline sit in the 1546 x 423 box every device shows. */
 export const Banner: React.FC = () => {
@@ -210,17 +231,27 @@ export const Banner: React.FC = () => {
       {/* the safe box: the badge and the scroll */}
       <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423 }}>
         <svg width={1546} height={423} viewBox="0 0 1546 423" style={{ position: 'absolute', inset: 0, overflow: 'visible', filter: 'drop-shadow(0 18px 26px rgba(0,0,0,0.55))' }}>
-          <defs><linearGradient id="parch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f7ebc9" /><stop offset="1" stopColor="#e3c88c" /></linearGradient></defs>
-          <path d="M308 26 Q840 -6 1370 26 L1370 397 Q840 429 308 397Z" fill="url(#parch)" stroke="#9a7440" strokeWidth={4} />
-          <path d="M322 42 Q840 14 1356 42 M322 381 Q840 409 1356 381" stroke="#b58a4a" strokeWidth={3} fill="none" />
-          <path d="M308 26 Q266 18 250 64 L250 359 Q266 405 308 397Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
-          <ellipse cx={262} cy={211} rx={26} ry={150} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={262} cy={211} rx={10} ry={74} fill="none" stroke="#9a7440" strokeWidth={3} />
-          <path d="M1370 26 Q1412 18 1428 64 L1428 359 Q1412 405 1370 397Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
-          <ellipse cx={1416} cy={211} rx={26} ry={150} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={1416} cy={211} rx={10} ry={74} fill="none" stroke="#9a7440" strokeWidth={3} />
-          {/* two laurel sprigs */}
-          {[-1, 1].map((s) => Array.from({ length: 7 }, (_, i) => <ellipse key={`${s}${i}`} cx={s < 0 ? 372 + i * 38 : 1306 - i * 38} cy={410 + Math.sin(i * 0.5) * 8} rx={8} ry={20} transform={`rotate(${s < 0 ? 70 - i * 6 : -70 + i * 6} ${s < 0 ? 372 + i * 38 : 1306 - i * 38} 410)`} fill={GOLD.mid} stroke={GOLD.deep} strokeWidth={2} opacity={0.95} />))}
+          <defs>
+            <linearGradient id="parch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f8edcf" /><stop offset="0.55" stopColor="#ecd6a0" /><stop offset="1" stopColor="#dcbf82" /></linearGradient>
+            <radialGradient id="stain1" cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#a8742e" stopOpacity="0.34" /><stop offset="1" stopColor="#a8742e" stopOpacity="0" /></radialGradient>
+            <filter id="soft" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="7" /></filter>
+            <clipPath id="torn"><path d={TORN} /></clipPath>
+          </defs>
+          {/* a second, darker sheet peeks out behind the first */}
+          <path d={TORN_BACK} fill="#bd9a5a" stroke="#7a5428" strokeWidth={3} />
+          <path d={TORN} fill="url(#parch)" stroke="#8a6230" strokeWidth={3.5} strokeLinejoin="round" />
+          <g clipPath="url(#torn)">
+            {/* burnt, stained edges and old stains */}
+            <path d={TORN} fill="none" stroke="#7a4e1e" strokeWidth={34} opacity={0.38} filter="url(#soft)" />
+            <ellipse cx={560} cy={120} rx={190} ry={90} fill="url(#stain1)" /><ellipse cx={1180} cy={330} rx={220} ry={80} fill="url(#stain1)" /><ellipse cx={900} cy={60} rx={140} ry={50} fill="url(#stain1)" /><ellipse cx={420} cy={340} rx={120} ry={60} fill="url(#stain1)" />
+            {/* the folds of the sheet */}
+            <rect x={560} y={0} width={36} height={430} fill="#7a4e1e" opacity={0.06} /><rect x={1060} y={0} width={30} height={430} fill="#7a4e1e" opacity={0.07} />
+            <path d="M578 20 V410 M1075 20 V410" stroke="#8a6230" strokeWidth={1.5} opacity={0.35} />
+            {/* hairline cracks */}
+            <path d="M330 120 l24 14 l-10 20 l22 18 M1330 90 l-26 18 l12 22 M1290 380 l-22 -16 l10 -20" stroke="#6a4420" strokeWidth={2.2} fill="none" opacity={0.5} strokeLinecap="round" />
+          </g>
         </svg>
-        <div style={{ position: 'absolute', left: 300, top: 36, width: 1010, height: 350, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'absolute', left: 292, top: 34, width: 1090, height: 350, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 92, lineHeight: 1.06, textAlign: 'center', color: '#3a2210', letterSpacing: 1, whiteSpace: 'nowrap', textShadow: '0 2px 0 rgba(255,244,216,0.7)' }}>THE CHRONICLES<br />OF HISTORY</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 14 }}>
             <div style={{ width: 120, height: 3, background: 'linear-gradient(90deg, transparent, #8a5a2a)' }} /><div style={{ width: 14, height: 14, background: '#a8442a', transform: 'rotate(45deg)' }} /><div style={{ width: 120, height: 3, background: 'linear-gradient(270deg, transparent, #8a5a2a)' }} />
