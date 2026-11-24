@@ -518,6 +518,16 @@ def test_the_pictures_must_tell_the_story_through_its_people():
     assert any("four different" in m for m in story_problems(some))
 
 
+def test_an_unknown_subject_is_reported_and_the_schema_has_no_huge_enum():
+    import json
+    from services.motion_generator import MotionProject
+    schema = json.dumps(MotionProject.model_json_schema())
+    assert '"samurai"' not in schema.split('"subjects"')[1][:600]  # subjects are plain strings: a 258-value enum is refused by Gemini
+    p = script("turning")
+    p.scenes[1].art[0].subjects = ["legionary", "unicorn"]
+    assert any("unknown subject" in x for x in make_validator(None, "turning")(p))
+
+
 def test_a_shot_can_carry_an_action_and_a_view_but_only_from_the_lists():
     shot = ArtShot(place="plains", time="day", subjects=["soldiers", "banner"], action="surrender", view="back")
     assert shot.action == "surrender" and shot.view == "back"

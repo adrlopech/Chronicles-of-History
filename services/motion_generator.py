@@ -47,7 +47,7 @@ TimeT = Literal["dawn", "day", "dusk", "night"]
 WeatherT = Literal["clear", "rain", "snow", "storm", "smoke"]
 ActionT = Literal["stand", "walk", "run", "sit", "point", "wave", "cheer", "kneel", "bow", "pray", "salute", "slash", "stab", "fall", "lie", "crouch", "carry", "push", "dig", "hammer", "write", "read", "think", "shout", "plead", "threaten", "shrug", "lift", "throw", "shoot", "drink", "dance", "sneak", "surrender", "cower", "lean", "watch"]
 ViewT = Literal["front", "side", "back"]
-SubjectT = Literal[SUBJECTS]  # type: ignore[valid-type]
+# NOT a Literal: a 258-value enum repeated in every shot makes Gemini refuse the schema ("too many states"); the names are checked by _art_problems instead
 # Subjects that did not exist in every era: the looks where each may be drawn (an anachronistic one is dropped, see fix_art_for_era)
 ERA_ONLY = {
     "tank": {"wartime"}, "plane": {"wartime"}, "train": {"industrial", "wartime"}, "factory": {"industrial", "wartime"},
@@ -274,7 +274,7 @@ class ArtShot(BaseModel):
     place: PlaceT = Field(..., description="Where the picture is set")
     time: TimeT = Field(..., description="Time of day: sets the sky and the light")
     weather: WeatherT = Field(default="clear", description="clear, rain, snow, storm (rain and lightning) or smoke")
-    subjects: List[SubjectT] = Field(..., description="1-4 DIFFERENT things drawn in the picture, the first is the hero: " + ", ".join(SUBJECTS))
+    subjects: List[str] = Field(..., description="1-4 DIFFERENT things drawn in the picture, the first is the hero: " + ", ".join(SUBJECTS))
     action: Optional[ActionT] = Field(default=None, description="What the PEOPLE in the picture are doing (only when the shot has soldiers, king, crowd, scholar, monk, farmer or merchant): " + ", ".join(ACTIONS) + ". Optional, but vary it from shot to shot")
     view: Optional[ViewT] = Field(default=None, description="Which way those people face: front (toward the viewer), side (in profile) or back (we see their backs, as they look at what is ahead). Optional: the action picks the natural one")
 
@@ -740,6 +740,9 @@ def _art_problems(i: int, s: MotionSceneModel) -> List[str]:
     if len(s.art) > 2:
         out.append(f"scene {i}: at most two illustration shots per scene")
     for sh in s.art:
+        unknown = [x for x in sh.subjects if x not in SUBJECTS]
+        if unknown:
+            out.append(f"scene {i}: unknown subject(s) {', '.join(unknown)}: use only names from the subject lists")
         if not 1 <= len(sh.subjects) <= 4 or len(set(sh.subjects)) != len(sh.subjects):
             out.append(f"scene {i}: a shot has 1-4 different subjects")
     return out
