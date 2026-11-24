@@ -318,7 +318,7 @@ def index() -> str:
     faq = "".join(f'<details class="rv" style="--d:{i * .05}s"><summary>{q}</summary><p>{a}</p></details>' for i, (q, a) in enumerate(FAQ))
     faq_sec = f'<section class="block" id="faq"><div class="container narrow">{kicker("VIII", "Questions")}<h2 class="rv">Before you <em>ask</em></h2>{faq}</div></section>'
 
-    cta = f'''<section class="finale"><div class="container"><div class="medal"><div class="rays small"></div><img class="rv zoom" src="logo.png" alt="" width="120" height="120"></div>
+    cta = f'''<section class="finale"><div class="burst"><div class="rays small"></div></div><div class="container"><div class="medal"><img class="rv zoom" src="logo.png" alt="" width="120" height="120"></div>
 <h2 class="rv">History is better<br><em>when it is told well</em></h2><p class="sub rv">Join the chronicle. A new story every day, on both channels.</p>
 <div class="cta rv"><a class="btn" href="{YT}" target="_blank" rel="noopener"><span>Subscribe on YouTube</span></a><a class="btn ghost" href="{TT}" target="_blank" rel="noopener"><span>Follow on TikTok</span></a></div></div></section>'''
 
@@ -520,8 +520,8 @@ summary:after{content:"+";position:absolute;right:24px;top:50%;margin-top:-16px;
 details p{padding:0 24px 22px;color:var(--paper2);animation:drop .4s}@keyframes drop{from{opacity:0;transform:translateY(-8px)}}
 /* finale */
 .finale{position:relative;z-index:3;text-align:center;padding:150px 0 130px;overflow:hidden;background:radial-gradient(800px 500px at 50% 50%,rgba(150,90,30,.5),transparent 70%)}
-.finale .container{position:relative;z-index:2}.medal{position:relative;width:120px;height:120px;margin:0 auto 26px}.medal img{position:relative;z-index:2;display:block;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 70px rgba(240,203,122,.7);animation:float 6s ease-in-out infinite}.medal .rays{z-index:0;opacity:.7}
-.finale:before,.finale:after{content:"";position:absolute;left:0;right:0;z-index:1;pointer-events:none}.finale:before{top:0;height:240px;background:linear-gradient(var(--ink),transparent)}.finale:after{bottom:0;height:160px;background:linear-gradient(transparent,#0b0705)}
+.finale .container{position:relative;z-index:2}.medal{position:relative;width:120px;height:120px;margin:0 auto 26px}.medal img{position:relative;z-index:2;display:block;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 70px rgba(240,203,122,.7);animation:float 6s ease-in-out infinite}.burst{position:absolute;left:50%;top:210px;width:0;height:0;z-index:0}.burst .rays{opacity:.7}
+.finale:before,.finale:after{content:"";position:absolute;left:0;right:0;z-index:1;pointer-events:none}.finale:before{top:0;height:340px;background:linear-gradient(var(--ink),transparent)}.finale:after{bottom:0;height:160px;background:linear-gradient(transparent,#0b0705)}
 /* footer */
 footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#0b0705;padding:34px 0 40px;color:var(--paper2);font-size:15px}
 .foot{display:flex;gap:26px;justify-content:space-between;flex-wrap:wrap;align-items:center}.fbrand{display:flex;gap:16px;align-items:center}.fbrand img{border-radius:50%;border:2px solid var(--gold)}
