@@ -7,7 +7,7 @@ Sibling of `Silicon Verdict` (`../Silicon Verdict`): same Remotion engine and pi
 
 The visual style is new (an illustrated archive with eleven era looks (antiquity, manuscript, seachart, empire, industrial, wartime, prehistory, renaissance, orient, frontier, spaceage): `guide/motion-engine.md`). The eight history formats (`guide/formats.md`: mystery, dayinlife, turning, lies, whatif, duel, journey, portrait) and their generator, validators and prompts are new; the tech formats, games, prices and news are gone. The rest of `guide/` and the brand assets (done: `guide/branding.md`, `node scripts/make_brand_assets.mjs`) are still the tech channel's. Next steps, in order:
 
-1. ~~Brand assets~~ done: CH monogram, avatar, YouTube banner and watermark in `assets/brand/` (`node scripts/make_brand_assets.mjs`, rules in `guide/branding.md`). Still to do by hand: upload them to the YouTube and TikTok profiles.
+1. ~~Brand assets~~ done: Chronicler mascot, avatar, YouTube banner and watermark in `assets/brand/` (`node scripts/make_brand_assets.mjs`, rules in `guide/branding.md`). Still to do by hand: upload them to the YouTube and TikTok profiles.
 2. Illustrations are animated vector art drawn in code (`remotion_studio/src/chronicle/art/`): grow the kit (more subjects, places, characters) by adding to `art/vocab.ts` AND `services/motion_generator.py`. No photographs and no AI images, by decision. The `image` scene is unused.
 3. First test wave: bank 2-3 scripts per format (`scripts/refill_story_bank.py`), publish, and read the numbers with `scripts/report_retention.py` to set `FORMAT_WEIGHTS`.
 4. New YouTube OAuth for the new channel (`scripts/authenticate_yt.py`), new `tokens/`. Ask the operator each time.
