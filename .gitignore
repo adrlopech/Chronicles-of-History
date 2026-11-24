@@ -89,3 +89,6 @@ scratch_gen/
 # web art: regenerate with scripts/web_art.tsx (see README of scripts/build_portal.py)
 !docs/assets/eras/*.svg
 !docs/assets/map.svg
+!docs/assets/brand/*.png
+!docs/assets/brand/*.zip
+!docs/assets/recent/*.jpg

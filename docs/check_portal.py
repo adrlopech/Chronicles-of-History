@@ -14,12 +14,12 @@ for page in sorted(D.glob("*.html")):
         if url.startswith(("http", "mailto:", "data:", "//")):
             continue
         path, _, frag = url.partition("#")
-        if path and not (D / path).exists():
+        if path and not (page.parent / path).exists():
             bad.append(f"{page.name}: missing file {url}")
         if frag and not path and frag not in ids:
             bad.append(f"{page.name}: missing anchor #{frag}")
-        if frag and path and path.endswith(".html") and (D / path).exists():
-            if frag not in set(re.findall(r'\bid="([^"]+)"', (D / path).read_text(encoding="utf-8"))):
+        if frag and path and path.endswith(".html") and (page.parent / path).exists():
+            if frag not in set(re.findall(r'\bid="([^"]+)"', (page.parent / path).read_text(encoding="utf-8"))):
                 bad.append(f"{page.name}: missing anchor {url}")
 print("\n".join(bad) or "portal links OK")
 sys.exit(1 if bad else 0)

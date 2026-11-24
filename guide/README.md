@@ -53,3 +53,4 @@ output/                    rendered videos, one folder per title (git-ignored)
 docs/                      the public web portal (GitHub Pages), not documentation
 notes/                     private research notes (git-ignored)
 ```
+| [Web portal](portal.md) | The public site: build, languages, library, press kit |

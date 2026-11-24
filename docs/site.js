@@ -86,17 +86,36 @@
     $$('.doc h2[id]').forEach(function (h) { tspy.observe(h); });
   }
 
+  // library filters
+  var libEl = $('#lib');
+  if (libEl) {
+    var flt = { era: 'all', series: 'all' }, cards = $$('.lcard', libEl), emp = $('#libempty');
+    $$('.chip').forEach(function (c) {
+      c.addEventListener('click', function () {
+        flt[c.dataset.f] = c.dataset.v;
+        $$('.chip[data-f="' + c.dataset.f + '"]').forEach(function (x) { x.classList.toggle('on', x === c); });
+        var n = 0;
+        cards.forEach(function (k) { var ok = (flt.era === 'all' || k.dataset.era === flt.era) && (flt.series === 'all' || k.dataset.series === flt.series); k.classList.toggle('off', !ok); if (ok) n++; });
+        emp.hidden = n > 0;
+      });
+    });
+  }
+
+  // copy buttons of the press kit
+  $$('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var txt = b.dataset.copy.charAt(0) === '#' && b.dataset.copy.length < 8 ? b.dataset.copy : ($(b.dataset.copy) || {}).innerText || b.dataset.copy, old = b.innerHTML;
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.classList.add('done'); b.innerHTML = b.dataset.done || 'Copied'; setTimeout(function () { b.classList.remove('done'); b.innerHTML = old; }, 1600); }).catch(function () {});
+    });
+  });
+
   // menu
   var bg = $('.burger'), menu = $('#menu');
   if (bg) { bg.addEventListener('click', function () { var o = menu.classList.toggle('open'); bg.setAttribute('aria-expanded', o); }); $$('#menu a').forEach(function (a) { a.addEventListener('click', function () { menu.classList.remove('open'); }); }); }
 
   // colour themes
-  var names = {
-    gilded: 'Gilded — gold leaf on dark leather, each era with its own accents.', sepia: 'Sepia — a faded photograph, copper and old gold.', ember: 'Ember — fire and brass on red-brown grounds.',
-    regal: 'Regal — oxblood and gold, the colours of courts and crowns.', bronze: 'Bronze — ochre and olive-brown, roads and camps.', ivory: 'Ivory — bone and umber, a daylight manuscript.', smoke: 'Smoke — ash and umber with a lantern glow.'
-  };
   var tbs = $$('.tb'), sls = $$('.tsl'), tn = $('#tname'), auto = true, idx = 0;
-  function pick(k) { tbs.forEach(function (b) { b.classList.toggle('on', b.dataset.k === k); }); sls.forEach(function (s) { s.classList.toggle('on', s.dataset.k === k); }); if (tn) tn.textContent = names[k]; }
+  function pick(k) { tbs.forEach(function (b) { b.classList.toggle('on', b.dataset.k === k); }); sls.forEach(function (s) { s.classList.toggle('on', s.dataset.k === k); }); var b = tbs.filter(function (x) { return x.dataset.k === k; })[0]; if (tn && b) tn.innerHTML = b.dataset.desc; }
   tbs.forEach(function (b, i) { b.addEventListener('click', function () { auto = false; idx = i; pick(b.dataset.k); }); });
   if (tbs.length && !reduce) setInterval(function () { if (!auto) return; idx = (idx + 1) % tbs.length; pick(tbs[idx].dataset.k); }, 3200);
 

@@ -2,11 +2,14 @@
 
 Run: python3 scripts/build_portal.py   (then python3 docs/check_portal.py). The portal is plain static files for GitHub Pages: no cookies, no analytics, nothing loaded from other hosts.
 """
+import json
 import re
+from datetime import datetime
 from pathlib import Path
 
 D = Path(__file__).resolve().parent.parent / "docs"
 BASE = "https://adrlopech.github.io/Chronicles-of-History"
+VIDEOS = json.loads((D / "data" / "videos.json").read_text(encoding="utf-8"))  # scripts/update_site_videos.py keeps it current
 YT = "https://www.youtube.com/@chroniclesofhistorytv"
 TT = "https://www.tiktok.com/@chroniclesofhistorytv"
 REPO = "https://github.com/adrlopech/Chronicles-of-History"
@@ -103,6 +106,19 @@ COVERS = [
     ("samurai", "Turning Point", "The Last Stand of the Samurai, 1877"),
     ("jesse-james", "Unsolved", "Did Jesse James Fake His Death?"),
 ]
+ERA_OF = {v: k for k, v in SLUG.items()}  # look slug -> era name
+
+
+def vdate(iso: str) -> str:
+    d = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    return f'<time datetime="{iso}">{d.day} {d.strftime("%b %Y")}</time>'
+
+
+THEME_DESC = {
+    "gilded": "Gilded &mdash; gold leaf on dark leather, each era with its own accents.", "sepia": "Sepia &mdash; a faded photograph, copper and old gold.", "ember": "Ember &mdash; fire and brass on red-brown grounds.",
+    "regal": "Regal &mdash; oxblood and gold, the colours of courts and crowns.", "bronze": "Bronze &mdash; ochre and olive-brown, roads and camps.", "ivory": "Ivory &mdash; bone and umber, a daylight manuscript.",
+    "smoke": "Smoke &mdash; ash and umber with a lantern glow.",
+}
 FORMATS = [("Unsolved", "One mystery, two theories, what is missing"), ("A Day In", "An ordinary day, one place, one year"), ("Turning Point", "The moment that changed everything"),
            ("History Lies", "Myth, fact or partly?"), ("What If History", "Counterfactuals on a real hinge"), ("History Duel", "Two contenders, round by round"),
            ("The Route", "Expeditions on a treasure map"), ("Life in Dates", "A life told through its dates")]
@@ -160,7 +176,7 @@ S_NARRATE = _fig(
     '<g transform="translate(60 34)"><rect x="52" y="0" width="52" height="96" rx="26" fill="url(#gold)" stroke="#8A6420" stroke-width="3"/>' + "".join(f'<path d="M58 {16 + k * 14} H98" stroke="#8A6420" stroke-width="2" opacity=".6"/>' for k in range(5))
     + '<path d="M28 70 C28 116 128 116 128 70" fill="none" stroke="#F0CB7A" stroke-width="6" stroke-linecap="round"/><path d="M78 112 V142 M52 142 H104" stroke="#F0CB7A" stroke-width="6" stroke-linecap="round"/></g>'
     + '<g transform="translate(236 56)">' + "".join(f'<rect x="{k * 14}" y="{70 - h / 2}" width="8" height="{h}" rx="4" fill="url(#gold)" opacity="{0.35 + (h / 140)}"/>' for k, h in enumerate([20, 44, 70, 98, 60, 120, 82, 46, 108, 70, 34, 56, 24, 12]))
-    + '</g><g transform="translate(60 214)"><rect width="360" height="56" rx="12" fill="#0E0805" stroke="#5A4126" stroke-width="2"/><text x="180" y="35" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="22" fill="#F2E3BF" letter-spacing="1">THE LEGIONS <tspan fill="#FF8A55">MARCHED</tspan> NORTH</text></g>'
+    + '</g><g transform="translate(60 214)"><rect width="360" height="56" rx="12" fill="#0E0805" stroke="#5A4126" stroke-width="2"/><text x="180" y="35" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="19" fill="#F2E3BF" letter-spacing=".5">THE LEGIONS <tspan fill="#FF8A55">MARCHED</tspan> NORTH</text></g>'
 )
 S_DRAW = ('<svg viewBox="0 0 480 300" role="img" aria-hidden="true"><defs><filter id="gb" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="9"/></filter><clipPath id="dc"><rect width="480" height="300" rx="0"/></clipPath></defs><g clip-path="url(#dc)"><ellipse cx="240" cy="262" rx="200" ry="26" fill="#D9A441" opacity=".22" filter="url(#gb)"/><image href="assets/eras/draw.svg" x="0" y="0" width="480" height="338" preserveAspectRatio="xMidYMid slice"/>'
           '<path d="M20 20 h34 M20 20 v34 M460 20 h-34 M460 20 v34 M20 280 h34 M20 280 v-34 M460 280 h-34 M460 280 v-34" stroke="#F0CB7A" stroke-width="3" fill="none" opacity=".9"/>'
@@ -182,6 +198,9 @@ def head(title: str, desc: str, fname: str) -> str:
     if fname == "index.html":
         jsonld = ('\n<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"The Chronicles of History","url":"' + BASE + '/","logo":"' + BASE + '/logo.png",'
                   '"description":"Narrated, hand-drawn history shorts of just over a minute.","sameAs":["' + YT + '","' + TT + '","' + REPO + '"]}</script>')
+        items = [{"@type": "ListItem", "position": i + 1, "item": {"@type": "VideoObject", "name": f'{v["series"]} #{v["number"]}: {v["title"]}', "thumbnailUrl": f'{BASE}/{v["cover"]}', "uploadDate": v["published"],
+                                                              "contentUrl": f'https://www.youtube.com/shorts/{v["id"]}', "description": f'{v["series"]}: a narrated, hand-drawn history short.'}} for i, v in enumerate(VIDEOS)]
+        jsonld += '\n<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "ItemList", "itemListElement": items}, ensure_ascii=False) + '</script>'
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,14 +221,14 @@ def head(title: str, desc: str, fname: str) -> str:
 <body>
 <a class="skip" href="#main">Skip to content</a><div id="progress"></div><div class="grain"></div><div class="glow" id="glow"></div><canvas id="embers" aria-hidden="true"></canvas>
 <header class="top"><nav aria-label="Main"><a href="index.html" class="brand"><img src="logo.png" alt="" width="40" height="40"><span>The Chronicles <b>of History</b></span></a>
-<ul id="menu"><li><a href="index.html#stories">Stories</a></li><li><a href="index.html#eras">Eras</a></li><li><a href="index.html#how">How it&rsquo;s made</a></li><li><a href="index.html#colour">Colours</a></li><li><a href="index.html#faq">FAQ</a></li></ul>
+<ul id="menu"><li><a href="index.html#stories">Stories</a></li><li><a href="index.html#library">Library</a></li><li><a href="index.html#eras">Eras</a></li><li><a href="index.html#how">How it&rsquo;s made</a></li><li><a href="index.html#colour">Colours</a></li><li><a href="index.html#faq">FAQ</a></li></ul>
 <a class="btn sm" href="{YT}" target="_blank" rel="noopener"><span>Watch</span></a><button class="burger" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false"><i></i><i></i></button></nav></header>
 '''
 
 
 def foot() -> str:
     return f'''<footer><div class="container foot"><div class="fbrand"><img src="logo.png" alt="" width="54" height="54"><div>&copy; 2026 The Chronicles of History. All rights reserved.<br><small>Narrated, hand-drawn history. Facts first.</small></div></div>
-<ul><li><a href="index.html">Home</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="{REPO}/issues" target="_blank" rel="noopener">Contact</a></li><li><a href="{REPO}" target="_blank" rel="noopener">GitHub</a></li><li><a href="{TT}" target="_blank" rel="noopener">TikTok</a></li><li><a href="{YT}" target="_blank" rel="noopener">YouTube</a></li><li><a href="https://adrlopech.github.io/Silicon-Verdict/" target="_blank" rel="noopener">Sister channel: Silicon Verdict</a></li></ul></div></footer>
+<ul><li><a href="index.html">Home</a></li><li><a href="presskit.html">Press kit</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="{REPO}/issues" target="_blank" rel="noopener">Contact</a></li><li><a href="{REPO}" target="_blank" rel="noopener">GitHub</a></li><li><a href="{TT}" target="_blank" rel="noopener">TikTok</a></li><li><a href="{YT}" target="_blank" rel="noopener">YouTube</a></li><li><a href="https://adrlopech.github.io/Silicon-Verdict/" target="_blank" rel="noopener">Sister channel: Silicon Verdict</a></li></ul></div></footer>
 <button class="backtop" type="button" aria-label="Back to top">&#8593;</button>
 <script src="site.js"></script>
 </body>
@@ -236,16 +255,33 @@ def index() -> str:
 </section>
 <div class="ribbon" aria-hidden="true"><div class="track">{"".join(f"<span>{e[0]}</span><b>&#10022;</b>" for e in ERAS * 2)}</div></div>'''
 
+    top = VIDEOS[:5]
     phones = "".join(
-        f'<a class="phone" style="--i:{i - 2}" href="{YT}/shorts" target="_blank" rel="noopener"><div class="bezel"><img src="assets/covers/{s}.jpg" alt="Cover: {t}" width="540" height="960"><span class="shine"></span></div><div class="cap"><b>{k}</b><span>{t}</span></div></a>'
-        for i, (s, k, t) in enumerate(COVERS)
+        f'<a class="phone" style="--i:{i - (len(top) - 1) / 2:g}" href="https://www.youtube.com/shorts/{v["id"]}" target="_blank" rel="noopener"><div class="bezel"><img src="{v["cover"]}" alt="Cover: {v["title"]}" width="540" height="960"><span class="shine"></span></div><div class="cap"><b>{v["series"]}</b><span>{v["title"]}</span></div></a>'
+        for i, v in enumerate(top)
     )
     stories = f'''<section class="pin" id="stories"><div class="stick"><div class="container">{kicker("I", "The stories")}
 <h2 class="rv">One true story, <em>every day</em></h2><p class="sub rv">Each story is a series of its own: a day in the life, a turning point, an unsolved mystery, a journey, a life in dates.</p></div>
 <div class="fan">{phones}</div><p class="fanhint">Scroll &#8595; the stories unfold</p></div></section>'''
 
+    eras_present = [e for e in dict.fromkeys(v["look"] for v in VIDEOS)]
+    series_present = [s for s in dict.fromkeys(v["series"] for v in VIDEOS)]
+    chips_e = '<button type="button" class="chip on" data-f="era" data-v="all">All eras</button>' + "".join(f'<button type="button" class="chip" data-f="era" data-v="{e}">{ERA_OF.get(e, e)}</button>' for e in eras_present)
+    chips_s = '<button type="button" class="chip on" data-f="series" data-v="all">All series</button>' + "".join(f'<button type="button" class="chip" data-f="series" data-v="{s}">{s}</button>' for s in series_present)
+    newest = VIDEOS[0]
+    feat = (f'<a class="feat rv" href="https://www.youtube.com/shorts/{newest["id"]}" target="_blank" rel="noopener"><div class="fimg"><img src="{newest["cover"]}" alt="Cover: {newest["title"]}" width="540" height="960" loading="lazy"></div>'
+            f'<div class="ftxt"><small>Newest story &middot; {vdate(newest["published"])}</small><h3>{newest["title"]}</h3><p>{newest["series"]} #{newest["number"]} &middot; {ERA_OF.get(newest["look"], "")}</p><span class="btn sm"><span>Watch the short</span></span></div></a>')
+    cards = "".join(
+        f'<a class="lcard" data-era="{v["look"]}" data-series="{v["series"]}" href="https://www.youtube.com/shorts/{v["id"]}" target="_blank" rel="noopener"><div class="lc-img"><img src="{v["cover"]}" alt="Cover: {v["title"]}" width="540" height="960" loading="lazy"></div>'
+        f'<div class="lc-txt"><b>{v["series"]} #{v["number"]}</b><span>{v["title"]}</span><small>{ERA_OF.get(v["look"], "")} &middot; {vdate(v["published"])}</small></div></a>'
+        for v in VIDEOS
+    )
+    library = f'''<section class="block" id="library"><div class="container">{kicker("II", "The library")}<h2 class="rv">Every story, <em>one shelf</em></h2>
+<p class="sub rv">A new story joins the shelf every day. Filter by era or by series.</p>{feat}
+<div class="chips rv">{chips_e}</div><div class="chips rv">{chips_s}</div><div class="lib" id="lib">{cards}</div><p class="empty" id="libempty" hidden>No story matches that mix yet.</p></div></section>'''
+
     nums = [(127, "historical characters"), (25, "animals"), (71, "structures"), (37, "actions"), (11, "eras"), (7, "colour themes")]
-    numbers = f'''<section class="block numbers" id="numbers"><div class="container">{kicker("II", "The workshop")}<h2 class="rv">A whole world, <em>drawn by code</em></h2>
+    numbers = f'''<section class="block numbers" id="numbers"><div class="container">{kicker("III", "The workshop")}<h2 class="rv">A whole world, <em>drawn by code</em></h2>
 <div class="nums">{"".join(f'<div class="num rv" style="--d:{i * .08}s"><strong data-to="{n}">0</strong><span>{t}</span></div>' for i, (n, t) in enumerate(nums))}</div>
 <div class="fmts rv">{"".join(f"<div><b>{a}</b><span>{b}</span></div>" for a, b in FORMATS)}</div></div></section>'''
 
@@ -253,7 +289,7 @@ def index() -> str:
         f'<article class="era rv {"l" if i % 2 == 0 else "r"}" style="--a:{a};--b:{b}"><span class="dot"></span><div class="card"><div class="pic"><img src="assets/eras/{SLUG[n]}.svg" alt="Drawing of {n}: {d}" loading="lazy" width="1280" height="1000"></div><div class="txt"><small>{yrs}</small><h3>{n}</h3><p>{d}</p></div><i class="bar"></i></div></article>'
         for i, (n, yrs, d, a, b) in enumerate(ERAS)
     )
-    era_sec = f'''<section class="block" id="eras"><div class="container">{kicker("III", "Eleven eras")}<h2 class="rv">Travel through <em>time</em></h2>
+    era_sec = f'''<section class="block" id="eras"><div class="container">{kicker("IV", "Eleven eras")}<h2 class="rv">Travel through <em>time</em></h2>
 <p class="sub rv">Each story is drawn in the look of its own age: its typefaces, frames and buildings, with every anachronism removed.</p>
 <div class="tl" id="tl"><div class="line"><i id="tlfill"></i></div>{eras}</div></div></section>'''
 
@@ -261,33 +297,58 @@ def index() -> str:
         f'<li class="step rv" style="--d:{(i % 3) * .1}s"><div class="fig">{STEP_ART[i]}<span class="n">{i + 1}</span></div><div class="stxt"><b>{ti}</b><p>{d}</p></div></li>'
         for i, (ti, d) in enumerate(STEPS)
     )
-    how = f'''<section class="block" id="how"><div class="container">{kicker("IV", "How it&rsquo;s made")}<h2 class="rv">From a spark to a <em>scroll</em></h2>
+    how = f'''<section class="block" id="how"><div class="container">{kicker("V", "How it&rsquo;s made")}<h2 class="rv">From a spark to a <em>scroll</em></h2>
 <p class="sub rv">One person, a pipeline of software and a strict editor: no story leaves without passing every gate.</p>
 <ol class="steps">{steps}</ol></div></section>'''
 
     mapsvg = (D / "assets" / "map.svg").read_text(encoding="utf-8")
-    mapsec = f'''<section class="block mapsec" id="maps"><div class="container two"><div class="copy">{kicker("V", "The maps")}
+    mapsec = f'''<section class="block mapsec" id="maps"><div class="container two"><div class="copy">{kicker("VI", "The maps")}
 <h2 class="rv">Maps like <em>buried treasure</em></h2><p class="sub rv">Journeys are inked on parchment over real coastlines: a dashed trail walks from place to place, X marks the spot and the compass keeps its watch. This is the very map our software draws.</p>
 <ul class="ticks rv"><li>Real coastlines from public-domain Natural Earth data</li><li>Every place at its true latitude and longitude</li><li>Aged paper, burnt edges, ships, palms and a sea serpent</li></ul></div>
 <figure class="map rv zoom">{mapsvg}<figcaption>Veracruz &rarr; Havana &rarr; Port Royal &rarr; Tortuga</figcaption></figure></div></section>'''
 
     thumbs = "".join(f'<img src="assets/themes/{k}.jpg" alt="Cover in the {n} colour theme" class="tsl{" on" if i == 0 else ""}" data-k="{k}" loading="lazy" width="540" height="960">' for i, (k, n) in enumerate(THEMES))
-    btns = "".join(f'<button type="button" class="tb{" on" if i == 0 else ""}" data-k="{k}"><i style="background:{THEME_DOT[k]}"></i>{n}</button>' for i, (k, n) in enumerate(THEMES))
+    btns = "".join(f'<button type="button" class="tb{" on" if i == 0 else ""}" data-k="{k}" data-desc="{THEME_DESC[k]}"><i style="background:{THEME_DOT[k]}"></i>{n}</button>' for i, (k, n) in enumerate(THEMES))
     colour = f'''<section class="block colour" id="colour"><div class="container two rev">
 <div class="phone big rv zoom"><div class="bezel"><div class="stack">{thumbs}</div><span class="shine"></span></div></div>
-<div class="copy">{kicker("VI", "Seven colour styles")}<h2 class="rv">Always brown and gold, <em>never the same</em></h2>
+<div class="copy">{kicker("VII", "Seven colour styles")}<h2 class="rv">Always brown and gold, <em>never the same</em></h2>
 <p class="sub rv">A palette of parchment, leather, brick and gold leaf, dressed in seven moods that rotate from video to video. Pick one and watch the cover change.</p>
-<div class="tbs rv" id="tbs">{btns}</div><p class="tname rv" id="tname">Gilded &mdash; gold leaf on dark leather, each era with its own accents.</p></div></div></section>'''
+<div class="tbs rv" id="tbs">{btns}</div><p class="tname rv" id="tname">{THEME_DESC["gilded"]}</p></div></div></section>'''
 
     faq = "".join(f'<details class="rv" style="--d:{i * .05}s"><summary>{q}</summary><p>{a}</p></details>' for i, (q, a) in enumerate(FAQ))
-    faq_sec = f'<section class="block" id="faq"><div class="container narrow">{kicker("VII", "Questions")}<h2 class="rv">Before you <em>ask</em></h2>{faq}</div></section>'
+    faq_sec = f'<section class="block" id="faq"><div class="container narrow">{kicker("VIII", "Questions")}<h2 class="rv">Before you <em>ask</em></h2>{faq}</div></section>'
 
     cta = f'''<section class="finale"><div class="container"><div class="medal"><div class="rays small"></div><img class="rv zoom" src="logo.png" alt="" width="120" height="120"></div>
 <h2 class="rv">History is better<br><em>when it is told well</em></h2><p class="sub rv">Join the chronicle. A new story every day, on both channels.</p>
 <div class="cta rv"><a class="btn" href="{YT}" target="_blank" rel="noopener"><span>Subscribe on YouTube</span></a><a class="btn ghost" href="{TT}" target="_blank" rel="noopener"><span>Follow on TikTok</span></a></div></div></section>'''
 
     return (head("The Chronicles of History | true stories, drawn alive", "Narrated, hand-drawn history shorts of just over a minute on YouTube and TikTok. A new real story every day.", "index.html")
-            + hero + '<main id="main">' + stories + numbers + era_sec + how + mapsec + colour + faq_sec + cta + "</main>" + foot())
+            + hero + '<main id="main">' + stories + library + numbers + era_sec + how + mapsec + colour + faq_sec + cta + "</main>" + foot())
+
+
+SWATCHES = [("Obsidian", "#100B07", "Backgrounds"), ("Leather", "#1E140C", "Panels"), ("Umber", "#2A1C10", "Cards"), ("Gold", "#D9A441", "Accents, rules"), ("Gold light", "#F0CB7A", "Headings"),
+            ("Parchment", "#F2E3BF", "Text on dark"), ("Brick", "#B8533A", "Warm accent"), ("Ochre", "#C9B38A", "Secondary text")]
+
+
+def presskit() -> str:
+    sw = "".join(f'<button type="button" data-copy="{h}" data-done="Copied"><i style="background:{h}"></i><b>{n}</b><span>{h} &middot; {u}</span></button>' for n, h, u in SWATCHES)
+    th = "".join(f'<button type="button" data-copy="{THEME_DOT[k]}" data-done="Copied"><i style="background:{THEME_DOT[k]}"></i><b>{n}</b><span>{THEME_DOT[k]}</span></button>' for k, n in THEMES)
+    short = "The Chronicles of History is a one-person studio that tells one true story from history every day in a narrated, hand-drawn vertical video of just over a minute, on YouTube and TikTok."
+    long_ = (short + " Each story is drawn in the look of its own age, from the Stone Age to the Space Age, by software that paints a cast of 127 historical characters, 25 animals and 71 structures. "
+             "Scripts are drafted with AI language models and checked by an automated fact-check pass before the narration is recorded with a synthetic voice.")
+    body = f'''<div class="pk">
+<section class="rv"><h2>About</h2><p>Copy and use freely, with credit.</p><blockquote id="b1">{short}</blockquote><button class="cbtn" type="button" data-copy="#b1" data-done="Copied">Copy short</button>
+<blockquote id="b2" style="margin-top:18px">{long_}</blockquote><button class="cbtn" type="button" data-copy="#b2" data-done="Copied">Copy long</button></section>
+<section class="rv"><h2>Facts</h2><div class="facts"><div><b>62&ndash;90 s</b><span>every story</span></div><div><b>8</b><span>story formats</span></div><div><b>11</b><span>eras</span></div><div><b>7</b><span>colour themes</span></div><div><b>1</b><span>new story a day</span></div></div>
+<p>YouTube <a href="{YT}">@chroniclesofhistorytv</a> &middot; TikTok <a href="{TT}">@chroniclesofhistorytv</a> &middot; <a href="{REPO}">GitHub</a></p></section>
+<section class="rv"><h2>Logo: the Chronicler</h2><div class="row"><div class="tile dark"><img src="assets/brand/avatar.png" alt="The Chronicler on dark" width="160" height="160"></div><div class="tile light"><img src="assets/brand/avatar.png" alt="The Chronicler on light" width="160" height="160"></div></div>
+<a class="dl" href="assets/brand/avatar.png" download>Avatar PNG 800&times;800</a><a class="dl" href="assets/brand/watermark.png" download>Watermark PNG</a></section>
+<section class="rv wide"><h2>Channel banner</h2><img src="og-image.png" alt="Channel banner of The Chronicles of History" width="1200" height="630" loading="lazy"><br><a class="dl" href="assets/brand/youtube_banner.png" download>Banner PNG 2560&times;1440</a><a class="dl" href="assets/brand/chronicles-press-kit.zip" download>Everything (ZIP)</a></section>
+<section class="rv"><h2>Colours</h2><p>Brown, gold and parchment only. Click a swatch to copy its code.</p><div class="sw">{sw}</div><h2 style="margin-top:26px">The seven theme accents</h2><div class="sw">{th}</div></section>
+<section class="rv"><h2>Using the brand</h2><ul><li>Keep the Chronicler round, on a dark or parchment background, with clear space around it.</li><li>Use the colours above. Never blue, green or purple.</li><li>Credit the channel when you quote it and link to the video.</li><li>Do not re-upload the videos as your own.</li></ul>
+<p>Questions or interview requests: <a href="{REPO}/issues" target="_blank" rel="noopener">open an issue on GitHub</a> or write in the channel comments.</p></section></div>'''
+    return (head("Press kit | The Chronicles of History", "Logo, banner, colours and ready-to-use descriptions of The Chronicles of History.", "presskit.html")
+            + f'<main id="main" class="legalpage"><section class="lhero"><div class="rays small"></div><div class="container narrow"><p class="kicker"><i></i>For journalists, partners and fans<i></i></p><h1>Press kit</h1><p class="sub">Everything you need to write about The Chronicles of History or to show its brand.</p></div></section><div class="container">{body}</div></main>' + foot())
 
 
 def legal(fname: str, title: str, desc: str, intro: str, body: str, meta: str) -> str:
@@ -484,6 +545,28 @@ footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#
  .era small{letter-spacing:.12em;white-space:nowrap}.mapsec .two{grid-template-columns:1fr}.era.r .card{flex-direction:row}.era.r .pic{margin:-6px 0 -6px -4px}.era.r .txt{text-align:left;padding:14px 12px 18px 6px}.era .txt{padding:14px 12px 18px 6px}.steps{grid-template-columns:1fr;max-width:520px}.era .pic{width:46%}.era h3{font-size:19px}.era p{font-size:14px}.step:after{display:none!important}.era+.era{margin-top:0}.tl .line{left:18px}.era,.era.r{width:100%;margin-left:0;padding:0 0 22px 48px}.era .dot,.era.r .dot{left:9px;right:auto}.rv.l:not(.in),.rv.r:not(.in){transform:translateY(34px)}
  .skyline{height:34vh}.ribbon{margin-top:-14px}.sun{width:360px;height:360px;margin:-180px 0 0 -180px;opacity:.5}.kicker{letter-spacing:.18em;font-size:11px}.kicker i{width:22px}.track{font-size:17px}h2{overflow-wrap:anywhere}.btn{padding:14px 24px}.cta .btn{width:100%;max-width:340px;text-align:center}.fanhint2{display:block}}
 @media(hover:none){.glow{display:none}}
+/* language switch, library, press kit */
+/* library and press kit */
+.feat{display:grid;grid-template-columns:150px 1fr;gap:30px;align-items:center;max-width:820px;margin:0 auto 40px;padding:22px;border:1px solid var(--line);border-radius:20px;background:radial-gradient(120% 140% at 0 50%,rgba(217,164,65,.14),rgba(20,13,8,.8) 70%);text-decoration:none;color:inherit;transition:.35s}
+.feat:hover{border-color:var(--gold);box-shadow:0 20px 60px rgba(217,164,65,.2);transform:translateY(-4px)}.fimg img{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover;border-radius:14px;border:3px solid #6a4a20;box-shadow:0 18px 40px #000a}
+.ftxt small{font:700 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}.ftxt h3{font:800 clamp(24px,3.4vw,36px)/1.1 var(--disp);color:var(--paper);margin:8px 0 6px;text-transform:uppercase;letter-spacing:.02em}.ftxt p{color:var(--paper2);margin-bottom:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}.chip{cursor:pointer;font:700 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--paper2);background:rgba(255,233,168,.05);border:1px solid var(--line);border-radius:999px;padding:9px 16px;transition:.25s}
+.chip:hover{border-color:var(--gold);color:var(--gold3)}.chip.on{background:linear-gradient(180deg,var(--gold3),var(--gold));color:#2A1A08;border-color:var(--gold2)}
+.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:20px;margin-top:28px}
+.lcard{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(42,28,16,.7);transition:transform .35s,opacity .35s,border-color .35s,box-shadow .35s}
+.lcard:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 18px 44px rgba(217,164,65,.25)}.lcard.off{display:none}.lc-img img{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover}
+.lc-txt{padding:12px 14px 16px}.lc-txt b{display:block;font:700 11px var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}.lc-txt span{display:block;font-size:15px;line-height:1.3;margin:4px 0 6px}.lc-txt small{color:var(--paper2);font-size:12px}
+.empty{text-align:center;color:var(--paper2);margin-top:26px}
+.pk{max-width:1000px;margin:0 auto;padding-bottom:70px;position:relative;z-index:3}.pk section{margin-bottom:22px;padding:30px 32px;border:1px solid var(--line);border-radius:18px;background:rgba(42,28,16,.7)}
+.pk h2{text-align:left;font-size:24px;margin:0 0 14px;color:var(--gold2)}.pk p{color:#E8D8B2;margin:8px 0}.pk .row{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+.pk .tile{display:grid;place-items:center;border-radius:14px;padding:22px;border:1px solid var(--line)}.pk .tile img{display:block;width:160px;height:160px;border-radius:50%}.pk .tile.light{background:#F2E3BF}.pk .tile.dark{background:#100B07}.pk .wide img{width:min(100%,520px);height:auto;border-radius:10px}
+.pk .dl{display:inline-block;margin:6px 10px 0 0;font:700 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gold3);text-decoration:none;border:1px solid var(--gold);border-radius:999px;padding:10px 18px;transition:.25s}.pk .dl:hover{background:var(--gold);color:#2A1A08}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:6px}.sw button{cursor:pointer;text-align:left;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#150E08;color:var(--paper);font:inherit;padding:0;transition:.25s}.sw button:hover{border-color:var(--gold);transform:translateY(-3px)}
+.sw i{display:block;height:64px}.sw b{display:block;padding:8px 12px 0;font:700 12px var(--disp);letter-spacing:.1em;text-transform:uppercase}.sw span{display:block;padding:0 12px 10px;font-size:13px;color:var(--paper2)}.sw .done span{color:var(--gold3)}
+.pk blockquote{margin:8px 0 10px;padding:14px 18px;border-left:3px solid var(--gold);background:rgba(255,233,168,.05);border-radius:0 12px 12px 0;color:var(--paper);font-size:16px}
+.pk ul{padding-left:22px;color:#E8D8B2}.pk li{margin:6px 0}.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.facts div{padding:14px;border-left:3px solid var(--gold);background:rgba(255,233,168,.05);border-radius:0 10px 10px 0}.facts b{display:block;font:800 22px var(--disp);color:var(--gold2)}.facts span{font-size:14px;color:var(--paper2)}
+.cbtn{cursor:pointer;font:700 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gold3);background:none;border:1px solid var(--gold);border-radius:999px;padding:8px 16px}.cbtn:hover,.cbtn.done{background:var(--gold);color:#2A1A08}
+@media(max-width:860px){.feat{grid-template-columns:120px 1fr;gap:18px}.pk section{padding:22px 20px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.title .w{opacity:1;transform:none}.rays,.sun{animation:none}#embers{display:none}}
 '''
 
@@ -575,17 +658,36 @@ JS = r'''(function () {
     $$('.doc h2[id]').forEach(function (h) { tspy.observe(h); });
   }
 
+  // library filters
+  var libEl = $('#lib');
+  if (libEl) {
+    var flt = { era: 'all', series: 'all' }, cards = $$('.lcard', libEl), emp = $('#libempty');
+    $$('.chip').forEach(function (c) {
+      c.addEventListener('click', function () {
+        flt[c.dataset.f] = c.dataset.v;
+        $$('.chip[data-f="' + c.dataset.f + '"]').forEach(function (x) { x.classList.toggle('on', x === c); });
+        var n = 0;
+        cards.forEach(function (k) { var ok = (flt.era === 'all' || k.dataset.era === flt.era) && (flt.series === 'all' || k.dataset.series === flt.series); k.classList.toggle('off', !ok); if (ok) n++; });
+        emp.hidden = n > 0;
+      });
+    });
+  }
+
+  // copy buttons of the press kit
+  $$('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var txt = b.dataset.copy.charAt(0) === '#' && b.dataset.copy.length < 8 ? b.dataset.copy : ($(b.dataset.copy) || {}).innerText || b.dataset.copy, old = b.innerHTML;
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.classList.add('done'); b.innerHTML = b.dataset.done || 'Copied'; setTimeout(function () { b.classList.remove('done'); b.innerHTML = old; }, 1600); }).catch(function () {});
+    });
+  });
+
   // menu
   var bg = $('.burger'), menu = $('#menu');
   if (bg) { bg.addEventListener('click', function () { var o = menu.classList.toggle('open'); bg.setAttribute('aria-expanded', o); }); $$('#menu a').forEach(function (a) { a.addEventListener('click', function () { menu.classList.remove('open'); }); }); }
 
   // colour themes
-  var names = {
-    gilded: 'Gilded — gold leaf on dark leather, each era with its own accents.', sepia: 'Sepia — a faded photograph, copper and old gold.', ember: 'Ember — fire and brass on red-brown grounds.',
-    regal: 'Regal — oxblood and gold, the colours of courts and crowns.', bronze: 'Bronze — ochre and olive-brown, roads and camps.', ivory: 'Ivory — bone and umber, a daylight manuscript.', smoke: 'Smoke — ash and umber with a lantern glow.'
-  };
   var tbs = $$('.tb'), sls = $$('.tsl'), tn = $('#tname'), auto = true, idx = 0;
-  function pick(k) { tbs.forEach(function (b) { b.classList.toggle('on', b.dataset.k === k); }); sls.forEach(function (s) { s.classList.toggle('on', s.dataset.k === k); }); if (tn) tn.textContent = names[k]; }
+  function pick(k) { tbs.forEach(function (b) { b.classList.toggle('on', b.dataset.k === k); }); sls.forEach(function (s) { s.classList.toggle('on', s.dataset.k === k); }); var b = tbs.filter(function (x) { return x.dataset.k === k; })[0]; if (tn && b) tn.innerHTML = b.dataset.desc; }
   tbs.forEach(function (b, i) { b.addEventListener('click', function () { auto = false; idx = i; pick(b.dataset.k); }); });
   if (tbs.length && !reduce) setInterval(function () { if (!auto) return; idx = (idx + 1) % tbs.length; pick(tbs[idx].dataset.k); }, 3200);
 
@@ -617,16 +719,21 @@ JS = r'''(function () {
 def build() -> None:
     (D / "site.css").write_text(CSS, encoding="utf-8")
     (D / "site.js").write_text(JS, encoding="utf-8")
-    (D / "index.html").write_text(index(), encoding="utf-8")
-    (D / "privacy.html").write_text(legal("privacy.html", "Privacy Policy", "Privacy Policy: no accounts, cookies or trackers; which YouTube data the channel uses and why.",
-                                          "What data The Chronicles of History handles and why. The short version: no accounts, no cookies, no trackers, and nothing is ever sold.", PRIVACY, "Last updated: 24 November 2026"), encoding="utf-8")
-    (D / "terms.html").write_text(legal("terms.html", "Terms of Service", "The rules for the Chronicles of History website and channels, in plain words.",
-                                        "The rules for this website and the channels, in plain words: what the project is and how to read the videos.", TERMS, "Last updated: 24 November 2026"), encoding="utf-8")
+    pages = {
+        "index.html": index(),
+        "presskit.html": presskit(),
+        "privacy.html": legal("privacy.html", "Privacy Policy", "Privacy Policy: no accounts, cookies or trackers; which YouTube data the channel uses and why.",
+                              "What data The Chronicles of History handles and why. The short version: no accounts, no cookies, no trackers, and nothing is ever sold.", PRIVACY, "Last updated: 24 November 2026"),
+        "terms.html": legal("terms.html", "Terms of Service", "The rules for the Chronicles of History website and channels, in plain words.",
+                            "The rules for this website and the channels, in plain words: what the project is and how to read the videos.", TERMS, "Last updated: 24 November 2026"),
+    }
+    for name, html in pages.items():
+        (D / name).write_text(html, encoding="utf-8")
     e404 = (head("Page not found | The Chronicles of History", "Page not found.", "404.html")
             + '<main id="main" class="e404"><div><div class="rays small"></div><p class="kicker"><i></i>Error 404<i></i></p><h1 class="title" style="font-size:clamp(40px,9vw,100px)"><span class="w">Lost</span> <span class="w">to</span> <span class="w">history</span></h1><p class="sub">This page is not in the archive.</p><div class="cta"><a class="btn" href="index.html"><span>Back to the chronicles</span></a></div></div></main>' + foot())
     (D / "404.html").write_text(e404, encoding="utf-8")
     (D / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n", encoding="utf-8")
-    (D / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}/{p}</loc></url>\n" for p in ["", "terms.html", "privacy.html"]) + "</urlset>\n", encoding="utf-8")
+    (D / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}/{p}</loc></url>\n" for p in ["", "presskit.html", "terms.html", "privacy.html"]) + "</urlset>\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

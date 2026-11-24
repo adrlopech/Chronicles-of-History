@@ -1,0 +1,47 @@
+[
+ {
+  "id": "aW5m1I0F7_Q",
+  "series": "Unsolved",
+  "number": 1,
+  "title": "Did Jesse James Fake His Death?",
+  "look": "frontier",
+  "published": "2026-11-24T22:09:24+00:00",
+  "cover": "assets/recent/aW5m1I0F7_Q.jpg"
+ },
+ {
+  "id": "K6qMRj8KSRw",
+  "series": "Turning Point",
+  "number": 1,
+  "title": "The Last Stand of the Samurai, 1877",
+  "look": "orient",
+  "published": "2026-11-24T22:08:11+00:00",
+  "cover": "assets/recent/K6qMRj8KSRw.jpg"
+ },
+ {
+  "id": "XaM3Zr0GgXs",
+  "series": "The Route",
+  "number": 1,
+  "title": "Apollo 11: The Journey to the Moon",
+  "look": "spaceage",
+  "published": "2026-11-24T22:06:30+00:00",
+  "cover": "assets/recent/XaM3Zr0GgXs.jpg"
+ },
+ {
+  "id": "ttf-fuYLsD0",
+  "series": "Life in Dates",
+  "number": 1,
+  "title": "Leonardo da Vinci: A Life in Dates",
+  "look": "renaissance",
+  "published": "2026-11-24T22:04:56+00:00",
+  "cover": "assets/recent/ttf-fuYLsD0.jpg"
+ },
+ {
+  "id": "Qz316-JoYRU",
+  "series": "A Day In",
+  "number": 1,
+  "title": "A Day as a Cave Painter 17,000 Years Ago",
+  "look": "prehistory",
+  "published": "2026-11-24T22:02:06+00:00",
+  "cover": "assets/recent/Qz316-JoYRU.jpg"
+ }
+]
