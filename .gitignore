@@ -1,0 +1,73 @@
+# Environment & Secrets
+.env
+client_secrets.json
+client_secret.json
+token.json
+tokens/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Video & Temporary Processing Files
+temp/
+/tmp/yt_automation/
+*.mp4
+*.mp3
+!assets/audio/*.mp3
+*.png
+*.jpg
+logs/
+*.log
+.DS_Store
+
+remotion_studio/build
+# Remotion / generated render inputs
+remotion_studio/node_modules/
+remotion_studio/public/
+output/
+
+# Auth material
+data/.tiktok_pkce_verifier.txt
+data/*token*.json
+.claude/settings.local.json
+
+# Private scripts and the history DB (it holds the banked scripts)
+data/story_seed/
+data/history.db
+data/history.db.bak-*
+docs/generated_scripts/
+
+data/test_weekly_rotation.db
+data/gemini_state.json
+.remotion/
+assets/games/manifest.json
+data/game_facts/
+
+# Web portal assets
+!docs/og-image.png
+!docs/favicon-32.png
+!docs/icon-192.png
+!docs/apple-touch-icon.png
+notes/
+
+# Reference clips of the ElevenLabs voices for the local backup voice (regenerate: scripts/make_voice_refs.py)
+assets/voice_refs/*.mp3
+data/token_backups/
+data/analytics_report.json
+
+# game logos of the portal (downloaded from the Steam store pages)
+!docs/assets/games/*.png
+!docs/assets/latest/*.jpg
+!docs/assets/recent/*.jpg
+!docs/assets/formats/*.jpg
+!docs/assets/looks/*.jpg
+
+# Batch manifests and slot log (local state)
+data/batches/
