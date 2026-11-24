@@ -18,6 +18,6 @@ mkdirSync(out, { recursive: true });
 const serveUrl = await bundle({ entryPoint: join(root, 'src', 'index.ts'), publicDir: mkdtempSync(join(tmpdir(), 'brand-public-')) });
 for (const [id, file] of [['BrandAvatar', 'avatar.png'], ['BrandBanner', 'youtube_banner.png'], ['BrandWatermark', 'watermark.png']]) {
   const composition = await selectComposition({ serveUrl, id });
-  await renderStill({ composition, serveUrl, output: join(out, file), frame: 0, imageFormat: 'png' });
+  await renderStill({ composition, serveUrl, output: join(out, file), frame: 30, imageFormat: 'png' });
   console.log(`[brand] ${file}`);
 }

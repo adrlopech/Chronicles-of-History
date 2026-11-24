@@ -20,9 +20,9 @@ export const Root: React.FC = () => {
       calculateMetadata={async ({ props }) => ({ durationInFrames: totalFrames((props as unknown as MotionGraphicProps).scenes) })}
     />
     <Composition id="Cover" component={Cover as unknown as React.FC<Record<string, unknown>>} durationInFrames={60} fps={30} width={1080} height={1920} defaultProps={sample as unknown as Record<string, unknown>} />
-    <Composition id="BrandAvatar" component={Avatar} durationInFrames={1} fps={30} width={800} height={800} />
-    <Composition id="BrandBanner" component={Banner} durationInFrames={1} fps={30} width={2560} height={1440} />
-    <Composition id="BrandWatermark" component={Watermark} durationInFrames={1} fps={30} width={300} height={300} />
+    <Composition id="BrandAvatar" component={Avatar} durationInFrames={60} fps={30} width={800} height={800} />
+    <Composition id="BrandBanner" component={Banner} durationInFrames={60} fps={30} width={2560} height={1440} />
+    <Composition id="BrandWatermark" component={Watermark} durationInFrames={60} fps={30} width={300} height={300} />
   </>
   );
 };

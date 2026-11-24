@@ -1,139 +1,115 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { Costumed } from '../chronicle/art/costumes';
-import { makeColors } from '../chronicle/art/palette';
-import { PersonKind } from '../chronicle/art/vocab';
-import { CINZEL_DECO, CORMORANT } from '../chronicle/fonts';
-import { LOOKS } from '../chronicle/looks';
+import { Engraving } from '../chronicle/icons';
+import { PLAYFAIR, PLAYFAIR_ITALIC, SPACE } from '../chronicle/fonts';
+import { IconName } from '../chronicle/types';
 
-/** The brand of The Chronicles of History: an open book of chronicles with a gold sun rising behind it. Used for the avatar, the banner, the watermark and the outro. */
+/**
+ * The brand of The Chronicles of History, in the spirit of the sister channel's: a bold, cut monogram that glows, on a deep gradient with sparkles and a fine grid, glass tiles around it,
+ * a two-tone wordmark (white roman + gold italic) and a monospaced tagline. The monogram is CH: two heavy chamfered letters, slanted, gold, sliced twice like a blade through parchment.
+ */
 export const GOLD = { hi: '#FFF1BF', mid: '#F0C25E', lo: '#B9822A', deep: '#6B430A' };
 export const OBSIDIAN = '#0A0710';
 export const EMBER = '#FF7A55';
 export const PARCHMENT = '#F4E6C8';
 
-const Defs: React.FC<{ id: string }> = ({ id }) => (
-  <defs>
-    <linearGradient id={`${id}-gold`} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stopColor={GOLD.hi} /><stop offset="0.45" stopColor={GOLD.mid} /><stop offset="1" stopColor={GOLD.lo} />
-    </linearGradient>
-    <linearGradient id={`${id}-ring`} x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stopColor={GOLD.hi} /><stop offset="0.5" stopColor={GOLD.lo} /><stop offset="1" stopColor={GOLD.mid} />
-    </linearGradient>
-    <radialGradient id={`${id}-disc`} cx="50%" cy="42%" r="62%">
-      <stop offset="0" stopColor="#2a1a2e" /><stop offset="0.7" stopColor="#120b16" /><stop offset="1" stopColor="#070409" />
-    </radialGradient>
-    <filter id={`${id}-glow`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-  </defs>
+const C_PATH = 'M50 0 H215 V72 H125 L100 95 V205 L125 228 H215 V300 H50 L0 250 V50Z';
+const H_PATH = 'M250 0 H325 V118 H405 V0 H480 V300 H405 V182 H325 V300 H250Z';
+
+/** The monogram alone, transparent ground, in an 800 x 800 box. `simple` is the flat one-colour version. */
+export const Seal: React.FC<{ id?: string; simple?: boolean }> = ({ id = 's', simple = false }) => (
+  <svg viewBox="0 0 800 800" width="100%" height="100%" style={{ overflow: 'visible' }}>
+    <defs>
+      <linearGradient id={`${id}-g`} x1="0" y1="0" x2="0.35" y2="1">
+        <stop offset="0" stopColor={GOLD.hi} /><stop offset="0.38" stopColor={GOLD.mid} /><stop offset="1" stopColor={GOLD.lo} />
+      </linearGradient>
+      <linearGradient id={`${id}-edge`} x1="0" y1="0" x2="1" y2="0"><stop offset="0.7" stopColor="#ffffff" stopOpacity="0" /><stop offset="1" stopColor="#ffffff" stopOpacity="0.55" /></linearGradient>
+      <linearGradient id={`${id}-gloss`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#fff" stopOpacity="0.32" /><stop offset="0.45" stopColor="#fff" stopOpacity="0.04" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></linearGradient>
+      <clipPath id={`${id}-clip`}><path d={C_PATH} /><path d={H_PATH} /></clipPath>
+      <filter id={`${id}-glow`} x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation={simple ? 0 : 16} result="b" />
+        <feColorMatrix in="b" type="matrix" values="1 0 0 0 0.35  0 1 0 0 0.2  0 0 1 0 0  0 0 0 1.1 0" result="c" />
+        <feMerge><feMergeNode in="c" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+    <g transform="translate(400 400) scale(1.22) skewX(-10) translate(-240 -150)" filter={`url(#${id}-glow)`}>
+      <g transform="translate(7 9)" fill={GOLD.deep} opacity={simple ? 0 : 0.9}><path d={C_PATH} /><path d={H_PATH} /></g>
+      <g clipPath={`url(#${id}-clip)`}>
+        <rect x={-20} y={-20} width={540} height={340} fill={`url(#${id}-g)`} />
+        {!simple && <rect x={-20} y={-20} width={540} height={340} fill={`url(#${id}-gloss)`} />}
+        {!simple && <rect x={-20} y={-20} width={540} height={340} fill={`url(#${id}-edge)`} />}
+        {/* two blade cuts through both letters */}
+        <path d="M-30 184 L520 166" stroke="#14091c" strokeWidth={9} />
+        <path d="M-30 207 L520 189" stroke="#14091c" strokeWidth={9} />
+      </g>
+    </g>
+  </svg>
 );
 
-/** The mark: an open BOOK OF CHRONICLES. A gold sun rises behind it; on the left page an illuminated gold C opens the first line, on the right page a little window shows the story coming alive
- *  (a traveller walking toward a temple under the same sun); a red ribbon marks the page. Drawn in an 800 x 800 box. `simple` is the one-colour version for the watermark. */
-export const Seal: React.FC<{ id?: string; simple?: boolean }> = ({ id = 's', simple = false }) => {
-  const rays = Array.from({ length: 19 }, (_, i) => {
-    const ang = Math.PI * (1.04 + (i / 18) * 0.92);
-    return { a: ang, b: ang + 0.045 };
-  });
-  if (simple) {
-    return (
-      <svg viewBox="0 0 800 800" width="100%" height="100%">
-        <Defs id={id} />
-        <circle cx={400} cy={330} r={120} fill={`url(#${id}-gold)`} />
-        <path d="M70 330 Q240 300 400 366 Q560 300 730 330 V610 Q560 570 400 640 Q240 570 70 610Z" fill="none" stroke={`url(#${id}-gold)`} strokeWidth={36} strokeLinejoin="round" />
-        <path d="M400 366 V640" stroke={`url(#${id}-gold)`} strokeWidth={26} />
-      </svg>
-    );
-  }
-  const left = 'M92 318 Q250 296 400 366 V588 Q250 514 92 540Z';
-  const right = 'M708 318 Q550 296 400 366 V588 Q550 514 708 540Z';
+/** A four-point sparkle. */
+const sparkle = (x: number, y: number, r: number) => `M${x} ${y - r} Q${x} ${y} ${x + r} ${y} Q${x} ${y} ${x} ${y + r} Q${x} ${y} ${x - r} ${y} Q${x} ${y} ${x} ${y - r}Z`;
+
+/** The ground of the brand: a deep gradient (indigo to obsidian to amber), a fine grid and gold and cream sparkles. */
+export const Cosmos: React.FC<{ w: number; h: number; wide?: boolean }> = ({ w, h, wide }) => {
+  let s = 7;
+  const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+  const n = wide ? 46 : 22;
   return (
-    <svg viewBox="0 0 800 800" width="100%" height="100%">
-      <Defs id={id} />
-      <defs>
-        <linearGradient id={`${id}-page`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#f6e9c8" /><stop offset="0.85" stopColor="#ead7a8" /><stop offset="1" stopColor="#cfb682" /></linearGradient>
-        <linearGradient id={`${id}-pageR`} x1="1" y1="0" x2="0" y2="0"><stop offset="0" stopColor="#f6e9c8" /><stop offset="0.85" stopColor="#ead7a8" /><stop offset="1" stopColor="#cfb682" /></linearGradient>
-        <linearGradient id={`${id}-leather`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#a02a30" /><stop offset="1" stopColor="#4e0f18" /></linearGradient>
-        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2a1650" /><stop offset="0.55" stopColor="#c4388c" /><stop offset="1" stopColor="#ff9a4a" /></linearGradient>
-        <clipPath id={`${id}-win`}><path d="M470 520 V420 A80 80 0 0 1 630 420 V520Z" /></clipPath>
-      </defs>
-      <g transform="translate(0 34)">
-      {/* the sun and its rays rise behind the book */}
-      {rays.map((r, i) => <path key={i} d={`M400 340 L${400 + Math.cos(r.a) * 345} ${340 + Math.sin(r.a) * 345} L${400 + Math.cos(r.b) * 345} ${340 + Math.sin(r.b) * 345}Z`} fill={GOLD.mid} opacity={i % 2 ? 0.2 : 0.34} />)}
-      <circle cx={400} cy={340} r={190} fill={GOLD.mid} opacity={0.14} />
-      <circle cx={400} cy={338} r={122} fill={`url(#${id}-gold)`} filter={`url(#${id}-glow)`} />
-      {/* the cover, with its gold edge */}
-      <path d="M62 300 Q250 268 400 340 Q550 268 738 300 V566 Q550 528 400 604 Q250 528 62 566Z" fill={`url(#${id}-leather)`} stroke={`url(#${id}-ring)`} strokeWidth={9} strokeLinejoin="round" />
-      <path d="M76 314 Q250 284 400 354 Q550 284 724 314 V552 Q550 514 400 590 Q250 514 76 552Z" fill="none" stroke={GOLD.mid} strokeWidth={2.5} opacity={0.6} />
-      {/* the pages: a stack of edges under the two leaves */}
-      {[24, 16, 8].map((dy, i) => (
-        <g key={i} transform={`translate(0 ${dy})`} opacity={0.5 + i * 0.15}>
-          <path d={left} fill="#cdb581" /><path d={right} fill="#cdb581" />
-        </g>
-      ))}
-      <path d={left} fill={`url(#${id}-page)`} stroke="#9a7c46" strokeWidth={3} strokeLinejoin="round" />
-      <path d={right} fill={`url(#${id}-pageR)`} stroke="#9a7c46" strokeWidth={3} strokeLinejoin="round" />
-      <path d="M400 366 V588" stroke="#8a6c3c" strokeWidth={5} />
-      {/* left page: an illuminated initial and lines of script */}
-      <text x={126} y={430} fontFamily={CINZEL_DECO} fontWeight={900} fontSize={118} fill={`url(#${id}-gold)`} stroke="#5a3a0a" strokeWidth={2.4} paintOrder="stroke fill">C</text>
-      {[[212, 372, 372], [212, 396, 372], [212, 420, 372]].map(([x, y, w], i) => <path key={i} d={`M${x} ${y + 2} Q${x + (w - x) / 2} ${y - 4} ${w} ${y + 4}`} stroke="#4a3418" strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.75} />)}
-      {[452, 482, 512].map((y, i) => <path key={y} d={`M126 ${y} Q250 ${y - 8 + i * 3} ${i === 2 ? 300 : 376} ${y + 8 + i * 2}`} stroke="#4a3418" strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.7} />)}
-      {/* right page: a window onto the story */}
-      <path d="M470 520 V420 A80 80 0 0 1 630 420 V520Z" fill={`url(#${id}-sky)`} />
-      <g clipPath={`url(#${id}-win)`}>
-        <circle cx={550} cy={474} r={34} fill="#fff1c8" /><circle cx={550} cy={474} r={52} fill="#ffe2a0" opacity={0.3} />
-        <g fill="#2a1233" opacity={0.9}><path d="M574 492 H632 V499 H574Z" />{[580, 592, 604, 616, 626].map((x) => <rect key={x} x={x - 2.5} y={471} width={5} height={23} />)}<path d="M571 473 L603 458 L635 473Z" /></g>
-        <path d="M470 520 V496 Q520 484 560 494 Q600 502 630 490 V520Z" fill="#150a1c" />
-        <g transform="translate(510 500)" fill="#0b0511" stroke="#0b0511"><circle cx={0} cy={-34} r={6.5} stroke="none" /><path d="M-6 -27 Q0 -31 6 -27 L10 -6 L-10 -6Z" stroke="none" /><path d="M-5 -6 L-6 8 M5 -6 L8 8 M9 -22 L24 -36 M26 -38 V10" strokeWidth={3.4} strokeLinecap="round" fill="none" /></g>
-      </g>
-      <path d="M470 520 V420 A80 80 0 0 1 630 420 V520Z" fill="none" stroke={`url(#${id}-ring)`} strokeWidth={6} />
-      {[[480, 540, 600], [480, 560, 566]].map(([x, y, w], i) => <path key={i} d={`M${x} ${y} Q${(x + w) / 2} ${y - 5} ${w} ${y + 2}`} stroke="#4a3418" strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.7} />)}
-      {/* the ribbon */}
-      <path d="M398 580 H438 V668 L418 650 L398 668Z" fill={EMBER} stroke="#8a2a1a" strokeWidth={3} transform="translate(0 6)" />
-      </g>
-    </svg>
+    <AbsoluteFill style={{ background: wide ? 'linear-gradient(100deg, #1b1550 0%, #120c2e 28%, #0a0710 58%, #2a1608 100%)' : 'linear-gradient(135deg, #1d1650 0%, #0d0916 55%, #3a1d08 100%)' }}>
+      <AbsoluteFill style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)', backgroundSize: `${wide ? 64 : 50}px ${wide ? 64 : 50}px` }} />
+      <svg width={w} height={h} style={{ position: 'absolute', inset: 0 }}>
+        {Array.from({ length: n }, (_, i) => {
+          const x = rnd() * w, y = rnd() * h, r = (wide ? 9 : 7) + rnd() * (wide ? 26 : 22);
+          const gold = rnd() > 0.55;
+          return <path key={i} d={sparkle(x, y, r)} fill={gold ? GOLD.mid : '#dfe6ff'} opacity={0.25 + rnd() * 0.55} />;
+        })}
+      </svg>
+    </AbsoluteFill>
   );
 };
 
 export const Avatar: React.FC = () => (
-  <AbsoluteFill style={{ background: OBSIDIAN, alignItems: 'center', justifyContent: 'center' }}>
-    <div style={{ width: '96%', height: '96%', transform: 'scale(1.0)' }}><Seal id="av" /></div>
+  <AbsoluteFill>
+    <Cosmos w={800} h={800} />
+    <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 800, height: 800 }}><Seal id="av" /></div>
+    </AbsoluteFill>
   </AbsoluteFill>
 );
 
-/** The seal alone on a transparent ground, for the YouTube video watermark. */
+/** The monogram alone on a transparent ground, for the YouTube video watermark. */
 export const Watermark: React.FC = () => (
-  <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}><div style={{ width: '100%', height: '100%' }}><Seal id="wm" simple /></div></AbsoluteFill>
+  <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 300, height: 300 }}><Seal id="wm" simple /></div></AbsoluteFill>
 );
 
-const LINEUP: { who: PersonKind; look: keyof typeof LOOKS }[] = [
-  { who: 'caveman', look: 'prehistory' }, { who: 'pharaoh', look: 'antiquity' }, { who: 'legionary', look: 'antiquity' }, { who: 'viking', look: 'manuscript' }, { who: 'knight', look: 'manuscript' },
-  { who: 'samurai', look: 'orient' }, { who: 'renaissance_artist', look: 'renaissance' }, { who: 'conquistador', look: 'seachart' }, { who: 'pirate', look: 'seachart' }, { who: 'redcoat', look: 'empire' },
-  { who: 'miner', look: 'industrial' }, { who: 'cowboy', look: 'frontier' }, { who: 'ww2_soldier', look: 'wartime' }, { who: 'astronaut', look: 'spaceage' },
+const TILES: { x: number; y: number; r: number; icon: IconName; o: number; s: number }[] = [
+  { x: 120, y: 390, r: -9, icon: 'column', o: 1, s: 215 }, { x: 360, y: 700, r: 7, icon: 'scroll', o: 0.85, s: 190 }, { x: 150, y: 1010, r: -5, icon: 'ship', o: 0.6, s: 175 },
+  { x: 640, y: 120, r: 8, icon: 'hourglass', o: 0.55, s: 170 }, { x: 1560, y: 150, r: -7, icon: 'compass', o: 0.5, s: 170 },
+  { x: 2330, y: 360, r: 8, icon: 'sword', o: 1, s: 230 }, { x: 2140, y: 740, r: -6, icon: 'castle', o: 0.8, s: 190 }, { x: 2380, y: 1020, r: 6, icon: 'pyramid', o: 0.6, s: 180 },
+  { x: 1750, y: 1120, r: -8, icon: 'quill', o: 0.5, s: 165 },
 ];
 
-/** The YouTube channel art (2560 x 1440). Everything that matters sits in the 1546 x 423 box at the centre, which every device shows; the rest is the atmosphere: rays, and the eras walking by. */
+/** The YouTube channel art (2560 x 1440). Title, monogram and tagline sit in the 1546 x 423 box every device shows; the glass tiles are the atmosphere. */
 export const Banner: React.FC = () => (
-  <AbsoluteFill style={{ background: `radial-gradient(ellipse 70% 90% at 50% 45%, #2b1a2e 0%, ${OBSIDIAN} 68%)` }}>
-    <AbsoluteFill style={{ background: `repeating-conic-gradient(from 180deg at 50% 38%, ${GOLD.mid}1c 0deg 4deg, transparent 4deg 14deg)`, maskImage: 'radial-gradient(ellipse 60% 70% at 50% 40%, #000 0%, transparent 75%)' }} />
-    {/* the eras, walking along the bottom edge */}
-    <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 360, background: `linear-gradient(0deg, #05030a 0%, ${OBSIDIAN}00 100%)` }} />
-    <svg viewBox="0 0 2560 1440" width={2560} height={1440} style={{ position: 'absolute', inset: 0 }}>
-      <path d="M0 1362 H2560" stroke={GOLD.lo} strokeWidth={3} opacity={0.6} />
-      {LINEUP.map((p, i) => {
-        const c = makeColors(LOOKS[p.look], 'dusk');
-        const x = 120 + i * (2320 / (LINEUP.length - 1));
-        return <g key={i} transform={`translate(${x} 1360)`}><Costumed c={{ ...c, shadow: '#05030a' }} t={1.2 + i * 0.37} seed={0.21 + i * 0.13} who={p.who} scale={2.7} view={i % 2 ? 'side' : 'front'} /></g>;
-      })}
-    </svg>
+  <AbsoluteFill>
+    <Cosmos w={2560} h={1440} wide />
+    <div style={{ position: 'absolute', left: 1250, top: 120, width: 1500, height: 1250, opacity: 0.07, transform: 'rotate(-6deg)' }}><Seal id="ghost" simple /></div>
+    <div style={{ position: 'absolute', left: 300, top: 230, fontFamily: SPACE, fontWeight: 500, fontSize: 30, letterSpacing: 6, color: 'rgba(255,255,255,0.45)' }}>CH // 01  HISTORY · MYSTERY · TURNING POINTS</div>
+    {TILES.map((t, i) => (
+      <div key={i} style={{ position: 'absolute', left: t.x - t.s / 2, top: t.y - t.s / 2, width: t.s, height: t.s, transform: `rotate(${t.r}deg)`, opacity: t.o, borderRadius: t.s * 0.24, background: 'linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03))', border: `2px solid ${GOLD.mid}55`, boxShadow: `0 18px 40px rgba(0,0,0,0.45), inset 0 0 40px ${GOLD.mid}14`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ filter: `drop-shadow(0 0 14px ${GOLD.mid}cc)` }}><Engraving name={t.icon} size={t.s * 0.56} color={GOLD.hi} accent={GOLD.mid} at={0} len={1} thick={4.6} /></div>
+      </div>
+    ))}
     {/* the safe box */}
-    <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423, display: 'flex', alignItems: 'center', gap: 44 }}>
-      <div style={{ width: 400, height: 400, flex: '0 0 auto', filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.7))' }}><Seal id="bn" /></div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 112, lineHeight: 1.0, letterSpacing: 3, color: GOLD.mid, textShadow: `0 3px 0 ${GOLD.hi}, 0 7px 0 ${GOLD.lo}, 0 11px 0 ${GOLD.deep}, 0 22px 30px rgba(0,0,0,0.85)` }}>THE CHRONICLES<br />OF HISTORY</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 14, height: 14, background: EMBER, transform: 'rotate(45deg)' }} />
-          <div style={{ fontFamily: CORMORANT, fontWeight: 700, fontSize: 46, letterSpacing: 3, color: PARCHMENT }}>Real stories, drawn alive. A new one every day.</div>
+    <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423, display: 'flex', alignItems: 'center', gap: 30 }}>
+      <div style={{ width: 390, height: 390, flex: '0 0 auto', marginLeft: -20 }}><Seal id="bn" /></div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.98 }}>
+          <span style={{ fontFamily: PLAYFAIR, fontWeight: 900, fontSize: 138, color: '#FFFFFF', letterSpacing: -2 }}>The Chronicles</span>
+          <span style={{ fontFamily: PLAYFAIR_ITALIC, fontWeight: 700, fontSize: 138, color: GOLD.mid, textShadow: `0 0 34px ${GOLD.mid}66`, marginTop: -4 }}>of History</span>
         </div>
+        <div style={{ marginTop: 22, width: 150, height: 5, background: EMBER }} />
+        <div style={{ marginTop: 14, fontFamily: SPACE, fontWeight: 500, fontSize: 34, letterSpacing: 8, color: 'rgba(255,255,255,0.62)' }}>TRUE STORIES / DRAWN ALIVE / ONE EVERY DAY</div>
       </div>
     </div>
   </AbsoluteFill>
