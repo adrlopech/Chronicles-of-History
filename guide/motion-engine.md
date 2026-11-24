@@ -84,3 +84,7 @@ everything is SVG drawn in code (`src/chronicle/art/`), so it is free, always on
 | `looks.ts`, `fonts.ts`, `types.ts`, `captions.tsx` | Eras, Google Fonts, the props contract, word-by-word captions |
 
 Preview and tweak: `cd remotion_studio && npx remotion studio`, open **MotionGraphic** (the sample is `chronicle/sample.json`). Type-check: `npx tsc --noEmit -p .`
+
+## Look and theme
+
+The **look** is the era (typefaces, frames, subjects); the **theme** is the colour style (`guide/palette.md`, "Colour themes"). The pipeline picks both (`services/looks.py`, `services/themes.py`) and passes `look` and `theme` in the props.

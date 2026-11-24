@@ -49,3 +49,24 @@ def test_every_era_has_a_warm_accent_pair():
         h = hex_[1:]
         assert is_warm(*(int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))), hex_
     assert len(re.findall(r"accent: '#", block)) == 11
+
+
+def test_python_and_typescript_theme_names_agree():
+    import re as _re
+
+    from services.themes import THEMES
+
+    ts = (SRC / "chronicle" / "palette.ts").read_text(encoding="utf-8")
+    block = ts.split("export const THEMES", 1)[1]
+    names = _re.findall(r"^  (\w+): (?:\{|$)", block, _re.M)
+    assert tuple(names) == THEMES
+
+
+def test_theme_rotation_skips_recent_ones_and_prefers_the_era_mood():
+    from services.themes import AVOID_LAST, THEMES, choose_theme
+
+    assert choose_theme("wartime", "x", recent=[]) == "smoke"
+    assert choose_theme("wartime", "x", recent=["smoke"]) != "smoke"
+    recent = ["sepia", "ember", "regal"][:AVOID_LAST]
+    assert choose_theme("antiquity", "Rome", recent=recent) not in recent
+    assert all(choose_theme("antiquity", f"t{i}", recent=[]) in THEMES for i in range(20))

@@ -40,7 +40,7 @@ const SKY: Record<TimeOfDay, { top: string; mid: string; bottom: string; sun: st
 
 /** The illustration palette of one shot: a time-of-day sky graded toward the look's own colours, silhouettes that get darker toward the viewer, and the look's accents for cloaks and flags. */
 export const makeColors = (look: Look, time: TimeOfDay, weather: Weather = 'clear'): Colors => {
-  const sky = SKY[time];
+  const sky = (look.sky ?? SKY)[time];
   const grade = (c: string, t = 0.1) => mix(c, look.accent2, t);
   const storm = weather === 'storm' ? 0.55 : weather === 'rain' ? 0.35 : weather === 'smoke' ? 0.3 : weather === 'snow' ? 0.25 : 0;
   const gray = (c: string) => mix(c, '#5a4a3a', storm);

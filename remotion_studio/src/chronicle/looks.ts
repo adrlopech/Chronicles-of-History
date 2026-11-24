@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { ERA_ACCENTS } from './palette';
+import { ERA_ACCENTS, THEMES, Sky } from './palette';
 import { BASKERVILLE, BASKERVILLE_ITALIC, CARDO, CARDO_ITALIC, CINZEL, CORMORANT, ELITE, FELL, FELL_ITALIC, GARAMOND, GARAMOND_ITALIC, MANROPE, MARCELLUS, PLAYFAIR, PLAYFAIR_ITALIC, SORA, SPACE, ANTON, BEBAS, ABRIL, OSWALD, MARKER, CINZEL_DECO, SHIPPORI, RYE, ORBITRON } from './fonts';
 
 /**
@@ -27,6 +27,8 @@ export interface Look {
   frame: FrameStyle;
   grain: number; // strength of the paper grain
   weight: number; // headline weight
+  sky?: Record<'dawn' | 'day' | 'dusk' | 'night', Sky>; // set by a colour theme: the sepia skies of the pictures
+  themed?: boolean; // a colour theme replaced the era's own accents
 }
 
 export const LOOKS: Record<string, Look> = {
@@ -75,6 +77,14 @@ const HEAD: Record<string, { font: string; weight: number; k: number }> = {
   spaceage: { font: ORBITRON, weight: 900, k: 0.86 },
 };
 /** Deep, era-tinted dark used for panels and backgrounds (never pure black). */
+/** Dresses an era look in a colour theme (palette.ts): same typefaces, frames and era, different warm colours. `gilded` or an unknown name leaves the era as it is. */
+export const applyTheme = (look: Look, themeName?: string): Look => {
+  const th = THEMES[themeName ?? ''];
+  if (!th || !th.paper) return look;
+  return { ...look, paper: th.paper, paper2: th.paper2, accent: th.accent, accent2: th.accent2, sky: th.sky, themed: true };
+};
+export const themedLook = (lookName?: string, themeName?: string): Look => applyTheme(lookFor(lookName), themeName);
+
 const deep = (look: Look, t: number) => {
   const h = look.paper2.replace('#', '');
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -90,7 +100,7 @@ export const modernLook = (look: Look): Look => {
     paper2: deep(look, 0.9),
     ink: '#FFF8EA',
     muted: 'rgba(255,248,234,0.74)',
-    ...(BRIGHT[look.name] ?? BRIGHT.manuscript),
+    ...(look.themed ? { accent: look.accent, accent2: look.accent2 } : BRIGHT[look.name] ?? BRIGHT.manuscript),
     head: hd.font,
     italic: PLAYFAIR_ITALIC,
     body: OSWALD,

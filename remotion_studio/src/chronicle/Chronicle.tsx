@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { AbsoluteFill, Sequence, interpolate, useCurrentFrame } from 'remotion';
 import { Captions, chunkCaptions, fallbackCaptions } from './captions';
 import { Corners, clamp, EASE_OUT, InkWords, fit } from './ink';
-import { Look, LookCtx, lookFor, modernLook, useLook } from './looks';
+import { Look, LookCtx, lookFor, modernLook, themedLook, useLook } from './looks';
 import { ModernBackdrop } from './paper';
 import { ArtStage } from './art/Stage';
 import { ArtCtx, Callout, Chapter, DateScene, Flash, ImageScene, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
@@ -81,10 +81,10 @@ const LoopTease: React.FC<{ scene: MotionScene; total: number }> = ({ scene, tot
   );
 };
 
-export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, look: lookName, captions }) => {
+export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, look: lookName, theme, captions }) => {
   if (!scenes?.length) throw new Error('MotionGraphic needs at least one scene');
   const frame = useCurrentFrame();
-  const era = lookFor(lookName);
+  const era = themedLook(lookName, theme);
   const look = modernLook(era);
   const chunks = useMemo(() => chunkCaptions(captions?.length ? captions : fallbackCaptions(scenes)), [captions, scenes]);
   const { starts, total } = useMemo(() => {

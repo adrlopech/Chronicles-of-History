@@ -322,6 +322,7 @@ class MotionProject(BaseModel):
     kind: str = Field(default="history", description="Set by the pipeline")
     format: Optional[str] = Field(default=None, description="Set by the pipeline: one of FORMATS (None = a free-form history)")
     look: Optional[str] = Field(default=None, description="Set by the pipeline: the era look of the video (services/looks.py)")
+    theme: Optional[str] = Field(default=None, description="Set by the pipeline: the colour theme of the video (services/themes.py)")
     captions: Optional[List[CaptionWord]] = Field(default=None, description="Set by the pipeline from the voice timing: the words of the caption strip")
     fact_checked: bool = Field(default=True, description="Set by the pipeline; False when no model could run the fact-check")
     gemini_input_tokens: int = Field(default=0)
@@ -334,6 +335,7 @@ class MotionProject(BaseModel):
             **({"series": self.series_label} if self.series_label else {}),
             "scenes": [s.model_dump(exclude_none=True) for s in self.scenes],
             **({"look": self.look} if self.look else {}),
+            **({"theme": self.theme} if self.theme else {}),
             **({"captions": [c.model_dump() for c in self.captions]} if self.captions else {}),
         }
 

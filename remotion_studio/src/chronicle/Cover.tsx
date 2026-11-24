@@ -3,7 +3,7 @@ import { AbsoluteFill } from 'remotion';
 import { Diorama } from './art/Diorama';
 import { ArtShot, kindOf } from './art/vocab';
 import { Corners, TEXT_SCALE, TornLabel, fit, foilText } from './ink';
-import { LookCtx, lookFor, modernLook } from './looks';
+import { LookCtx, modernLook, themedLook } from './looks';
 import { CHANNEL, MotionGraphicProps } from './types';
 
 /**
@@ -25,8 +25,8 @@ const pickShot = (scenes: MotionGraphicProps['scenes'], rank: number): ArtShot |
   return (ranked[Math.min(rank, ranked.length - 1)] ?? ranked[0])?.sh;
 };
 
-export const Cover: React.FC<MotionGraphicProps & { coverScene?: number }> = ({ scenes, title, series, look: lookName, coverScene = 0 }) => {
-  const era = lookFor(lookName);
+export const Cover: React.FC<MotionGraphicProps & { coverScene?: number }> = ({ scenes, title, series, look: lookName, theme, coverScene = 0 }) => {
+  const era = themedLook(lookName, theme);
   const look = modernLook(era);
   const shot = pickShot(scenes, coverScene > 0 ? 1 : 0);
   const date = scenes.find((s) => s.type === 'date');

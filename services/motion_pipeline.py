@@ -539,7 +539,11 @@ def _prepare_project(project: Any) -> None:
     add_vote_items(project)  # the outro draws the two options of the vote as two tablets
     if not project.look:
         project.look = choose_look(project.format, project.topic)  # the era of the topic (antiquity, manuscript, seachart, empire, industrial, wartime)
-    logger.info("Look: %s", project.look)
+    if not project.theme:
+        from services.themes import choose_theme
+
+        project.theme = choose_theme(project.look or "", project.topic)
+    logger.info("Look: %s, theme: %s", project.look, project.theme)
     dropped = fix_art_for_era(project)  # no tank in ancient Rome
     if dropped:
         logger.info("Illustrations: %d anachronistic subject(s) removed for the %s era.", dropped, project.look)
@@ -652,7 +656,7 @@ def finish_motion_video(prep: PreparedVideo, export_only: bool = False, dry_run:
                 yt_id = f"local_{run_id}"
         try:
             record_short_history(weekday_index=datetime.now().weekday(), theme_key="motion_graphics", game_title=project.screen_title, voice_id_used="none", topic=project.topic,
-                                 title=project.title, video_id=yt_id, category=("MOTION GRAPHICS " + project.format.upper()) if project.format else "MOTION GRAPHICS", tone="illustrated_archive", preset=f"remotion_motion:{project.look or 'manuscript'}")
+                                 title=project.title, video_id=yt_id, category=("MOTION GRAPHICS " + project.format.upper()) if project.format else "MOTION GRAPHICS", tone="illustrated_archive", preset=f"remotion_motion:{project.look or 'manuscript'}:{project.theme or 'gilded'}")
         except Exception as exc:
             logger.warning("History not recorded: %s", exc)
         logger.info("Motion Graphics video ready in %.0fs: %s", time.time() - prep.started, out["tiktok"])

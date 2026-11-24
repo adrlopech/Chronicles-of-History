@@ -56,3 +56,19 @@ Earthy and historical: brick, oxblood, bronze, olive-gold, umber, parchment, dar
 - A new colour is added to `palette.ts` and to this page together, and must pass `tests/test_palette.py` (brown, gold, red-brown or a neutral).
 - Neutrals (cream, greys with almost no colour, near-black) are allowed for text and shadows.
 - Gold is for titles, years, frames and the brand; ember and copper only as small accents; everything else is brown and parchment.
+
+## Colour themes
+
+A video is dressed in one of seven warm **themes** (`THEMES` in `remotion_studio/src/chronicle/palette.ts`, rotation in `services/themes.py`). A theme changes the light and mood (panels, accent and gilt, corners, skies of the pictures), never the era (typefaces, frames, subjects). All of them obey the rules above; `tests/test_palette.py` scans their hexes too.
+
+| Theme | Mood | Accent / gilt |
+|---|---|---|
+| gilded | house style: gold leaf on dark leather, each era keeps its own accents | per era |
+| sepia | faded photograph, pale skies | copper `#C8642A` / old gold `#D4A24A` |
+| ember | fire and brass, red-brown grounds | `#FF6A3D` / `#FFB04A` |
+| regal | oxblood and gold, courts and crowns | `#E0A93C` / `#B8433A` |
+| bronze | ochre and olive-brown, roads and camps | `#D9A334` / `#A8793A` |
+| ivory | bone and umber, a daylight manuscript | `#B8532E` / `#C89A4A` |
+| smoke | ash and umber, wars and winters | lantern `#E39A3B` / `#9C7C58` |
+
+`choose_theme` prefers the era's mood (wartime → smoke, frontier → bronze, empire/renaissance → regal, spaceage → sepia) unless it was used in the last three videos, then rotates by topic hash. The history preset is stored as `remotion_motion:<look>:<theme>`. `MotionGraphic` and `Cover` take an optional `theme` prop.

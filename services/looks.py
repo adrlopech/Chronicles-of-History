@@ -42,7 +42,7 @@ def recent_looks(limit: int = AVOID_LAST) -> List[str]:
         init_db()
         with get_db_connection() as conn:
             rows = conn.execute("SELECT preset FROM shorts_history WHERE preset LIKE 'remotion_motion:%' ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
-        return [r["preset"].split(":", 1)[1] for r in rows]
+        return [r["preset"].split(":")[1] for r in rows]
     except Exception:
         return []
 

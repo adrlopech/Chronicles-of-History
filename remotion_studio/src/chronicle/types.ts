@@ -52,10 +52,10 @@ export interface CaptionWord {
 export interface MotionGraphicProps {
   title: string;
   series?: string;
+  theme?: string; // the colour theme (palette.ts THEMES): gilded, sepia, ember, regal, bronze, ivory or smoke
   look?: string; // an era look (looks.ts): antiquity, manuscript, seachart, empire, industrial, wartime
   captions?: CaptionWord[];
   scenes: MotionScene[];
-  theme?: MotionTheme; // ignored: the look sets every colour
 }
 
 export const FPS = 30;

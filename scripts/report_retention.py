@@ -53,7 +53,7 @@ def history_index() -> Dict[str, Dict[str, str]]:
     with get_db_connection() as conn:
         for r in conn.execute("SELECT video_id, title, category, preset FROM shorts_history"):
             cat = (r["category"] or "").replace("MOTION GRAPHICS", "").strip().lower() or "classic"
-            look = r["preset"].split(":", 1)[1] if (r["preset"] or "").startswith("remotion_motion:") else ""
+            look = r["preset"].split(":")[1] if (r["preset"] or "").startswith("remotion_motion:") else ""
             info = {"format": cat, "look": look}
             if r["video_id"]:
                 out[r["video_id"]] = info
