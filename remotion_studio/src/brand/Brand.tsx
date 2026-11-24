@@ -2,6 +2,7 @@ import React from 'react';
 import { AbsoluteFill } from 'remotion';
 import { Aqueduct, Cathedral, Colosseum, GreatWall, Obelisk, Pagoda } from '../chronicle/art/structures2';
 import { Castle, Pyramids, Temple, Windmill } from '../chronicle/art/things';
+import { Caravan } from '../chronicle/art/people';
 import { Colors, mix } from '../chronicle/art/palette';
 import { CINZEL_DECO, CORMORANT } from '../chronicle/fonts';
 import { Corners } from '../chronicle/ink';
@@ -192,31 +193,47 @@ export const Banner: React.FC = () => {
         <path d="M0 1338 Q640 1314 1280 1334 T2560 1326" stroke="#f0c25e" strokeWidth={3} fill="none" opacity={0.5} />
         <rect width={2560} height={1440} fill="url(#vig)" />
       </svg>
+      {/* a compass rose, a flock of birds, long clouds and a caravan: the small stories of the panorama */}
+      <svg width={2560} height={1440} viewBox="0 0 2560 1440" style={{ position: 'absolute', inset: 0 }}>
+        <g transform="translate(2230 300)" opacity={0.55} fill="none" stroke="#f0c25e" strokeWidth={3}>
+          <circle r={118} /><circle r={96} strokeWidth={1.5} />
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <path key={a} d={a % 90 === 0 ? 'M0 -150 L16 -16 L0 0 L-16 -16Z' : 'M0 -104 L9 -9 L0 0 L-9 -9Z'} transform={`rotate(${a})`} fill={a % 90 === 0 ? '#f0c25e' : 'none'} fillOpacity={0.55} />)}
+          <text x={0} y={-160} textAnchor="middle" fill="#f0c25e" stroke="none" fontFamily={CINZEL_DECO} fontWeight={900} fontSize={40}>N</text>
+        </g>
+        {[[520, 300, 1.7], [650, 240, 1.3], [750, 330, 1.1], [1800, 400, 1.5], [1930, 340, 1.1], [2020, 430, 0.9]].map(([x, y, s], i) => (
+          <path key={i} d={`M${x - 26 * s} ${y} Q${x - 12 * s} ${y - 16 * s} ${x} ${y + 2 * s} Q${x + 12 * s} ${y - 16 * s} ${x + 26 * s} ${y}`} stroke="#2a170a" strokeWidth={5 * s} fill="none" strokeLinecap="round" opacity={0.8} />
+        ))}
+        {[[360, 690, 340, 26], [2000, 650, 380, 24], [1500, 590, 260, 18], [820, 600, 220, 16]].map(([x, y, w, h], i) => <ellipse key={i} cx={x} cy={y} rx={w} ry={h} fill="#fff1c8" opacity={0.2} />)}
+        <g transform="translate(900 1330) scale(0.78)"><Caravan c={{ ...c, near: c.fore, mid: c.fore, far: c.fore, light: c.fore, accent: c.fore, accent2: c.fore }} t={0.3} seed={2} dir={1} /></g>
+      </svg>
       {/* an aged-paper grain over everything */}
       <AbsoluteFill style={{ opacity: 0.1, mixBlendMode: 'multiply', backgroundImage: 'repeating-radial-gradient(circle at 23% 31%, #3a2210 0 1px, transparent 1px 3px)' }} />
       {/* the double gold frame with its corner brackets */}
       <div style={{ position: 'absolute', left: 34, top: 34, right: 34, bottom: 34, border: `5px solid ${GOLD.mid}`, boxShadow: `inset 0 0 0 10px #1c1008, inset 0 0 0 13px ${GOLD.lo}`, borderRadius: 6 }} />
       <div style={{ position: 'absolute', inset: 0 }}><Corners color={GOLD.hi} size={110} inset={46} weight={7} /></div>
+      {[[1280, 34], [1280, 1406]].map(([x, y], i) => <div key={i} style={{ position: 'absolute', left: x - 170, top: y - 14, width: 340, height: 28, display: 'flex', alignItems: 'center', gap: 14, background: '#1c1008' }}><div style={{ flex: 1, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid})` }} /><div style={{ width: 16, height: 16, background: GOLD.hi, transform: 'rotate(45deg)' }} /><div style={{ flex: 1, height: 3, background: `linear-gradient(270deg, transparent, ${GOLD.mid})` }} /></div>)}
       {/* the safe box: the badge and the scroll */}
       <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423 }}>
         <svg width={1546} height={423} viewBox="0 0 1546 423" style={{ position: 'absolute', inset: 0, overflow: 'visible', filter: 'drop-shadow(0 18px 26px rgba(0,0,0,0.55))' }}>
           <defs><linearGradient id="parch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f7ebc9" /><stop offset="1" stopColor="#e3c88c" /></linearGradient></defs>
-          <path d="M330 48 Q760 20 1220 48 L1220 372 Q760 400 330 372Z" fill="url(#parch)" stroke="#9a7440" strokeWidth={4} />
-          <path d="M342 62 Q760 38 1208 62 M342 358 Q760 382 1208 358" stroke="#b58a4a" strokeWidth={3} fill="none" />
-          {/* the curled ends */}
-          <path d="M330 48 Q290 40 276 80 L276 340 Q290 384 330 372Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
-          <ellipse cx={288} cy={210} rx={22} ry={130} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={288} cy={210} rx={9} ry={64} fill="none" stroke="#9a7440" strokeWidth={3} />
-          <path d="M1220 48 Q1260 40 1274 80 L1274 340 Q1260 384 1220 372Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
-          <ellipse cx={1262} cy={210} rx={22} ry={130} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={1262} cy={210} rx={9} ry={64} fill="none" stroke="#9a7440" strokeWidth={3} />
+          <path d="M308 26 Q840 -6 1370 26 L1370 397 Q840 429 308 397Z" fill="url(#parch)" stroke="#9a7440" strokeWidth={4} />
+          <path d="M322 42 Q840 14 1356 42 M322 381 Q840 409 1356 381" stroke="#b58a4a" strokeWidth={3} fill="none" />
+          <path d="M308 26 Q266 18 250 64 L250 359 Q266 405 308 397Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
+          <ellipse cx={262} cy={211} rx={26} ry={150} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={262} cy={211} rx={10} ry={74} fill="none" stroke="#9a7440" strokeWidth={3} />
+          <path d="M1370 26 Q1412 18 1428 64 L1428 359 Q1412 405 1370 397Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
+          <ellipse cx={1416} cy={211} rx={26} ry={150} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={1416} cy={211} rx={10} ry={74} fill="none" stroke="#9a7440" strokeWidth={3} />
+          {/* a wax seal and two laurel sprigs */}
+          <circle cx={1352} cy={352} r={34} fill="#b3202a" stroke="#6a0f16" strokeWidth={4} /><circle cx={1352} cy={352} r={24} fill="none" stroke="#e05a5a" strokeWidth={2} opacity={0.7} /><text x={1352} y={366} textAnchor="middle" fontFamily={CINZEL_DECO} fontWeight={900} fontSize={38} fill="#f4d58a">C</text>
+          {[-1, 1].map((s) => Array.from({ length: 7 }, (_, i) => <ellipse key={`${s}${i}`} cx={s < 0 ? 372 + i * 38 : 1306 - i * 38} cy={410 + Math.sin(i * 0.5) * 8} rx={8} ry={20} transform={`rotate(${s < 0 ? 70 - i * 6 : -70 + i * 6} ${s < 0 ? 372 + i * 38 : 1306 - i * 38} 410)`} fill={GOLD.mid} stroke={GOLD.deep} strokeWidth={2} opacity={0.95} />))}
         </svg>
-        <div style={{ position: 'absolute', left: 335, top: 56, width: 880, height: 310, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 80, lineHeight: 1.06, textAlign: 'center', color: '#3a2210', letterSpacing: 1, whiteSpace: 'nowrap', textShadow: '0 2px 0 rgba(255,244,216,0.7)' }}>THE CHRONICLES<br />OF HISTORY</div>
+        <div style={{ position: 'absolute', left: 300, top: 36, width: 1010, height: 350, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 92, lineHeight: 1.06, textAlign: 'center', color: '#3a2210', letterSpacing: 1, whiteSpace: 'nowrap', textShadow: '0 2px 0 rgba(255,244,216,0.7)' }}>THE CHRONICLES<br />OF HISTORY</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 14 }}>
             <div style={{ width: 120, height: 3, background: 'linear-gradient(90deg, transparent, #8a5a2a)' }} /><div style={{ width: 14, height: 14, background: '#a8442a', transform: 'rotate(45deg)' }} /><div style={{ width: 120, height: 3, background: 'linear-gradient(270deg, transparent, #8a5a2a)' }} />
           </div>
-          <div style={{ fontFamily: CORMORANT, fontWeight: 700, fontStyle: 'italic', fontSize: 42, color: '#5a3a1c', marginTop: 6, whiteSpace: 'nowrap' }}>True stories, drawn alive. A new one every day.</div>
+          <div style={{ fontFamily: CORMORANT, fontWeight: 700, fontStyle: 'italic', fontSize: 48, color: '#5a3a1c', marginTop: 8, whiteSpace: 'nowrap' }}>True stories, drawn alive. A new one every day.</div>
         </div>
-        <div style={{ position: 'absolute', left: -62, top: 8, width: 408, height: 408, filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.6))' }}><Seal id="bn" /></div>
+        <div style={{ position: 'absolute', left: -92, top: 4, width: 420, height: 420, filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.6))' }}><Seal id="bn" /></div>
       </div>
     </AbsoluteFill>
   );
