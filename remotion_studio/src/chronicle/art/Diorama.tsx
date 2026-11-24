@@ -85,7 +85,7 @@ const Atmosphere: React.FC<{ c: Colors; time: string; place: string; t: number; 
 interface Slot { x: number; d: keyof typeof DEPTH; s: number }
 
 /** One shot: the place, the subjects laid out in depth, the camera sliding across the layers, the weather over everything. Pure function of `frame`. */
-export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look: Look; seed: number }> = ({ shot, frame, dur, look, seed: seed0 }) => {
+export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look: Look; seed: number; bare?: boolean }> = ({ shot, frame, dur, look, seed: seed0, bare }) => {
   const seed = (seed0 + hash(shot.subjects.join())) % 1000;
   const t = frame / 30;
   const c = makeColors(look, shot.time, shot.weather ?? 'clear');
@@ -127,6 +127,17 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     items.push({ z: sj === 'fire' ? y + 100 : y - 600, key: `fx${i}`, node: <g transform={`translate(${x + lx} ${y}) scale(${s})`}><C c={c} t={t} seed={seed + i} dir={1} /></g> });
   });
   items.sort((a, b) => a.z - b.z);
+  if (bare) {
+    // the web portal: only the buildings and the people, no sky, ground or atmosphere; every item is a group the page can animate
+    const cls = (key: string) => (key.startsWith('fx') ? 'it fx' : (Number(key.match(/(\d+)$/)?.[1]) >= 20 ? 'it pr' : Number(key.match(/(\d+)$/)?.[1]) >= 10 ? 'it act' : 'it st'));
+    return (
+      <svg width={1080} height={H} viewBox={`0 0 1080 ${H}`} style={{ display: 'block' }}>
+        <g transform={`translate(540 ${GY + 150}) scale(${zoom}) translate(-540 ${-(GY + 150)})`}>
+          {items.map((it, n) => <g key={it.key} className={cls(it.key)} style={{ ['--i' as string]: n }}>{it.node}</g>)}
+        </g>
+      </svg>
+    );
+  }
   return (
     <svg width={1080} height={H} viewBox={`0 0 1080 ${H}`} style={{ display: 'block' }}>
       <g transform={`translate(540 ${GY + 150}) scale(${zoom}) translate(-540 ${-(GY + 150)})`}>

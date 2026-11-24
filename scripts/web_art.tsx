@@ -22,9 +22,11 @@ const ERA_SHOTS: Record<string, { look: string; shot: any; seed: number; frame: 
   spaceage: { look: 'spaceage', seed: 21, frame: 40, shot: { place: 'plains', time: 'night', subjects: ['rocket', 'radar_dish', 'astronaut', 'lander'], action: 'watch' } },
   draw: { look: 'manuscript', seed: 5, frame: 30, shot: { place: 'city', time: 'day', subjects: ['castle', 'knight', 'jester', 'banner'], action: 'cheer' } },
 };
+const STYLE = '<style>.it{transform-box:fill-box;transform-origin:50% 100%}.act{animation:b 3.4s ease-in-out infinite;animation-delay:calc(var(--i)*-.8s)}.pr{animation:b 4.2s ease-in-out infinite;animation-delay:calc(var(--i)*-1.1s)}.fx{animation:f .9s ease-in-out infinite alternate}@keyframes b{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-5px) scaleY(1.025) rotate(.5deg)}}@keyframes f{from{transform:scale(1);opacity:.9}to{transform:scale(1.07,1.12);opacity:1}}</style>';
+// only the people and the buildings (no sky or ground), animated by CSS; the viewBox is fitted afterwards by scripts/fit_art.html
 for (const [name, e] of Object.entries(ERA_SHOTS)) {
-  let svg = renderToStaticMarkup(<Diorama shot={e.shot} frame={e.frame} dur={150} look={lookFor(e.look)} seed={e.seed} />);
-  svg = svg.replace('width="1080" height="1920" viewBox="0 0 1080 1920"', 'xmlns="http://www.w3.org/2000/svg" width="1280" height="1000" viewBox="-100 70 1280 1000"');
+  let svg = renderToStaticMarkup(<Diorama bare shot={e.shot} frame={e.frame} dur={150} look={lookFor(e.look)} seed={e.seed} />);
+  svg = svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/>/, '>' + STYLE);
   writeFileSync(`${out}/eras/${name}.svg`, svg);
 }
 
