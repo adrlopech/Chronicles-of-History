@@ -162,7 +162,6 @@ const SKYLINE: { C: React.FC<any>; x: number; s: number; layer: 'far' | 'near' }
   { C: Pagoda, x: 2420, s: 1.45, layer: 'near' },
 ];
 
-const PLATE = 'polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px), calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px)';
 const YT_PATH = 'M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z';
 const TT_PATH = 'M16.6 5.82A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z';
 
@@ -233,31 +232,46 @@ export const Banner: React.FC = () => {
       <div style={{ position: 'absolute', left: 34, top: 34, right: 34, bottom: 34, border: `5px solid ${GOLD.mid}`, boxShadow: `inset 0 0 0 10px #1c1008, inset 0 0 0 13px ${GOLD.lo}`, borderRadius: 6 }} />
       <div style={{ position: 'absolute', inset: 0 }}><Corners color={GOLD.hi} size={110} inset={46} weight={7} /></div>
       {[[1280, 34], [1280, 1406]].map(([x, y], i) => <div key={i} style={{ position: 'absolute', left: x - 170, top: y - 14, width: 340, height: 28, display: 'flex', alignItems: 'center', gap: 14, background: '#1c1008' }}><div style={{ flex: 1, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid})` }} /><div style={{ width: 16, height: 16, background: GOLD.hi, transform: 'rotate(45deg)' }} /><div style={{ flex: 1, height: 3, background: `linear-gradient(270deg, transparent, ${GOLD.mid})` }} /></div>)}
-      {/* two narrow leather plaques either side of the title, inside the band tablets show (x 352 to 2207) and just outside the phone band: what the channel offers, and where to find it */}
-      {[{ x: 430, side: 'left' }, { x: 2130, side: 'right' }].map((pl) => (
-        <div key={pl.side} style={{ position: 'absolute', left: pl.x - 74, top: 548, width: 148, height: 344, filter: 'drop-shadow(0 14px 20px rgba(0,0,0,0.55))' }}>
-          <div style={{ width: '100%', height: '100%', clipPath: PLATE, background: `linear-gradient(145deg, ${GOLD.hi}, ${GOLD.lo})`, padding: 4 }}>
-            <div style={{ width: '100%', height: '100%', clipPath: PLATE, background: 'linear-gradient(180deg, #4a2c14 0%, #2a170a 100%)', padding: 6 }}>
-              <div style={{ width: '100%', height: '100%', clipPath: PLATE, border: `2px solid ${GOLD.mid}88`, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, textAlign: 'center' }}>
-                {pl.side === 'left' ? (
-                  <>
-                    <div style={{ filter: `drop-shadow(0 0 8px ${GOLD.mid}aa)` }}><Engraving name="hourglass" size={66} color={GOLD.hi} accent={GOLD.mid} at={0} len={1} thick={4.4} /></div>
-                    <div style={{ width: 70, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid}, transparent)` }} />
-                    <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 27, lineHeight: 1.12, color: GOLD.mid, textShadow: `0 2px 0 ${GOLD.deep}`, whiteSpace: 'nowrap' }}>A NEW<br />STORY<br />EVERY<br />DAY</div>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 25, lineHeight: 1.1, color: GOLD.mid, textShadow: `0 2px 0 ${GOLD.deep}` }}>FIND<br />US ON</div>
-                    <div style={{ width: 70, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid}, transparent)` }} />
-                    <svg width={72} height={72} viewBox="0 0 24 24" style={{ filter: `drop-shadow(0 0 7px ${GOLD.mid}aa)` }}><path fill={GOLD.mid} d={YT_PATH} /></svg>
-                    <svg width={62} height={62} viewBox="0 0 24 24" style={{ filter: `drop-shadow(0 0 7px ${GOLD.mid}aa)` }}><path fill={GOLD.mid} d={TT_PATH} /></svg>
-                  </>
-                )}
-              </div>
+      {/* two scraps torn from the same sheet as the title scroll, either side of it: inside the band tablets show (x 352 to 2207), just outside the phone band */}
+      {[{ x: 430, side: 'left', rot: -3, seed: 23 }, { x: 2130, side: 'right', rot: 3, seed: 41 }].map((pl) => {
+        const shape = torn(10, 12, 158, 356, pl.seed, 11);
+        const back = torn(14, 18, 162, 364, pl.seed + 7, 14);
+        const id = `scrap${pl.side}`;
+        return (
+          <div key={pl.side} style={{ position: 'absolute', left: pl.x - 84, top: 530, width: 168, height: 376, transform: `rotate(${pl.rot}deg)`, filter: 'drop-shadow(0 14px 20px rgba(0,0,0,0.55))' }}>
+            <svg width={168} height={376} viewBox="0 0 168 376" style={{ position: 'absolute', inset: 0 }}>
+              <defs>
+                <clipPath id={`${id}-c`}><path d={shape} /></clipPath>
+                <linearGradient id={`${id}-p`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f8edcf" /><stop offset="0.55" stopColor="#ecd6a0" /><stop offset="1" stopColor="#dcbf82" /></linearGradient>
+                <filter id={`${id}-f`} x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5" /></filter>
+              </defs>
+              <path d={back} fill="#bd9a5a" stroke="#7a5428" strokeWidth={2.5} />
+              <path d={shape} fill={`url(#${id}-p)`} stroke="#8a6230" strokeWidth={3} strokeLinejoin="round" />
+              <g clipPath={`url(#${id}-c)`}>
+                <path d={shape} fill="none" stroke="#7a4e1e" strokeWidth={26} opacity={0.4} filter={`url(#${id}-f)`} />
+                <ellipse cx={84} cy={90} rx={70} ry={50} fill="#a8742e" opacity={0.16} /><ellipse cx={90} cy={300} rx={60} ry={44} fill="#a8742e" opacity={0.18} />
+                <path d="M20 190 l18 8 l-6 14 M150 120 l-16 10 l8 14" stroke="#6a4420" strokeWidth={2} fill="none" opacity={0.5} strokeLinecap="round" />
+              </g>
+            </svg>
+            <div style={{ position: 'absolute', left: 12, top: 18, width: 144, height: 336, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, textAlign: 'center' }}>
+              {pl.side === 'left' ? (
+                <>
+                  <Engraving name="hourglass" size={70} color="#4a2e14" accent="#8a5a2a" at={0} len={1} thick={4.6} />
+                  <div style={{ width: 70, height: 3, background: 'linear-gradient(90deg, transparent, #8a5a2a, transparent)' }} />
+                  <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 27, lineHeight: 1.12, color: '#3a2210', whiteSpace: 'nowrap' }}>A NEW<br />STORY<br />EVERY<br />DAY</div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 26, lineHeight: 1.1, color: '#3a2210' }}>FIND<br />US ON</div>
+                  <div style={{ width: 70, height: 3, background: 'linear-gradient(90deg, transparent, #8a5a2a, transparent)' }} />
+                  <svg width={74} height={74} viewBox="0 0 24 24"><path fill="#3a2210" d={YT_PATH} /></svg>
+                  <svg width={64} height={64} viewBox="0 0 24 24"><path fill="#3a2210" d={TT_PATH} /></svg>
+                </>
+              )}
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       {/* the phone box: YouTube shows phones only the centre 1546 x 423 of the art, so the badge and the scroll are centred in it and scaled to stay clear of its edges */}
       <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423, transform: 'translateX(103px) translateY(-6px) scale(0.85)', transformOrigin: '670px 211px' }}>
         <svg width={1546} height={423} viewBox="0 0 1546 423" style={{ position: 'absolute', inset: 0, overflow: 'visible', filter: 'drop-shadow(0 18px 26px rgba(0,0,0,0.55))' }}>
