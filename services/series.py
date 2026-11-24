@@ -1,7 +1,6 @@
-"""Named, numbered series for the Motion formats ("Fix It Now #7", "Decoded #12").
+"""Named, numbered series for the Motion formats ("Turning Point #7", "Unsolved #12").
 
-The content study (notes/content_style_study_2026-11.md) found that the biggest niche accounts run numbered series ("PC tip that can save you - Pt 73"): the title, the first frame and
-the hashtag repeat, so a viewer who liked one video recognises the next. Each format has a series name and a one-word hashtag; the number is how many different topics of that format
+Numbered series work on short video: the title, the first frame and the hashtag repeat, so a viewer who liked one video recognises the next. Each format has a series name and a one-word hashtag; the number is how many different topics of that format
 the history already holds, plus one.
 """
 import re
@@ -11,25 +10,14 @@ from services.history import get_db_connection, init_db
 
 # format -> (series name shown in the title and on the first frame, one-word hashtag without the #)
 SERIES: Dict[str, Tuple[str, str]] = {
-    "fix": ("Fix It Now", "fixitnow"),
-    "decode": ("Decoded", "decoded"),
-    "whatif": ("What If", "whatif"),
-    "versus": ("Spec Duel", "specduel"),
-    "evolution": ("Evolution", "techevolution"),
-    "myth": ("Myth or Fact", "mythorfact"),
-    "tier": ("Tier List", "pctierlist"),
-    "hardware": ("Silicon Files", "siliconfiles"),
-    "simple": ("Everyday Tech", "everydaytech"),
-    "top5": ("Top 5", "techtop5"),
-    "eli5": ("Explained Simply", "explainedsimply"),
-    "fails": ("Tech Fails", "techfails"),
-    "numbers": ("By the Numbers", "bythenumbers"),
-    "quiz": ("Tech Quiz", "techquiz"),
-    "stop": ("Stop Doing This", "stopdoingthis"),
-    "rumor": ("Rumor Mill", "rumormill"),
-    "review": ("Worth It", "worthit"),
-    "news": ("Tech Briefing", "techbriefing"),
-    "priced": ("Priced In", "pricedin"),
+    "mystery": ("Unsolved", "unsolvedhistory"),
+    "dayinlife": ("A Day In", "adayinhistory"),
+    "turning": ("Turning Point", "turningpoint"),
+    "lies": ("History Lies", "historylies"),
+    "whatif": ("What If History", "whatifhistory"),
+    "duel": ("History Duel", "historyduel"),
+    "journey": ("The Route", "historyroute"),
+    "portrait": ("Life in Dates", "lifeindates"),
 }
 MAX_TITLE = 100  # MotionProject.title limit
 _HASHTAGS = re.compile(r"\s*#\w+")
@@ -49,7 +37,7 @@ def joined_hashtag(text: str) -> str:
 
 
 def apply_series(project: Any, number: Optional[int] = None) -> Optional[str]:
-    """Prefixes the title with the series label ("Fix It Now #7: ..."), puts the label on the first scene's kicker (the cover frame), adds the series hashtag to the tags and a line to the
+    """Prefixes the title with the series label ("Turning Point #7: ..."), puts the label on the first scene's kicker (the cover frame), adds the series hashtag to the tags and a line to the
     description. Returns the label, or None when the format has no series or the project already carries it."""
     entry = SERIES.get(project.format or "")
     if not entry:

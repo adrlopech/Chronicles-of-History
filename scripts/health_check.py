@@ -4,7 +4,7 @@
   python scripts/health_check.py            # prints a table
   python scripts/health_check.py --notify   # also sends a notification when something is wrong
 
-Checks: YouTube token (refreshes it, so a revoked or expired one shows up now and not in the middle of an upload), ElevenLabs credits, Gemini key, banked scripts, prices age, free disk.
+Checks: YouTube token (refreshes it, so a revoked or expired one shows up now and not in the middle of an upload), ElevenLabs credits, Gemini key, banked scripts, free disk.
 """
 import argparse
 import shutil
@@ -59,22 +59,12 @@ def bank() -> Check:
     return (OK if total >= 8 else WARN), "Banked scripts", f"{total} ready ({', '.join(f'{k} {v}' for k, v in sorted(stock.items()) if v) or 'none'}): the fallback for a failed slot"
 
 
-def prices() -> Check:
-    from services.prices import age_days, load_prices
-    try:
-        p = load_prices()
-    except Exception as exc:  # noqa: BLE001
-        return WARN, "Prices", f"none ({exc}): no 'Every X' video"
-    age = age_days(p)
-    return (OK if age <= 3 else WARN), "Prices", f"{p['date']} ({age} day(s) old; 'Every X' videos need at most 3)"
-
-
 def disk() -> Check:
     free = shutil.disk_usage(BASE_DIR).free / 1e9
     return (OK if free >= 10 else FAIL if free < 3 else WARN), "Free disk", f"{free:.1f} GB (a batch writes about 2 GB; `limpieza` frees more)"
 
 
-CHECKS: List[Callable[[], Check]] = [youtube, elevenlabs, gemini, bank, prices, disk]
+CHECKS: List[Callable[[], Check]] = [youtube, elevenlabs, gemini, bank, disk]
 
 
 def run() -> List[Check]:
@@ -97,7 +87,7 @@ def main() -> int:
     bad = [r for r in results if r[0] == FAIL]
     if bad and args.notify:
         from services.notify import notify
-        notify("Silicon Verdict: health check", "; ".join(f"{n}: {d}" for _, n, d in bad)[:200])
+        notify("Chronicles: health check", "; ".join(f"{n}: {d}" for _, n, d in bad)[:200])
     return 1 if bad else 0
 
 

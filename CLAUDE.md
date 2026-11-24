@@ -5,11 +5,11 @@ Sibling of `Silicon Verdict` (`../Silicon Verdict`): same Remotion engine and pi
 
 ## Status
 
-The visual style is new (an illustrated archive with six era looks: `guide/motion-engine.md`). The Python generator, validators and docs are still the tech channel's. Next steps, in order:
+The visual style is new (an illustrated archive with six era looks: `guide/motion-engine.md`). The eight history formats (`guide/formats.md`: mystery, dayinlife, turning, lies, whatif, duel, journey, portrait) and their generator, validators and prompts are new; the tech formats, games, prices and news are gone. The rest of `guide/` and the brand assets are still the tech channel's. Next steps, in order:
 
 1. Brand assets for the channels (logo, cover, avatar): `scripts/make_brand_assets.py` still draws Silicon Verdict's.
-2. Rewrite the generator prompts and validators in `services/motion_generator.py` for history (hook, 3-5 verified facts, closer; no prices, no games, no tech news).
-3. Remove what history does not use: `services/prices.py`, `game_*`, `tech_news.py`, price/game scripts and their tests.
+2. Real images: an `image` scene exists in the renderer but nothing fetches public-domain engravings or photographs yet (Wikimedia Commons / Library of Congress, with credits).
+3. First test wave: bank 2-3 scripts per format (`scripts/refill_story_bank.py`), publish, and read the numbers with `scripts/report_retention.py` to set `FORMAT_WEIGHTS`.
 4. New YouTube OAuth for the new channel (`scripts/authenticate_yt.py`), new `tokens/`. Ask the operator each time.
 5. Pilot: 10 videos, 2-3 weeks, compare retention with Silicon Verdict (`scripts/report_retention.py`).
 
@@ -20,4 +20,4 @@ The visual style is new (an illustrated archive with six era looks: `guide/motio
 - Facts in history scripts must be verifiable; no invented dates or quotes.
 - Commit and push straight to `main`, no branches.
 
-Commands and formats are the same as in Silicon Verdict; see `guide/`.
+Commands: `.venv/bin/python main.py --motion-format <format>`, `scripts/genera_batch.py`, `scripts/refill_story_bank.py`, `scripts/render_silent_preview.py`; `python main.py help` lists them. The old guides in `guide/` still describe Silicon Verdict except `formats.md` and `motion-engine.md`.

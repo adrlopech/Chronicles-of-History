@@ -5,21 +5,13 @@ from datetime import date, timedelta
 from types import SimpleNamespace
 
 
-from services import comments, prices, yt_analytics
+from services import comments, yt_analytics
 from services.motion_pipeline import cover_style
 
 
 def test_cover_style_is_stable_and_uses_both_styles():
     assert cover_style("Same title") == cover_style("Same title")
     assert {cover_style(f"Video {i}") for i in range(40)} == {"a", "b"}
-
-
-def test_price_moves_and_history(tmp_path, monkeypatch):
-    monkeypatch.setattr(prices, "PRICES_DIR", tmp_path)
-    (tmp_path / "2026-11-22.json").write_text(json.dumps({"prices": {"rtx:5070": {"price": 600}, "rtx:5080": {"price": 1000}, "rtx:4060": {"price": None}}}))
-    (tmp_path / "2026-11-23.json").write_text(json.dumps({"prices": {"rtx:5070": {"price": 540}, "rtx:5080": {"price": 1010}, "rtx:4060": {"price": 300}}}))
-    assert [(m["key"], m["pct"]) for m in prices.moves(5)] == [("rtx:5070", -10.0)]  # 5080 moved 1 %, 4060 had no earlier price
-    assert prices.history("rtx:5070") == [("2026-11-22", 600.0), ("2026-11-23", 540.0)]
 
 
 def test_early_report_caches_finished_windows(tmp_path, monkeypatch):
@@ -63,7 +55,6 @@ def test_whole_batch_with_stubs(tmp_path, monkeypatch):
     monkeypatch.setattr(gb, "LOG", tmp_path / "log.json")
     monkeypatch.setattr(gb, "format_stats", lambda: {})
     monkeypatch.setattr(gb, "ranked_slots", lambda: gb.DEFAULT_SLOTS_UTC)
-    monkeypatch.setattr(gb, "every_pick", lambda picks: (None, "test"))
     monkeypatch.setattr(gb, "prepare_with_fallback", lambda p, plan: f"prep-{p['format']}")
     monkeypatch.setattr(gb, "small_copy", lambda src, dst: dst)
     monkeypatch.setattr(mp, "finish_motion_video", lambda prep, export_only=True: {"youtube_video": str(tmp_path / f"{prep}.mp4"), "tiktok_video": "t.mp4", "title": f"Title {prep}", "cover_style": "b", "tiktok_cover": ""})
@@ -73,12 +64,12 @@ def test_whole_batch_with_stubs(tmp_path, monkeypatch):
     import services.notify as nt
     sent = []
     monkeypatch.setattr(nt, "notify", lambda t, m, webhook=None: sent.append(t))
-    monkeypatch.setattr(sys, "argv", ["genera_batch", "--count", "2", "--date", "2026-12-01", "--seed", "1", "--no-every"])
+    monkeypatch.setattr(sys, "argv", ["genera_batch", "--count", "2", "--date", "2026-12-01", "--seed", "1"])
     assert gb.main() == 0
     manifest = json.loads((tmp_path / "latest.json").read_text())
     assert len(manifest) == 2 and all(e["video_id"] == "ABC123" and e["cover_style"] == "b" for e in manifest)
     assert [e["cover_style"] for e in json.loads((tmp_path / "log.json").read_text())] == ["b", "b"]
-    assert sent == ["Silicon Verdict: batch finished"]
+    assert sent == ["Chronicles: batch finished"]
 
 
 def test_batch_does_not_start_when_the_health_check_fails(monkeypatch):
@@ -90,8 +81,8 @@ def test_batch_does_not_start_when_the_health_check_fails(monkeypatch):
     monkeypatch.setattr(gb, "ranked_slots", lambda: gb.DEFAULT_SLOTS_UTC)
     monkeypatch.setattr(hc, "run", lambda: [("FAIL", "YouTube token", "dead")])
     monkeypatch.setattr(nt, "notify", lambda t, m, webhook=None: sent.append(t))
-    monkeypatch.setattr(sys, "argv", ["genera_batch", "--count", "1", "--no-every"])
-    assert gb.main() == 1 and sent == ["Silicon Verdict: batch not started"]
+    monkeypatch.setattr(sys, "argv", ["genera_batch", "--count", "1"])
+    assert gb.main() == 1 and sent == ["Chronicles: batch not started"]
 
 
 def test_count_limits_the_plan():

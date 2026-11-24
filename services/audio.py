@@ -1,4 +1,4 @@
-"""Audio synthesis and modulation service for Silicon Verdict single master videos.
+"""Audio synthesis and modulation service for The Chronicles of History master videos.
 
 Calibrated for:
 - tech_curiosities (Storytelling / Tecnología Desmontada):

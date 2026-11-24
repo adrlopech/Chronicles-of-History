@@ -1,7 +1,7 @@
 """Database access for `data/history.db` and the history of produced videos.
 
 `shorts_history` (SQLite) records every produced video: topic, title, video id, format, look, voice. The series numbers, the look rotation, the "never the same format as last time" rule
-and the narrator rule read it. The other tables of the same file belong to their own modules (`story_bank`, `game_registry`, `looks`, `series`).
+and the narrator rule read it. The other tables of the same file belong to their own modules (`story_bank`, `looks`, `series`).
 """
 import logging
 import sqlite3

@@ -123,7 +123,7 @@ class YouTubeService:
                 if len(final_title) <= 92:
                     final_title = f"{final_title} #Shorts"
             if "#Shorts" not in final_description and "#shorts" not in final_description:
-                final_description = f"{final_description}\n\n#Shorts #SiliconVerdict #Tech"
+                final_description = f"{final_description}\n\n#Shorts #History"
 
         # Apply YouTube character limits
         safe_title = final_title[:100]

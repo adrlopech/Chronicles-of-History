@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Silicon Verdict Comprehensive Asset Cleaner (CLI utility for 'limpieza').
+"""Comprehensive Asset Cleaner (The Chronicles of History) (CLI utility for 'limpieza').
 
 Purges generated video exports in output/tiktok/, output/youtube/,
 render frames, temporary directories, and scratch cache.
@@ -27,7 +27,7 @@ from services.cleaner import execute_comprehensive_cleanup
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Silicon Verdict Comprehensive Cleaner: purges processed videos and render cache"
+        description="Comprehensive Cleaner: purges processed videos and render cache"
     )
     parser.add_argument(
         "--dry-run",
@@ -51,7 +51,7 @@ def main():
     )
 
     print("\n" + "=" * 70)
-    print(" 🧹 SILICON VERDICT: REPORTE DE LIMPIEZA")
+    print(" 🧹 CHRONICLES: REPORTE DE LIMPIEZA")
     print("=" * 70)
     print(f" Modo:                     {'SIMULACIÓN (DRY RUN)' if res['dry_run'] else 'EJECUCIÓN REAL'}")
     print(f" Vídeos Eliminados (.mp4): {len(res['deleted_videos'])}")

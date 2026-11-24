@@ -122,7 +122,7 @@ def execute_comprehensive_cleanup(
     """
     root = Path(base_dir or settings.BASE_DIR).resolve()
     t = _Tally(dry_run)
-    logger.info(">>> INICIANDO LIMPIEZA DE ARTEFACTOS SILICON VERDICT (purgar TikTok: %s, dry run: %s) <<<", clean_tiktok, dry_run)
+    logger.info(">>> INICIANDO LIMPIEZA DE ARTEFACTOS CHRONICLES (purgar TikTok: %s, dry run: %s) <<<", clean_tiktok, dry_run)
 
     if clean_youtube:
         _purge_output_dir(t, root / "output" / "youtube", "YouTube", with_meta=False, delete=True)

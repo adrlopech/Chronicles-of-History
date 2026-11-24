@@ -1,7 +1,7 @@
-"""Silicon Verdict: makes one Motion Graphics video (62-90 s, English) and, unless told otherwise, uploads it to YouTube.
+"""The Chronicles of History: makes one Motion Graphics video (62-90 s, English) and, unless told otherwise, uploads it to YouTube.
 
-    .venv/bin/python main.py --motion-format myth --export-only
-    .venv/bin/python main.py --motion-format any --topic "How TRIM keeps SSDs fast"
+    .venv/bin/python main.py --motion-format turning --export-only
+    .venv/bin/python main.py --motion-format any --topic "The fall of Constantinople"
     .venv/bin/python main.py help
 
 The daily batch of four videos is `scripts/genera_batch.py`; this is the single-video entry point.
@@ -33,18 +33,16 @@ logging.basicConfig(
         logging.FileHandler(BASE_DIR / "logs" / "pipeline.log", encoding="utf-8"),
     ],
 )
-logger = logging.getLogger("silicon_verdict")
+logger = logging.getLogger("chronicles")
 
-MOTION_FORMATS = ["auto", "any", "myth", "tier", "whatif", "easter", "evolution", "versus", "hardware", "simple", "fix", "decode", "top5", "eli5", "fails", "numbers", "quiz", "stop", "rumor", "review", "news", "priced"]
+MOTION_FORMATS = ["auto", "any", "mystery", "dayinlife", "turning", "lies", "whatif", "duel", "journey", "portrait"]
 
 
 def parse_args(argv=None):
-    parser = argparse.ArgumentParser(description="Silicon Verdict: one Motion Graphics video, rendered and (optionally) uploaded.")
+    parser = argparse.ArgumentParser(description="The Chronicles of History: one Motion Graphics video, rendered and (optionally) uploaded.")
     parser.add_argument("--topic", type=str, help="A fixed subject. Without it the story bank, then the LLM, picks one.")
-    parser.add_argument("--motion-kind", type=str, choices=["auto", "curiosity", "game"], default="auto",
-                        help="curiosity (a tech idea), game (an engineering fact about a game, with real footage) or auto (alternates; a game needs unused, non-blacklisted footage).")
     parser.add_argument("--motion-format", type=str, choices=MOTION_FORMATS, default="auto",
-                        help="Content format (see guide/formats.md). any = a weighted random one, never news; auto = the classic explainer.")
+                        help="Content format (see guide/formats.md). any = a weighted random one; auto = a free-form history.")
     parser.add_argument("--export-only", action="store_true", help="Render and write the files under output/ but do not upload.")
     parser.add_argument("--dry-run", action="store_true", help="Everything but the upload.")
     parser.add_argument("--privacy", type=str, choices=["public", "unlisted", "private"], default="public", help="YouTube privacy of the upload (default: public).")
@@ -61,7 +59,7 @@ def main() -> int:
     args = parse_args()
     from services.motion_pipeline import run_motion_pipeline
     try:
-        run_motion_pipeline(topic=args.topic, export_only=args.export_only, dry_run=args.dry_run, privacy=args.privacy, kind=args.motion_kind, fmt=args.motion_format)
+        run_motion_pipeline(topic=args.topic, export_only=args.export_only, dry_run=args.dry_run, privacy=args.privacy, fmt=args.motion_format)
     except Exception as exc:
         logger.error("Motion Graphics pipeline failed: %s", exc)
         return 1

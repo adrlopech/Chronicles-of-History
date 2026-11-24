@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local OAuth 2.0 helper script to authenticate with YouTube Data API v3 for 'Silicon Verdict'.
+"""Local OAuth 2.0 helper script to authenticate with YouTube Data API v3 for 'The Chronicles of History'.
 
 Run this script on your local workstation to generate the persistent `token.json`
 credentials file with long-lived offline refresh capability.
@@ -33,7 +33,7 @@ TOKEN_LEGACY_FILE = BASE_DIR / "token.json"
 
 def authenticate_local() -> None:
     """Launches local OAuth 2.0 flow, receives user authorization, and stores token.json."""
-    logger.info("Initializing YouTube Data API v3 authentication for 'Silicon Verdict'...")
+    logger.info("Initializing YouTube Data API v3 authentication for 'The Chronicles of History'...")
 
     if not CLIENT_SECRETS_FILE.is_file():
         alt_path = BASE_DIR / "tokens" / "client_secret.json"
@@ -57,7 +57,7 @@ def authenticate_local() -> None:
         # Building a second URL here with flow.authorization_url() made the browser answer one state while the server waited for another (MismatchingStateError).
         print("\n" + "=" * 80)
         print(">>> GOOGLE OAUTH 2.0 AUTHORIZATION REQUIRED <<<")
-        print("Approve the access in the browser window that opens (choose the Silicon Verdict channel account); if none opens, use the URL printed below.")
+        print("Approve the access in the browser window that opens (choose the Chronicles of History channel account); if none opens, use the URL printed below.")
         print("=" * 80 + "\n")
 
         logger.info("Awaiting authorization callback on http://localhost:8080 ...")

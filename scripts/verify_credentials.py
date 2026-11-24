@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Comprehensive diagnostic tool to verify all Silicon Verdict API credentials.
+"""Comprehensive diagnostic tool to verify all The Chronicles of History API credentials.
 
 Performs ultra-lightweight, non-costly probe requests:
 - Gemini 2.0 Flash generation
@@ -125,7 +125,7 @@ def test_youtube_secrets() -> tuple[bool, str]:
 
 def main():
     print(f"\n{CYAN}{BOLD}{'=' * 75}{RESET}")
-    print(f"{CYAN}{BOLD}   SILICON VERDICT: COMPREHENSIVE CREDENTIALS VALIDATION TOOL{RESET}")
+    print(f"{CYAN}{BOLD}   CHRONICLES: COMPREHENSIVE CREDENTIALS VALIDATION TOOL{RESET}")
     print(f"{CYAN}{BOLD}{'=' * 75}{RESET}\n")
 
     checks = [

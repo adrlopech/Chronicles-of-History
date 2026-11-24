@@ -32,14 +32,13 @@ def _norm(title: str) -> str:
 
 
 TITLE_PATTERNS = [
-    ("Every X (prices)", r"\bEvery\b.*(Today's Price|on Sale)"), ("Spec Duel", r"^Spec Duel"), ("Myth or Fact", r"^Myth or Fact"), ("Decoded", r"^Decoded"), ("Fix It Now", r"^Fix It Now"),
-    ("Silicon Files", r"^Silicon Files"), ("Everyday Tech", r"^Everyday Tech"), ("Tier List", r"^Tier List"), ("Evolution", r"Evolution #|Years of .* in \d+ Seconds"), ("What If", r"^What If"),
-    ("Top 5", r"^Top 5"), ("Why ...?", r"^Why\b"), ("How ...", r"^How\b"), ("What is ...", r"^What\b"),
+    ("Unsolved", r"^Unsolved"), ("A Day In", r"^A Day In"), ("Turning Point", r"^Turning Point"), ("History Lies", r"^History Lies"), ("What If History", r"^What If"),
+    ("History Duel", r"^History Duel"), ("The Route", r"^The Route"), ("Life in Dates", r"^Life in Dates"), ("Why ...?", r"^Why\b"), ("How ...", r"^How\b"), ("What is ...", r"^What\b"),
 ]
 
 
 def title_pattern(title: str) -> str:
-    """The recurring shape of a title, to compare hooks: "Every X at Today's Price", "Spec Duel", "What If", "Myth or Fact"... (the first word when none matches)."""
+    """The recurring shape of a title, to compare hooks: "Turning Point", "History Duel", "What If", "Unsolved"... (the first word when none matches)."""
     t = re.sub(r"#\w+", "", title).strip()
     for name, pattern in TITLE_PATTERNS:
         if re.search(pattern, t, re.I):

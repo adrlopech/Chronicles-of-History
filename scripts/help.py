@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Silicon Verdict command reference (python main.py help). The full documentation is in guide/README.md."""
+"""The Chronicles of History command reference (python main.py help). The full documentation is in guide/README.md."""
 
 HELP_TEXT = """================================================================================
- SILICON VERDICT: COMMAND REFERENCE   (full documentation: guide/README.md)
+ THE CHRONICLES OF HISTORY: COMMAND REFERENCE   (full documentation: guide/README.md)
 ================================================================================
 
 1. CHAT COMMANDS (with Claude Code, see CLAUDE.md)
@@ -20,10 +20,8 @@ HELP_TEXT = """=================================================================
  PYTHONPATH=. .venv/bin/python scripts/genera_batch.py --topics retry.json --out data/batches/retry.json
 
  .venv/bin/python main.py --motion-format <format> [--export-only]
-   formats: myth tier whatif easter evolution versus hardware simple fix decode
-            top5 eli5 fails numbers quiz stop rumor review news priced any
- .venv/bin/python main.py --motion-kind curiosity --topic "How TRIM keeps SSDs fast"
- .venv/bin/python main.py --motion-kind game          # needs prepared game footage
+   formats: mystery dayinlife turning lies whatif duel journey portrait any   (guide/formats.md)
+ .venv/bin/python main.py --motion-format turning --topic "Caesar crosses the Rubicon"
 
 3. PUBLISHING
 --------------------------------------------------------------------------------
@@ -31,20 +29,17 @@ HELP_TEXT = """=================================================================
  .venv/bin/python scripts/retry_youtube_uploads.py data/batches/<date>.json
  .venv/bin/python scripts/authenticate_yt.py                           # renew the YouTube token (only if it fails with invalid_grant)
 
-4. BANKS, FOOTAGE, ANALYTICS
+4. BANK, ANALYTICS, PREVIEWS
 --------------------------------------------------------------------------------
- .venv/bin/python scripts/refill_story_bank.py --series motion --format <format>
- .venv/bin/python scripts/fetch_game_images.py | fetch_game_clips.py | caption_game_media.py | build_game_facts.py
+ .venv/bin/python scripts/refill_story_bank.py [--format mystery --target 8]
  .venv/bin/python scripts/report_retention.py [--days 28 --min-views 300]
  .venv/bin/python scripts/render_silent_preview.py <script.json> --out DIR   # no-voice preview of a script
- .venv/bin/python -m services.tech_news                                # today's headlines (news format)
 
 5. CHECKS
 --------------------------------------------------------------------------------
  .venv/bin/python -m pytest
  .venv/bin/ruff check .
  (cd remotion_studio && npx tsc --noEmit -p .)
- python3 docs/check_portal.py
 
 6. WHERE THINGS ARE
 --------------------------------------------------------------------------------
@@ -53,7 +48,7 @@ HELP_TEXT = """=================================================================
  output/tiktok_small/<title>.mp4                      <10 MB copy for the TikTok upload
  data/batches/latest.json                               manifest of the last genera batch
  data/batches/log.json                                  slot of every scheduled video (ranks the hours)
- data/history.db                                      history, story bank, game registry
+ data/history.db                                      history and story bank
  data/scripts/                                        hand-written scripts (MotionProject JSON)
 ================================================================================
 """

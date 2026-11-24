@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The `genera` command: 4 Motion videos picked from the channel's own numbers, rendered, and scheduled for TOMORROW at the best hours.
+"""The `genera` command: 4 Motion videos (The Chronicles of History) picked from the channel's own numbers, rendered, and scheduled for TOMORROW at the best hours.
 
   python scripts/genera_batch.py --plan            # only show the plan (formats, hours, why) and stop
   python scripts/genera_batch.py                   # plan + render 4 + schedule them on YouTube + prepare the TikTok copies
@@ -24,7 +24,7 @@ import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -35,7 +35,7 @@ DEFAULT_SLOTS_UTC = ["13:00", "16:00", "19:00", "22:00"]  # 8-9 am / noon / 3 pm
 LOG = BASE_DIR / "data" / "batches" / "log.json"
 LATEST = BASE_DIR / "data" / "batches" / "latest.json"
 SMALL_DIR = BASE_DIR / "output" / "tiktok_small"
-FORMAT_ALIASES = {"hardware deep dive": "hardware", "everyday curiosities": "classic"}
+FORMAT_ALIASES: Dict[str, str] = {}
 
 
 def format_stats() -> Dict[str, Dict[str, float]]:
@@ -66,7 +66,7 @@ def format_stats() -> Dict[str, Dict[str, float]]:
 
 def pick_formats(stats: Dict[str, Dict[str, float]], rng: random.Random, n: int = 4, avoid: Optional[List[str]] = None) -> List[Dict[str, Any]]:
     from services.motion_generator import FORMAT_WEIGHTS, FORMATS
-    pool = [f for f in FORMATS if f not in ("easter",) and f in FORMAT_WEIGHTS and f not in (avoid or [])]
+    pool = [f for f in FORMATS if f in FORMAT_WEIGHTS and f not in (avoid or [])]
     chosen: List[Dict[str, Any]] = []
 
     def add(fmt: str, why: str) -> None:
@@ -88,39 +88,6 @@ def pick_formats(stats: Dict[str, Dict[str, float]], rng: random.Random, n: int 
         add(f, "weighted draw")
         rest.remove(f)
     return chosen[:n]
-
-
-EVERY_MAX_AGE_DAYS = 3  # an "Every X at today's price" video needs prices collected within this many days (guide/prices.md)
-
-
-def every_pick(picks: List[Dict[str, Any]], today: Optional[date] = None) -> tuple:
-    """One slot of the batch goes to a product-intent "Every X at today's price" video (what search traffic looks for) when fresh prices exist.
-    Builds the script of the family used longest ago from data/products + data/prices and returns (pick, note); (None, reason) when it cannot.
-    The pick replaces a `tier` pick if there is one, else the last pick."""
-    from scripts.build_every_script import build, validate
-    from services.prices import age_days, families, latest_prices_file, load_prices
-    path = latest_prices_file()
-    if path is None:
-        return None, "no price file in data/prices/"
-    prices = load_prices(path)
-    age = age_days(prices, today)
-    if age > EVERY_MAX_AGE_DAYS:
-        return None, f"the newest prices are {age} days old (limit {EVERY_MAX_AGE_DAYS}): collect new ones, guide/prices.md"
-    last: Dict[str, str] = {}
-    for e in (json.loads(LOG.read_text()) if LOG.is_file() else []):
-        if e.get("family"):
-            last[e["family"]] = max(last.get(e["family"], ""), e.get("date", ""))
-    for fam in sorted(families(), key=lambda f: last.get(f, "")):  # the family not shown for longest first
-        try:
-            data = build(fam, prices)
-        except ValueError:
-            continue
-        if validate(data):
-            continue
-        out = BASE_DIR / "data" / "scripts" / f"every_{fam}.json"
-        out.write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-        return {"format": "tier", "script": f"data/scripts/{out.name}", "family": fam, "why": f"Every {data['screen_title'].replace(' Tier List', '')} at today's price (prices of {prices['date']})"}, ""
-    return None, "no product family could be built from the newest prices"
 
 
 def ranked_slots() -> List[str]:
@@ -163,7 +130,7 @@ def tiktok_caption(title: str) -> Dict[str, Any]:
 
 
 def prepare(p: Dict[str, Any]) -> Any:
-    """First half of a video of the plan (script, footage, narration): a chosen subject with its own source text, a hand-written script or a data-picked format."""
+    """First half of a video of the plan (script, narration): a chosen subject with its own source text, a hand-written script or a data-picked format."""
     from services.motion_pipeline import prepare_motion_video
     if p.get("script"):  # a hand-written MotionProject (JSON), checked by the same validator as generated ones
         from services.motion_generator import MotionProject, make_validator
@@ -172,14 +139,14 @@ def prepare(p: Dict[str, Any]) -> Any:
         problems = make_validator(facts=facts, fmt=None if p["format"] == "classic" else p["format"], retention=True)(script)
         if problems:
             raise ValueError(f"the script {p['script']} does not pass the validator: {problems}")
-        return prepare_motion_video(topic=script.topic, kind="curiosity", fmt="auto" if p["format"] == "classic" else p["format"], source_text=facts, script=script)
+        return prepare_motion_video(topic=script.topic, fmt="auto" if p["format"] == "classic" else p["format"], source_text=facts, script=script)
     if p.get("topic"):
         source = (BASE_DIR / p["source"]).read_text(encoding="utf-8") if p.get("source") else None
-        return prepare_motion_video(topic=p["topic"], kind="curiosity", fmt="auto" if p["format"] == "classic" else p["format"], source_text=source)
+        return prepare_motion_video(topic=p["topic"], fmt="auto" if p["format"] == "classic" else p["format"], source_text=source)
     return prepare_motion_video(fmt=p["format"])
 
 
-FALLBACK_ORDER = ["versus", "myth", "whatif", "evolution", "decode", "tier", "hardware", "fix", "simple"]  # proven formats first; the ones the channel's numbers like best
+FALLBACK_ORDER = ["mystery", "turning", "whatif", "duel", "lies", "journey", "portrait", "dayinlife"]  # the order of the first test wave; reorder it once the channel's numbers say which formats win
 
 
 def choose_fallback(plan: List[Dict[str, Any]], failed: str, stock: Dict[str, int]) -> List[str]:
@@ -203,7 +170,7 @@ def prepare_with_fallback(p: Dict[str, Any], plan: List[Dict[str, Any]]) -> Any:
         for fmt in choose_fallback(plan, original, ready_by_format("motion")):
             try:
                 prep = prepare_motion_video(fmt=fmt, bank_only=True)
-            except Exception as bank_exc:  # the bank was emptied meanwhile, or the script failed in voice / footage
+            except Exception as bank_exc:  # the bank was emptied meanwhile, or the script failed in voice
                 print(f"  banked {fmt} failed: {str(bank_exc)[:120]}")
                 continue
             p["format"], p["why"] = fmt, f"fallback for {original} (no script available): banked {fmt}"
@@ -213,13 +180,13 @@ def prepare_with_fallback(p: Dict[str, Any], plan: List[Dict[str, Any]]) -> Any:
 
 
 def can_prefetch(p: Dict[str, Any]) -> bool:
-    """The next video can be prepared while this one renders unless it may pick game footage (the footage ledger is only updated when a video is finished)."""
+    """The next video can be prepared while this one renders (script and voice need no CPU-heavy work)."""
     from services.motion_generator import FORMATS
-    return p["format"] in FORMATS and p["format"] != "easter"
+    return p["format"] in FORMATS
 
 
 def run_plan(plan: List[Dict[str, Any]], prepare_fn: Callable, finish_fn: Callable, publish_fn: Callable, public_first: bool = False, can_prefetch_fn: Callable = can_prefetch) -> None:
-    """Produces the videos of the plan in order. Three stages overlap: while video N renders (finish_fn), video N+1 is prepared (script, footage, voice: prepare_fn) and video N-1 is uploaded (publish_fn).
+    """Produces the videos of the plan in order. Three stages overlap: while video N renders (finish_fn), video N+1 is prepared (script, voice: prepare_fn) and video N-1 is uploaded (publish_fn).
     A video that fails in any stage is reported and skipped; the others carry on."""
     with ThreadPoolExecutor(max_workers=1) as preparer, ThreadPoolExecutor(max_workers=1) as uploader:
         prepared: Dict[int, Any] = {}
@@ -255,7 +222,6 @@ def main() -> int:
     ap.add_argument("--public-first", action="store_true", help="the first video of the plan (its slot already passed) is uploaded PUBLIC right away instead of scheduled")
     ap.add_argument("--avoid", default="", help="comma-separated formats to leave out (e.g. the ones of the previous day)")
     ap.add_argument("--count", type=int, default=4, choices=range(1, 5), metavar="1-4", help="how many videos to make (default 4); fewer take the best-ranked slots")
-    ap.add_argument("--no-every", action="store_true", help="do not give one slot to an 'Every X at today's price' video (they need prices collected in the last 3 days)")
     ap.add_argument("--out", default=None, help="where to write the batch manifest (default data/batches/latest.json)")
     ap.add_argument("--topics", default=None, help="JSON file with the 4 videos to make instead of the data-picked formats: [{format, topic, source (path to a text file), why}]; "
                                                   "format 'classic' = the classic explainer. Slots are assigned in file order (first = best slot)")
@@ -268,13 +234,6 @@ def main() -> int:
     else:
         stats = format_stats()
         picks = pick_formats(stats, random.Random(args.seed), n=args.count, avoid=[x for x in args.avoid.split(",") if x])
-        if not args.no_every and args.count >= 2:  # a single video is the best format, not a price list
-            every, note = every_pick(picks)
-            if every:
-                at = next((i for i, x in enumerate(picks) if x["format"] == "tier"), len(picks) - 1)
-                picks[at] = every
-            else:
-                print(f"  (no 'Every X' video: {note})")
     slots = ranked_slots()
     plan = []
     for pick, slot in zip(picks, slots):  # the best formats take the best-ranked slots (a topics file may pin a slot with "slot": "HH:MM")
@@ -285,13 +244,6 @@ def main() -> int:
     print(f"\nPlan for {day} (UTC; Madrid = UTC+1):")
     for p in plan:
         print(f"  {p['slot']} UTC / {p['madrid']} Madrid  {p['format']:<10} {p['why']}")
-    try:
-        from services.prices import moves
-        big = moves(8.0)
-        if big:
-            print(f"\nPrice moves of 8% or more since the previous price file: {len(big)} (scripts/price_drops.py) - a good day for an 'Every X' video.")
-    except Exception:  # noqa: BLE001 - informative only
-        pass
     if args.plan:
         return 0
 
@@ -300,7 +252,7 @@ def main() -> int:
     blockers = [f"{n}: {d}" for st, n, d in health() if st == FAIL]
     if blockers:  # a batch that cannot finish (dead token, no voice credits) is better stopped now than 15 minutes in
         print("Health check failed:", *blockers, sep="\n  - ")
-        notify("Silicon Verdict: batch not started", "; ".join(blockers)[:200])
+        notify("Chronicles: batch not started", "; ".join(blockers)[:200])
         return 1
     from services.motion_pipeline import finish_motion_video
     done: List[Dict[str, Any]] = []
@@ -327,7 +279,7 @@ def main() -> int:
 
     run_plan(plan, lambda item: prepare_with_fallback(item, plan), lambda prep: finish_motion_video(prep, export_only=True), publish, args.public_first)
     failed = len(plan) - len(done)
-    notify("Silicon Verdict: batch " + ("finished" if not failed else "finished with gaps"), f"{len(done)} of {len(plan)} videos scheduled on YouTube for {day}" + (" - rerun the failed ones" if failed else " - TikTok is next"))
+    notify("Chronicles: batch " + ("finished" if not failed else "finished with gaps"), f"{len(done)} of {len(plan)} videos scheduled on YouTube for {day}" + (" - rerun the failed ones" if failed else " - TikTok is next"))
     print(f"\nYouTube is scheduled ({len(done)} of {len(plan)}{'; rerun the failed ones with --topics and a pinned slot' if failed else ''}). TikTok: finish in TikTok Studio from {out} (caption, hashtags picked from the dropdown, Programación at each slot).")
     return 0
 
