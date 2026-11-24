@@ -11,7 +11,7 @@ interface Costume { hat?: Hat; hold?: Hold; robe?: string; body?: string; cloak?
 const HEX: Record<string, string> = { R: '#a8232b', B: '#2c4a86', W: '#e6dfcc', K: '#2b2623', G: '#3f6b3a', Y: '#d6b03a', P: '#6b2d7a', O: '#c8642a', N: '#6a4a2e', S: '#9aa3ad', T: '#2b7a78', KH: '#6b6a45', OL: '#55603d', GR: '#6c6f73' };
 
 /** Leaders and rulers stand alone; everyone else comes with two companions. */
-export const SOLO: readonly string[] = ['pharaoh', 'roman_emperor', 'jarl', 'pope', 'queen', 'shogun', 'khan', 'sultan', 'byzantine_emperor', 'chinese_emperor', 'admiral', 'merchant_prince', 'tycoon', 'field_marshal'];
+export const SOLO: readonly string[] = ['pharaoh', 'roman_emperor', 'jarl', 'pope', 'queen', 'shogun', 'khan', 'sultan', 'byzantine_emperor', 'chinese_emperor', 'admiral', 'merchant_prince', 'tycoon', 'field_marshal', 'president'];
 
 const COSTUMES: Record<PersonId, (c: Colors, B: (k: string) => string) => Costume> = {
   caveman: (c, B) => ({ body: B('N'), hold: 'club', skin: 1, beard: true }),
@@ -114,6 +114,33 @@ const COSTUMES: Record<PersonId, (c: Colors, B: (k: string) => string) => Costum
   field_marshal: (c, B) => ({ hat: 'peaked', body: B('GR'), armor: c.gold, cloak: B('GR'), hold: 'cane' }),
   refugee: (c, B) => ({ hat: 'hood', robe: B('N'), hold: 'bag' }),
   astronaut: (c, B) => ({ hat: 'astro', body: B('W'), armor: B('W') }),
+  neanderthal: (c, B) => ({ body: B('N'), hold: 'club', beard: true, skin: 1 }),
+  shaman: (c, B) => ({ hat: 'antlers', body: B('N'), cloak: B('R'), hold: 'staff', beard: true, skin: 1 }),
+  cave_painter: (c, B) => ({ body: B('N'), hold: 'torch', skin: 1 }),
+  mammoth_hunter: (c, B) => ({ hat: 'fur', body: B('N'), hold: 'spear', beard: true, skin: 1 }),
+  banker: (c, B) => ({ hat: 'beret', hatColor: B('P'), robe: B('P'), hold: 'bag' }),
+  courtier: (c, B) => ({ hat: 'feather', hatColor: B('R'), body: B('P'), cloak: B('B'), hold: 'sword' }),
+  condottiero: (c, B) => ({ hat: 'feather', hatColor: B('R'), body: B('S'), armor: B('S'), cloak: B('R'), hold: 'sword', beard: true }),
+  printer: (c, B) => ({ hat: 'flatcap', hatColor: B('N'), body: B('W'), hold: 'book' }),
+  geisha: (c, B) => ({ hat: 'geisha', robe: B('R'), hold: 'fan', female: true }),
+  rice_farmer: (c, B) => ({ hat: 'conical', hatColor: B('Y'), body: B('N'), hold: 'tool', skin: 1 }),
+  tang_scholar: (c, B) => ({ hat: 'mandarin', robe: B('T'), hold: 'scroll', skin: 1 }),
+  shaolin_monk: (c, B) => ({ robe: B('O'), hold: 'staff', skin: 1 }),
+  sheriff: (c, B) => ({ hat: 'cowboy', body: B('N'), hold: 'pistol', beard: true }),
+  outlaw: (c, B) => ({ hat: 'cowboy', body: B('K'), cloak: B('K'), hold: 'pistol', beard: true }),
+  prospector: (c, B) => ({ hat: 'wide', body: B('N'), hold: 'pickaxe', beard: true }),
+  settler: (c, B) => ({ hat: 'straw', body: B('B'), hold: 'tool' }),
+  pioneer_woman: (c, B) => ({ hat: 'bonnet', hatColor: B('W'), robe: B('B'), hold: 'bag', female: true }),
+  trapper: (c, B) => ({ hat: 'fur', body: B('N'), cloak: B('N'), hold: 'rifle', beard: true }),
+  railroad_worker: (c, B) => ({ hat: 'flatcap', hatColor: B('B'), body: B('B'), hold: 'hammer' }),
+  native_warrior: (c, B) => ({ hat: 'headdress', body: B('N'), hold: 'bow', skin: 2 }),
+  cosmonaut: (c, B) => ({ hat: 'astro', body: B('W'), armor: B('R') }),
+  scientist: (c, B) => ({ body: B('W'), hold: 'flask' }),
+  programmer: (c, B) => ({ body: B('GR'), hold: 'laptop' }),
+  protester: (c, B) => ({ body: B('O'), hold: 'placard' }),
+  president: (c, B) => ({ body: B('K'), cloak: B('K') }),
+  reporter: (c, B) => ({ body: B('K'), hold: 'mic' }),
+  test_pilot: (c, B) => ({ hat: 'aviator', body: B('OL') }),
 };
 
 export const PersonGroup: React.FC<Drawn & { c: Colors; who: PersonId }> = ({ c, t, seed, dir, act, view, who }) => {

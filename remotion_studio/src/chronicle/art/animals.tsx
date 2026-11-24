@@ -1,6 +1,7 @@
 import React from 'react';
 import { Colors, mix } from './palette';
 import { Drawn } from './draw';
+import { Elephant } from './people';
 
 type P = Drawn & { c: Colors };
 
@@ -9,7 +10,7 @@ interface Q {
   rx: number; ry: number; leg: number; lw: number; col: string; col2?: string;
   neck?: number; hr: number; snout: number; ear: 'point' | 'round' | 'long' | 'floppy' | 'tall' | 'none';
   horns?: 'bull' | 'curve' | 'goat' | 'antler'; tail: 'thin' | 'bushy' | 'tuft' | 'curl' | 'stub';
-  mane?: boolean; stripes?: boolean; wool?: boolean; spots?: boolean; tusks?: boolean; beard?: boolean; speed: number; tip?: string; hump?: boolean; spotCol: (c: Colors) => string;
+  mane?: boolean | 'neck'; fang?: boolean; shaggy?: boolean; stripes?: boolean; wool?: boolean; spots?: boolean; tusks?: boolean; beard?: boolean; speed: number; tip?: string; hump?: boolean; spotCol: (c: Colors) => string;
 }
 
 const Quad: React.FC<P & { q: Q }> = ({ c, t, seed, q }) => {
@@ -52,13 +53,16 @@ const Quad: React.FC<P & { q: Q }> = ({ c, t, seed, q }) => {
         {q.spots && [[-0.5, -0.3, 0.38], [0.1, 0.2, 0.34], [0.5, -0.4, 0.28], [-0.1, -0.5, 0.25]].map(([x, y, r], i) => <ellipse key={i} cx={x * q.rx} cy={by + y * q.ry} rx={q.ry * r * 1.6} ry={q.ry * r * 1.2} fill={q.spotCol(c)} />)}
         {/* neck and head */}
         <path d={`M${q.rx * 0.5} ${by - q.ry * 0.3} L${hx - q.hr * 0.2} ${hy + q.hr * 0.3}`} stroke={q.col} strokeWidth={q.hr * (neck ? 1.1 : 1.8)} strokeLinecap="round" />
-        {q.mane && <g fill={mix('#8a5a20', c.mid, 0.2)}>{Array.from({ length: 11 }, (_, i) => { const a = (i / 11) * Math.PI * 2; return <circle key={i} cx={hx - 4 + Math.cos(a) * q.hr * 1.05} cy={hy + Math.sin(a) * q.hr * 1.05} r={q.hr * 0.55} />; })}</g>}
+        {q.mane === 'neck' && <path d={`M${q.rx * 0.4} ${by - q.ry * 0.9} Q${q.rx * 0.7} ${(by + hy) / 2 - q.hr} ${hx - q.hr * 0.6} ${hy - q.hr * 0.9}`} stroke={mix('#2a1c12', c.mid, 0.2)} strokeWidth={9} fill="none" strokeLinecap="round" />}
+        {q.mane === true && <g fill={mix('#8a5a20', c.mid, 0.2)}>{Array.from({ length: 11 }, (_, i) => { const a = (i / 11) * Math.PI * 2; return <circle key={i} cx={hx - 4 + Math.cos(a) * q.hr * 1.05} cy={hy + Math.sin(a) * q.hr * 1.05} r={q.hr * 0.55} />; })}</g>}
         {q.ear === 'long' && <path d={`M${hx - q.hr * 0.3} ${hy - q.hr * 0.7} Q${hx - q.hr * 1.6} ${hy - q.hr * 0.4} ${hx - q.hr * 1.5} ${hy + q.hr * 0.2} Q${hx - q.hr * 0.8} ${hy - q.hr * 0.1} ${hx - q.hr * 0.2} ${hy - q.hr * 0.3}Z`} fill={dk} />}
         {q.horns === 'antler' && <g stroke={mix('#8a6a3a', c.mid, 0.2)} strokeWidth={3.2} fill="none" strokeLinecap="round">{[0, 1].map((k) => <path key={k} d={`M${hx - 4 + k * 6} ${hy - q.hr * 0.8} l${-4 + k * 8} -22 l-8 -10 M${hx - 4 + k * 6 + (-4 + k * 8)} ${hy - q.hr * 0.8 - 22} l8 -12 M${hx - 4 + k * 6 + (-4 + k * 8)} ${hy - q.hr * 0.8 - 12} l10 -4`} />)}</g>}
         <ellipse cx={hx} cy={hy} rx={q.hr} ry={q.hr * 0.9} fill={q.col} stroke={ol} strokeWidth={1.2} />
         <path d={`M${hx + q.hr * 0.4} ${hy - q.hr * 0.3} L${hx + q.hr * 0.4 + q.snout} ${hy + q.hr * 0.1} L${hx + q.hr * 0.4 + q.snout * 0.9} ${hy + q.hr * 0.6} L${hx} ${hy + q.hr * 0.7}Z`} fill={q.col2 ?? mix(q.col, c.light, 0.25)} stroke={ol} strokeWidth={1} />
         <circle cx={hx + q.hr * 0.4 + q.snout - 1} cy={hy + q.hr * 0.05} r={Math.max(1.6, q.hr * 0.16)} fill="#1c1410" />
         {eye}
+        {q.fang && <path d={`M${hx + q.hr * 0.4 + q.snout * 0.55} ${hy + q.hr * 0.45} l1 16 l4 -15`} fill="#f4efe0" stroke={ol} strokeWidth={0.8} />}
+        {q.shaggy && Array.from({ length: 9 }, (_, i) => <path key={i} d={`M${-q.rx * 0.8 + i * q.rx * 0.2} ${by + q.ry * 0.8} l${(i % 2 ? 1 : -1) * 3} ${10 + (i % 3) * 3}`} stroke={dk} strokeWidth={3.4} strokeLinecap="round" />)}
         {q.tusks && <path d={`M${hx + q.hr * 0.4 + q.snout * 0.6} ${hy + q.hr * 0.55} q4 -10 10 -12`} stroke="#f1e8d0" strokeWidth={3.2} fill="none" strokeLinecap="round" />}
         {q.beard && <path d={`M${hx + q.hr * 0.3} ${hy + q.hr * 0.7} l2 14 l5 -12`} fill={mix(q.col, c.light, 0.4)} stroke={ol} strokeWidth={0.8} />}
         {q.ear === 'point' && <path d={`M${hx - q.hr * 0.5} ${hy - q.hr * 0.6} L${hx - q.hr * 0.3} ${hy - q.hr * 1.7} L${hx + q.hr * 0.25} ${hy - q.hr * 0.7}Z`} fill={q.col} stroke={ol} strokeWidth={1} />}
@@ -170,4 +174,20 @@ export const Whale: React.FC<P> = ({ c, t, seed }) => {
   );
 };
 
-export const NEW_ANIMALS = { dog: Dog, wolf: Wolf, fox: Fox, lion: Lion, tiger: Tiger, bear: Bear, deer: Deer, boar: Boar, pig: Pig, cow: Cow, ox: Ox, sheep: Sheep, goat: Goat, donkey: Donkey, rat: Rat, eagle: Eagle, raven: Raven, snake: Snake, crocodile: Crocodile, whale: Whale } as const;
+export const Sabertooth = mk((c) => S({ rx: 50, ry: 23, leg: 32, lw: 11, col: B('#b98a54', c), col2: B('#e6cf9a', c), hr: 14, snout: 11, ear: 'round', tail: 'stub', fang: true, stripes: false, speed: 5 }));
+export const Bison = mk((c) => S({ rx: 58, ry: 30, leg: 34, lw: 11, col: B('#4a3326', c), col2: B('#6b4c36', c), hr: 17, snout: 10, ear: 'round', horns: 'curve', tail: 'tuft', hump: true, shaggy: true, speed: 3.6 }));
+export const Horse = mk((c) => S({ rx: 46, ry: 20, leg: 50, lw: 7, col: B('#8a5a34', c), col2: B('#b9895a', c), neck: 26, hr: 12, snout: 18, ear: 'point', tail: 'bushy', mane: 'neck', speed: 7 }));
+export const Camel = mk((c) => S({ rx: 46, ry: 22, leg: 52, lw: 7, col: B('#c19a62', c), col2: B('#e2c796', c), neck: 40, hr: 11, snout: 14, ear: 'round', tail: 'tuft', hump: true, speed: 4.4 }));
+export const Mammoth: React.FC<P> = ({ c, t, seed }) => {
+  const fur = mix('#5a3d28', c.mid, 0.25);
+  return (
+    <g>
+      <Elephant c={{ ...c, near: fur, mid: mix(fur, c.light, 0.15), light: c.light }} t={t} seed={seed} rider={false} />
+      <path d="M120 -86 Q150 -52 128 -20 Q112 -6 98 -22" stroke="#efe6cf" strokeWidth={9} fill="none" strokeLinecap="round" />
+      {Array.from({ length: 10 }, (_, i) => <path key={i} d={`M${-70 + i * 16} -60 q${i % 2 ? 3 : -3} 22 ${i % 2 ? 2 : -2} 52`} stroke={mix(fur, c.shadow, 0.4)} strokeWidth={5} strokeLinecap="round" fill="none" />)}
+      <path d="M-30 -150 Q10 -176 60 -156 Q40 -146 10 -144 Q-14 -140 -30 -150Z" fill={mix(fur, c.shadow, 0.3)} />
+    </g>
+  );
+};
+
+export const NEW_ANIMALS = { dog: Dog, wolf: Wolf, fox: Fox, lion: Lion, tiger: Tiger, bear: Bear, deer: Deer, boar: Boar, pig: Pig, cow: Cow, ox: Ox, sheep: Sheep, goat: Goat, donkey: Donkey, rat: Rat, eagle: Eagle, raven: Raven, snake: Snake, crocodile: Crocodile, whale: Whale, mammoth: Mammoth, sabertooth: Sabertooth, bison: Bison, horse: Horse, camel: Camel } as const;

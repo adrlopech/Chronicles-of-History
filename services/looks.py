@@ -7,12 +7,17 @@ import hashlib
 import re
 from typing import List, Optional
 
-LOOKS = ("antiquity", "manuscript", "seachart", "empire", "industrial", "wartime")
+LOOKS = ("antiquity", "manuscript", "seachart", "empire", "industrial", "wartime", "prehistory", "renaissance", "orient", "frontier", "spaceage")
 
 # keywords of the topic -> era (first match wins)
 ERA_KEYWORDS = (
-    ("wartime", r"\b(world war|ww[12]|wwii|nazi|hitler|cold war|soviet|stalin|d-day|trench\w*|holocaust|vietnam|korean war|cuban missile)\b"),
-    ("industrial", r"\b(industrial|steam|railway|railroad|factory|victorian|titanic|telegraph|gold rush|civil war|18[0-9]{2}|19[01][0-9])\b"),
+    ("spaceage", r"\b(space race|apollo|nasa|moon landing|sputnik|satellite\w*|astronaut\w*|cosmonaut\w*|internet|computer\w*|silicon valley|cold war|berlin wall|cuban missile|vietnam|korean war|19[5-9][0-9]|20[0-2][0-9])\b"),
+    ("prehistory", r"\b(prehistor\w*|stone age|neolithic|paleolithic|cavem[ae]n|cave painting\w*|mammoth\w*|neanderthal\w*|ice age|lascaux|stonehenge|gobekli)\b"),
+    ("renaissance", r"\b(renaissance|medici|leonardo|da vinci|michelangelo|florence|galileo|gutenberg|printing press|reformation|borgia|machiavelli)\b"),
+    ("orient", r"\b(samurai|shogun\w*|ninja\w*|ming|qing|tang dynasty|han dynasty|song dynasty|qin|great wall|terracotta|forbidden city|kublai|japan\w*|china|chinese|edo|meiji|joseon)\b"),
+    ("frontier", r"\b(wild west|cowboy\w*|outlaw\w*|oregon trail|gold rush|sheriff\w*|homestead\w*|pony express|alamo|gunfight\w*|billy the kid|jesse james|buffalo bill|transcontinental|apache|sioux|comanche|custer)\b"),
+    ("wartime", r"\b(world war|ww[12]|wwii|nazi|hitler|soviet|stalin|d-day|trench\w*|holocaust)\b"),
+    ("industrial", r"\b(industrial|steam|railway|railroad|factory|victorian|titanic|telegraph|civil war|18[0-9]{2}|19[01][0-9])\b"),
     ("empire", r"\b(napoleon|louis xiv|french revolution|tsar|romanov|tudor|henry viii|elizabeth|dynasty|ottoman|habsburg|versailles|monarch\w*|empress|king|queen)\b"),
     ("seachart", r"\b(pirate\w*|armada|columbus|magellan|explor\w*|voyage|navigat\w*|conquistador\w*|age of sail|spice|silk road|colonial\w*|trade route)\b"),
     ("manuscript", r"\b(medieval|middle ages|viking\w*|crusade\w*|knight\w*|plague|black death|feudal|charlemagne|joan of arc|castle\w*|monk\w*|mongol\w*|genghis)\b"),

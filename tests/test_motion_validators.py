@@ -308,7 +308,7 @@ def test_to_props_carries_the_look_captions_and_series_but_no_theme():
 
 def test_the_python_and_the_remotion_looks_agree():
     ts_names = re.findall(r"^  (\w+): \{ name: '(\w+)'", LOOKS_TS.read_text(encoding="utf-8"), re.M)
-    assert {k for k, _ in ts_names} == set(LOOKS) and all(k == n for k, n in ts_names) and len(LOOKS) == 6
+    assert {k for k, _ in ts_names} == set(LOOKS) and all(k == n for k, n in ts_names) and len(LOOKS) == 11
 
 
 def test_the_topic_picks_its_era_and_other_topics_rotate():
@@ -446,8 +446,8 @@ def test_the_python_art_vocabulary_matches_the_remotion_one():
     for name, values in (("PLACES", PLACES), ("TIMES", TIMES), ("WEATHERS", WEATHERS), ("STRUCTURES", STRUCTURES), ("ACTORS", ACTORS), ("PEOPLE", PEOPLE), ("ANIMALS", ANIMALS), ("PROPS", PROPS), ("EFFECTS", EFFECTS)):
         m = re.search(rf"export const {name} = \[(.*?)\] as const", ts, re.S)
         assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == values, name
-    assert len(PEOPLE) == 100 and len(ANIMALS) == 20 and len(STRUCTURES) == 61
-    assert len(SUBJECTS) == len(set(SUBJECTS)) == 212
+    assert len(PEOPLE) == 127 and len(ANIMALS) == 25 and len(STRUCTURES) == 71
+    assert len(SUBJECTS) == len(set(SUBJECTS)) == 258
     m = re.search(r"export const ACTIONS = \[(.*?)\] as const", ts, re.S)
     assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == ACTIONS
     assert len(ACTIONS) == 37
@@ -456,16 +456,16 @@ def test_the_python_art_vocabulary_matches_the_remotion_one():
 def test_every_subject_has_a_drawing_and_every_era_entry_names_a_real_subject():
     root = Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "chronicle" / "art"
     costumes = (root / "costumes.tsx").read_text(encoding="utf-8")
-    structures = (root / "structures2.tsx").read_text(encoding="utf-8")
+    structures = (root / "structures2.tsx").read_text(encoding="utf-8") + (root / "structures3.tsx").read_text(encoding="utf-8")
     animals = (root / "animals.tsx").read_text(encoding="utf-8")
     for who in PEOPLE:
         assert re.search(rf"^  {who}: \(", costumes, re.M), who
-    for s in STRUCTURES[11:]:
+    for s in STRUCTURES[11:] + ACTORS[16:]:
         assert re.search(rf"\b{s}: ", structures), s
     for a in ANIMALS:
         assert re.search(rf"\b{a}: ", animals), a
     for name, looks in ERA_ONLY.items():
-        assert name in SUBJECTS and looks <= {"antiquity", "manuscript", "seachart", "empire", "industrial", "wartime"}, name
+        assert name in SUBJECTS and looks <= set(LOOKS), name
 
 
 def test_characters_structures_and_animals_of_the_wrong_era_are_dropped():
@@ -487,6 +487,17 @@ def test_characters_structures_and_animals_of_the_wrong_era_are_dropped():
     p.scenes = [Sc([only])]
     fix_art_for_era(p)
     assert only.subjects == ["crowd"]
+
+
+def test_the_new_eras_pick_their_topics_and_draw_only_what_belongs():
+    from services.motion_generator import era_allows
+    assert era_look("The woolly mammoth hunters") == "prehistory" and era_look("Leonardo da Vinci") == "renaissance" and era_look("The last samurai") == "orient"
+    assert era_look("Billy the Kid and the Wild West") == "frontier" and era_look("The Apollo 11 moon landing") == "spaceage" and era_look("The Cuban Missile Crisis") == "spaceage"
+    assert era_allows("mammoth", "prehistory") and era_allows("fire", "prehistory") and not era_allows("king", "prehistory") and not era_allows("castle", "prehistory")
+    assert era_allows("samurai", "orient") and era_allows("pagoda", "orient") and not era_allows("knight", "orient") and not era_allows("cathedral", "orient")
+    assert era_allows("saloon", "frontier") and era_allows("cowboy", "frontier") and not era_allows("samurai", "frontier") and not era_allows("pharaoh", "frontier")
+    assert era_allows("lander", "spaceage") and era_allows("astronaut", "spaceage") and not era_allows("knight", "spaceage") and not era_allows("cavalry", "spaceage")
+    assert era_allows("duomo", "renaissance") and era_allows("conquistador", "renaissance") and not era_allows("tank", "renaissance")
 
 
 def test_a_shot_can_carry_an_action_and_a_view_but_only_from_the_lists():

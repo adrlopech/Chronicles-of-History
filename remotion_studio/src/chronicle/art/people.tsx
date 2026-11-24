@@ -383,7 +383,7 @@ export const Merchant: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir, act
   </g>
 );
 
-const Elephant: React.FC<Drawn & { c: Colors }> = ({ c, t, seed }) => {
+export const Elephant: React.FC<Drawn & { c: Colors; rider?: boolean }> = ({ c, t, seed, rider = true }) => {
   const g = t * 3 + seed;
   const leg = (x: number, ph: number) => <path d={`M${x} -70 L${x + Math.sin(g + ph) * 8} -30 L${x + Math.sin(g + ph) * 10} 0`} stroke={c.near} strokeWidth={22} strokeLinecap="round" fill="none" />;
   const sway = Math.sin(t * 2.2 + seed) * 10;
@@ -396,8 +396,8 @@ const Elephant: React.FC<Drawn & { c: Colors }> = ({ c, t, seed }) => {
       <path d={`M98 -108 Q${120 + sway} -70 ${104 + sway * 1.4} -34`} stroke={c.near} strokeWidth={17} fill="none" strokeLinecap="round" />
       <path d="M92 -96 Q116 -88 122 -108" stroke={c.light} strokeWidth={6} fill="none" strokeLinecap="round" />
       <path d={`M-76 -108 Q-96 ${-90 + sway} -84 -58`} stroke={c.near} strokeWidth={7} fill="none" strokeLinecap="round" />
-      <path d="M-34 -146 L-34 -166 L34 -166 L34 -146Z" fill={c.accent} stroke={c.shadow} strokeWidth={2} />
-      <g transform="translate(0 -166) scale(0.6)"><Person c={c} t={t} seed={seed} hat="helmet" hold="spear" body={c.mid} pose="ride" stool={false} /></g>
+      {rider && <path d="M-34 -146 L-34 -166 L34 -166 L34 -146Z" fill={c.accent} stroke={c.shadow} strokeWidth={2} />}
+      {rider && <g transform="translate(0 -166) scale(0.6)"><Person c={c} t={t} seed={seed} hat="helmet" hold="spear" body={c.mid} pose="ride" stool={false} /></g>}
     </g>
   );
 };

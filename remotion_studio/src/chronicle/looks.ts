@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { BASKERVILLE, BASKERVILLE_ITALIC, CARDO, CARDO_ITALIC, CINZEL, CORMORANT, ELITE, FELL, FELL_ITALIC, GARAMOND, GARAMOND_ITALIC, MANROPE, MARCELLUS, PLAYFAIR, PLAYFAIR_ITALIC, SORA, SPACE, ANTON, BEBAS, ABRIL, OSWALD } from './fonts';
+import { BASKERVILLE, BASKERVILLE_ITALIC, CARDO, CARDO_ITALIC, CINZEL, CORMORANT, ELITE, FELL, FELL_ITALIC, GARAMOND, GARAMOND_ITALIC, MANROPE, MARCELLUS, PLAYFAIR, PLAYFAIR_ITALIC, SORA, SPACE, ANTON, BEBAS, ABRIL, OSWALD, MARKER, CINZEL_DECO, SHIPPORI, RYE, ORBITRON } from './fonts';
 
 /**
  * A LOOK is an ERA: the paper, the ink, the typefaces and the frame of one period of history. The pipeline picks one per video (services/looks.py) from the topic.
@@ -41,6 +41,16 @@ export const LOOKS: Record<string, Look> = {
   industrial: { name: 'industrial', era: 'Industrial age', dark: false, paper: '#DDD3BC', paper2: '#B5A98E', ink: '#1E1B18', muted: '#6E665A', accent: '#B03A2E', accent2: '#4A4640', head: BASKERVILLE, italic: BASKERVILLE_ITALIC, body: BASKERVILLE, date: ELITE, caps: false, k: 0.58, frame: 'single', grain: 0.7, weight: 700 },
   // the world wars and the Cold War: olive-black, typewriter, a signal mustard
   wartime: { name: 'wartime', era: '20th century conflicts', dark: true, paper: '#262B1D', paper2: '#0E110B', ink: '#EAE5D0', muted: '#A6A68F', accent: '#DDB53B', accent2: '#8B2E1F', head: ELITE, italic: CARDO_ITALIC, body: CARDO, date: ELITE, caps: true, k: 0.64, frame: 'corners', grain: 0.65, weight: 400 },
+  // the Stone Age: charcoal, red ochre and bone, a hand-drawn marker
+  prehistory: { name: 'prehistory', era: 'Prehistory', dark: true, paper: '#33261c', paper2: '#120c08', ink: '#F1E4CC', muted: '#B39C80', accent: '#D6552B', accent2: '#E8C27A', head: MARKER, italic: CARDO_ITALIC, body: CARDO, date: MARKER, caps: true, k: 0.62, frame: 'single', grain: 0.8, weight: 400 },
+  // the Renaissance: fresco plaster, terracotta and ultramarine, carved capitals
+  renaissance: { name: 'renaissance', era: 'Renaissance', dark: false, paper: '#EFDFC2', paper2: '#CDAE80', ink: '#1F2A44', muted: '#76684F', accent: '#B6452C', accent2: '#2F5DA8', head: CINZEL_DECO, italic: CORMORANT, body: CORMORANT, date: CINZEL_DECO, caps: true, k: 0.8, frame: 'double', grain: 0.45, weight: 900 },
+  // dynasties and shoguns of East Asia: black lacquer, vermilion, jade and gold
+  orient: { name: 'orient', era: 'Dynasties of the East', dark: true, paper: '#1E1A1A', paper2: '#080606', ink: '#F4EAD2', muted: '#B7A78C', accent: '#E0482F', accent2: '#4FB59A', head: SHIPPORI, italic: SHIPPORI, body: CORMORANT, date: SHIPPORI, caps: false, k: 0.8, frame: 'single', grain: 0.4, weight: 800 },
+  // the American West and the 19th-century frontier: sun-bleached sepia, wanted-poster slab type
+  frontier: { name: 'frontier', era: 'The Frontier', dark: false, paper: '#E7D3A8', paper2: '#BE9B62', ink: '#2A1C10', muted: '#7C6240', accent: '#A9331F', accent2: '#5B4A2E', head: RYE, italic: BASKERVILLE_ITALIC, body: BASKERVILLE, date: RYE, caps: true, k: 0.72, frame: 'double', grain: 0.7, weight: 400 },
+  // the space age and the modern world: deep navy, signal orange and cyan, technical type
+  spaceage: { name: 'spaceage', era: 'Space age and modern times', dark: true, paper: '#0F1B33', paper2: '#050A16', ink: '#EAF2FA', muted: '#9AAAC2', accent: '#FF7A2F', accent2: '#4CD2E8', head: ORBITRON, italic: SPACE, body: SPACE, date: ORBITRON, caps: true, k: 0.84, frame: 'corners', grain: 0.3, weight: 900 },
 };
 
 export const LOOK_NAMES = Object.keys(LOOKS);
@@ -56,6 +66,11 @@ const BRIGHT: Record<string, { accent: string; accent2: string }> = {
   empire: { accent: '#FFC857', accent2: '#FF5C8A' },
   industrial: { accent: '#FF6B5B', accent2: '#9AB0C4' },
   wartime: { accent: '#FFD23F', accent2: '#FF7A3D' },
+  prehistory: { accent: '#FF6A3A', accent2: '#FFD27A' },
+  renaissance: { accent: '#FF7A55', accent2: '#6EA8FF' },
+  orient: { accent: '#FF5A3C', accent2: '#5CE0B8' },
+  frontier: { accent: '#FF6B4A', accent2: '#FFC857' },
+  spaceage: { accent: '#FF8A3D', accent2: '#4CE0F2' },
 };
 const HEAD: Record<string, { font: string; weight: number; k: number }> = {
   antiquity: { font: CINZEL, weight: 800, k: 0.8 },
@@ -64,6 +79,11 @@ const HEAD: Record<string, { font: string; weight: number; k: number }> = {
   empire: { font: PLAYFAIR, weight: 900, k: 0.74 },
   industrial: { font: ANTON, weight: 400, k: 0.52 },
   wartime: { font: BEBAS, weight: 400, k: 0.46 },
+  prehistory: { font: MARKER, weight: 400, k: 0.62 },
+  renaissance: { font: CINZEL_DECO, weight: 900, k: 0.82 },
+  orient: { font: SHIPPORI, weight: 800, k: 0.84 },
+  frontier: { font: RYE, weight: 400, k: 0.74 },
+  spaceage: { font: ORBITRON, weight: 900, k: 0.86 },
 };
 /** Deep, era-tinted dark used for panels and backgrounds (never pure black). */
 const deep = (look: Look, t: number) => {

@@ -9,6 +9,7 @@ import { Action, ArtShot, Subject, View, kindOf, PEOPLE, PersonKind } from './vo
 import { PersonGroup } from './costumes';
 import { NEW_ANIMALS } from './animals';
 import { NEW_STRUCTURES } from './structures2';
+import { STRUCTURES3, VEHICLES3 } from './structures3';
 import { hash, rng } from '../ink';
 
 type Dr = { c: Colors; t: number; seed: number; dir: 1 | -1; act?: Action; view?: View };
@@ -20,11 +21,11 @@ const DRAW: Record<string, React.FC<Dr>> = {
   fire: Fire, smoke: Smoke, birds: Birds, comet: Comet, eclipse: Eclipse, volcano: Volcano,
 };
 const PEOPLE_DRAW = Object.fromEntries(PEOPLE.map((who) => [who, (p: Dr) => <PersonGroup {...p} who={who as PersonKind} />])) as unknown as Record<PersonKind, React.FC<Dr>>;
-Object.assign(DRAW, PEOPLE_DRAW, NEW_ANIMALS, NEW_STRUCTURES);
-const ANIMAL_SPEED = { dog: 70, wolf: 90, fox: 80, deer: 80, lion: 40, tiger: 45, bear: 25, boar: 60, pig: 20, cow: 12, ox: 12, sheep: 16, goat: 20, donkey: 24, rat: 70, snake: 24, crocodile: 10, eagle: 60, raven: 60, whale: 12 } as Record<string, number>;
+Object.assign(DRAW, PEOPLE_DRAW, NEW_ANIMALS, NEW_STRUCTURES, STRUCTURES3, VEHICLES3);
+const ANIMAL_SPEED = { mammoth: 18, sabertooth: 45, bison: 22, horse: 90, camel: 28, wagon: 30, junk: 22, dog: 70, wolf: 90, fox: 80, deer: 80, lion: 40, tiger: 45, bear: 25, boar: 60, pig: 20, cow: 12, ox: 12, sheep: 16, goat: 20, donkey: 24, rat: 70, snake: 24, crocodile: 10, eagle: 60, raven: 60, whale: 12 } as Record<string, number>;
 const MOVES = new Set(['walk', 'run', 'carry', 'push', 'sneak']);
 const SPEED: Partial<Record<Subject, number>> = { soldiers: 46, cavalry: 150, caravan: 38, elephants: 30, ship: 26, fleet: 22, galley: 34, train: 190, tank: 80, plane: 230, farmer: 20 };
-const WATER = new Set<string>(['ship', 'fleet', 'galley', 'whale']);
+const WATER = new Set<string>(['ship', 'fleet', 'galley', 'whale', 'junk']);
 
 const DEPTH = { far: { y: GY + 70, s: 1.4, f: 0.6 }, mid: { y: GY + 205, s: 2.3, f: 0.85 }, near: { y: GY + 370, s: 2.9, f: 1.1 }, fore: { y: GY + 480, s: 2.3, f: 1.3 } } as const;
 

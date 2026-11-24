@@ -6,6 +6,7 @@ export const HATS = [
   'nemes', 'laurel', 'crest', 'horned', 'conical', 'straw', 'tricorn', 'bicorne', 'top', 'feather', 'miter', 'greathelm', 'kabuto', 'beret',
   'cowboy', 'bandana', 'wig', 'fur', 'headdress', 'mongol', 'imperial', 'mandarin', 'wide', 'morion', 'bearskin', 'bonnet', 'phrygian', 'flatcap',
   'miner', 'brodie', 'peaked', 'aviator', 'fedora', 'nurse', 'sailor', 'astro', 'jester', 'beak',
+  'topknot', 'geisha', 'antlers', 'bowler',
 ] as const;
 export type Hat = (typeof HATS)[number];
 
@@ -69,6 +70,10 @@ export const HatShape: React.FC<HatProps> = ({ hat, c, t, seed, HY, side, back, 
     case 'astro': return <><circle cx={0} cy={y} r={22} fill="#dbe7ee" opacity={0.35} stroke="#f4f0e6" strokeWidth={4} /><path d={`M-14 ${y - 12} Q-8 ${y - 20} 2 ${y - 20}`} stroke="#ffffff" strokeWidth={2.4} fill="none" opacity={0.7} strokeLinecap="round" /><rect x={-9} y={y + 17} width={18} height={6} rx={2} fill="#f4f0e6" stroke={ol} strokeWidth={1} /></>;
     case 'jester': return <><path d={`M-14 ${y - 6} Q-26 ${y - 20} -30 ${y - 34} Q-14 ${y - 30} -4 ${y - 20}Z`} fill={col} stroke={ol} strokeWidth={1} /><path d={`M14 ${y - 6} Q26 ${y - 20} 30 ${y - 34} Q14 ${y - 30} 4 ${y - 20}Z`} fill={c.accent} stroke={ol} strokeWidth={1} /><path d={`M-14 ${y - 6} Q0 ${y - 26} 14 ${y - 6}Z`} fill={c.gold} stroke={ol} strokeWidth={1} /><circle cx={-30} cy={y - 34} r={3.2} fill={c.gold} /><circle cx={30} cy={y - 34} r={3.2} fill={c.gold} /></>;
     case 'beak': return <><ellipse cx={0} cy={y - 10} rx={24} ry={5} fill={blk} stroke={ol} strokeWidth={1} /><path d={`M-12 ${y - 11} Q-12 ${y - 25} 0 ${y - 25} Q12 ${y - 25} 12 ${y - 11}Z`} fill={blk} stroke={ol} strokeWidth={1} />{side ? <path d={`M10 ${y - 2} Q24 ${y + 6} 28 ${y + 22} Q16 ${y + 18} 8 ${y + 10}Z`} fill={mix('#3a3430', c.mid, 0.2)} stroke={ol} strokeWidth={1} /> : <path d={`M-5 ${y - 3} Q0 ${y - 1} 5 ${y - 3} L0 ${y + 24}Z`} fill={mix('#3a3430', c.mid, 0.2)} stroke={ol} strokeWidth={1} />}{!back && <circle cx={side ? 6 : -6} cy={y - 1} r={3.2} fill={c.glow} opacity={0.8} />}</>;
+    case 'topknot': return <><path d={`M-14 ${y - 6} Q-14 ${y - 20} 0 ${y - 20} Q14 ${y - 20} 14 ${y - 6} Q0 ${y - 12} -14 ${y - 6}Z`} fill={blk} /><ellipse cx={side ? -4 : 0} cy={y - 25} rx={5} ry={7} fill={blk} stroke={ol} strokeWidth={0.8} /><path d={`M${side ? -9 : -5} ${y - 21} h10`} stroke={c.accent} strokeWidth={2} /></>;
+    case 'geisha': return <><path d={`M-17 ${y + 4} Q-20 ${y - 22} 0 ${y - 23} Q20 ${y - 22} 17 ${y + 4} Q10 ${y - 12} 0 ${y - 13} Q-10 ${y - 12} -17 ${y + 4}Z`} fill={blk} stroke={ol} strokeWidth={1} /><ellipse cx={0} cy={y - 27} rx={11} ry={6} fill={blk} stroke={ol} strokeWidth={1} /><path d={`M-14 ${y - 30} L14 ${y - 26}`} stroke={c.gold} strokeWidth={2.4} strokeLinecap="round" /><circle cx={12} cy={y - 24} r={3.4} fill={c.accent} /></>;
+    case 'antlers': return <><path d={`M-12 ${y - 12} Q-14 ${y - 22} -12 ${y - 26} M-12 ${y - 12} Q-24 ${y - 16} -28 ${y - 32} M-20 ${y - 22} L-28 ${y - 24} M12 ${y - 12} Q14 ${y - 22} 12 ${y - 26} M12 ${y - 12} Q24 ${y - 16} 28 ${y - 32} M20 ${y - 22} L28 ${y - 24}`} stroke="#d9cdb0" strokeWidth={4} fill="none" strokeLinecap="round" /><path d={`M-15 ${y - 6} Q0 ${y - 16} 15 ${y - 6}`} stroke={c.accent} strokeWidth={4} fill="none" /></>;
+    case 'bowler': return <><ellipse cx={0} cy={y - 8} rx={19} ry={4.4} fill={blk} stroke={ol} strokeWidth={1} /><path d={`M-12 ${y - 9} Q-13 ${y - 26} 0 ${y - 26} Q13 ${y - 26} 12 ${y - 9}Z`} fill={blk} stroke={ol} strokeWidth={1} /><rect x={-12} y={y - 14} width={24} height={3.4} fill={c.light} opacity={0.6} /></>;
     default: return null;
   }
 };

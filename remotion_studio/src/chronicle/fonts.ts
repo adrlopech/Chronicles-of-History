@@ -7,6 +7,11 @@ import { loadFont as loadPlayfair } from '@remotion/google-fonts/PlayfairDisplay
 import { loadFont as loadBaskerville } from '@remotion/google-fonts/LibreBaskerville';
 import { loadFont as loadElite } from '@remotion/google-fonts/SpecialElite';
 import { loadFont as loadCardo } from '@remotion/google-fonts/Cardo';
+import { loadFont as loadMarker } from '@remotion/google-fonts/PermanentMarker';
+import { loadFont as loadCinzelDeco } from '@remotion/google-fonts/CinzelDecorative';
+import { loadFont as loadShippori } from '@remotion/google-fonts/ShipporiMincho';
+import { loadFont as loadRye } from '@remotion/google-fonts/Rye';
+import { loadFont as loadOrbitron } from '@remotion/google-fonts/Orbitron';
 
 // Google Fonts only. Loaded once; Remotion waits for them before it renders a frame.
 export const CINZEL = loadCinzel('normal', { weights: ['600', '800'], subsets: ['latin'] }).fontFamily;
@@ -41,3 +46,10 @@ export const ANTON = loadAnton('normal', { weights: ['400'], subsets: ['latin'] 
 export const BEBAS = loadBebas('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily;
 export const ABRIL = loadAbril('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily;
 export const OSWALD = loadOswald('normal', { weights: ['500', '700'], subsets: ['latin'] }).fontFamily;
+
+// the five later eras: prehistory, renaissance, orient, frontier, space age
+export const MARKER = loadMarker('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily;
+export const CINZEL_DECO = loadCinzelDeco('normal', { weights: ['700', '900'], subsets: ['latin'] }).fontFamily;
+export const SHIPPORI = loadShippori('normal', { weights: ['700', '800'], subsets: ['latin'] }).fontFamily;
+export const RYE = loadRye('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily;
+export const ORBITRON = loadOrbitron('normal', { weights: ['700', '900'], subsets: ['latin'] }).fontFamily;

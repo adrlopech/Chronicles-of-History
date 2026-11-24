@@ -30,11 +30,11 @@ SCENE_TYPES = ("statement", "chapter", "date", "timeline", "map", "quote", "ledg
 PLACES = ("desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield")
 TIMES = ("dawn", "day", "dusk", "night")
 WEATHERS = ("clear", "rain", "snow", "storm", "smoke")
-STRUCTURES = ("castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins", "ziggurat", "colosseum", "aqueduct", "obelisk", "sphinx", "great_wall", "triumphal_arch", "stonehenge", "hut", "palisade", "harbor", "market", "well", "library", "theater", "adobe", "tomb", "palace", "cathedral", "church", "mosque", "pagoda", "monastery", "longhouse", "fortress", "siege_tower", "catapult", "trebuchet", "forge", "tavern", "village", "tipi", "yurt", "igloo", "torii", "japanese_castle", "star_fort", "observatory", "printing_press", "gallows", "guillotine", "clocktower", "mine", "skyscraper", "derrick", "barn", "telegraph", "bunker", "radiotower", "rocket")
-ACTORS = ("soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", "farmer", "merchant", "ship", "fleet", "galley", "elephants", "train", "tank", "plane")
+STRUCTURES = ("castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins", "ziggurat", "colosseum", "aqueduct", "obelisk", "sphinx", "great_wall", "triumphal_arch", "stonehenge", "hut", "palisade", "harbor", "market", "well", "library", "theater", "adobe", "tomb", "palace", "cathedral", "church", "mosque", "pagoda", "monastery", "longhouse", "fortress", "siege_tower", "catapult", "trebuchet", "forge", "tavern", "village", "tipi", "yurt", "igloo", "torii", "japanese_castle", "star_fort", "observatory", "printing_press", "gallows", "guillotine", "clocktower", "mine", "skyscraper", "derrick", "barn", "telegraph", "bunker", "radiotower", "rocket", "cave", "menhir", "duomo", "pavilion", "dojo", "saloon", "general_store", "water_tower", "radar_dish", "cooling_tower")
+ACTORS = ("soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", "farmer", "merchant", "ship", "fleet", "galley", "elephants", "train", "tank", "plane", "wagon", "junk", "lander", "satellite")
 # A hundred historical characters (costumes of one figure; leaders alone, the rest with two companions) and twenty animals
-PEOPLE = ("caveman", "pharaoh", "egyptian_priest", "scribe", "pyramid_builder", "gladiator", "legionary", "centurion", "senator", "roman_emperor", "vestal", "hoplite", "philosopher", "athlete", "persian_immortal", "babylonian", "celt", "carthaginian", "oracle", "druid", "qin_warrior", "knight", "crusader", "templar", "viking", "jarl", "bishop", "pope", "friar", "peasant", "blacksmith", "longbowman", "crossbowman", "castle_guard", "queen", "princess", "jester", "executioner", "alchemist", "plague_doctor", "samurai", "ninja", "shogun", "mongol_horseman", "khan", "saracen", "sultan", "byzantine_emperor", "aztec_warrior", "aztec_priest", "inca_noble", "maya_priest", "silk_trader", "mandarin", "chinese_emperor", "conquistador", "explorer", "navigator", "pirate", "buccaneer", "sailor", "admiral", "native_chief", "missionary", "renaissance_artist", "inventor", "astronomer", "merchant_prince", "musketeer", "redcoat", "grenadier", "minuteman", "general", "nobleman", "revolutionary", "frontiersman", "cowboy", "factory_worker", "miner", "engineer", "gentleman", "lady", "surgeon", "tycoon", "suffragette", "ww1_infantry", "ww1_officer", "ww2_soldier", "paratrooper", "pilot", "nurse", "resistance_fighter", "spy", "codebreaker", "factory_woman", "navy_sailor", "tank_commander", "field_marshal", "refugee", "astronaut")
-ANIMALS = ("dog", "wolf", "fox", "lion", "tiger", "bear", "deer", "boar", "pig", "cow", "ox", "sheep", "goat", "donkey", "rat", "eagle", "raven", "snake", "crocodile", "whale")
+PEOPLE = ("caveman", "pharaoh", "egyptian_priest", "scribe", "pyramid_builder", "gladiator", "legionary", "centurion", "senator", "roman_emperor", "vestal", "hoplite", "philosopher", "athlete", "persian_immortal", "babylonian", "celt", "carthaginian", "oracle", "druid", "qin_warrior", "knight", "crusader", "templar", "viking", "jarl", "bishop", "pope", "friar", "peasant", "blacksmith", "longbowman", "crossbowman", "castle_guard", "queen", "princess", "jester", "executioner", "alchemist", "plague_doctor", "samurai", "ninja", "shogun", "mongol_horseman", "khan", "saracen", "sultan", "byzantine_emperor", "aztec_warrior", "aztec_priest", "inca_noble", "maya_priest", "silk_trader", "mandarin", "chinese_emperor", "conquistador", "explorer", "navigator", "pirate", "buccaneer", "sailor", "admiral", "native_chief", "missionary", "renaissance_artist", "inventor", "astronomer", "merchant_prince", "musketeer", "redcoat", "grenadier", "minuteman", "general", "nobleman", "revolutionary", "frontiersman", "cowboy", "factory_worker", "miner", "engineer", "gentleman", "lady", "surgeon", "tycoon", "suffragette", "ww1_infantry", "ww1_officer", "ww2_soldier", "paratrooper", "pilot", "nurse", "resistance_fighter", "spy", "codebreaker", "factory_woman", "navy_sailor", "tank_commander", "field_marshal", "refugee", "astronaut", "neanderthal", "shaman", "cave_painter", "mammoth_hunter", "banker", "courtier", "condottiero", "printer", "geisha", "rice_farmer", "tang_scholar", "shaolin_monk", "sheriff", "outlaw", "prospector", "settler", "pioneer_woman", "trapper", "railroad_worker", "native_warrior", "cosmonaut", "scientist", "programmer", "protester", "president", "reporter", "test_pilot")
+ANIMALS = ("dog", "wolf", "fox", "lion", "tiger", "bear", "deer", "boar", "pig", "cow", "ox", "sheep", "goat", "donkey", "rat", "eagle", "raven", "snake", "crocodile", "whale", "mammoth", "sabertooth", "bison", "horse", "camel")
 PROPS = ("scroll", "crown", "sword", "chest", "torch", "banner", "throne", "map", "cannon")
 EFFECTS = ("fire", "smoke", "birds", "comet", "eclipse", "volcano")
 SUBJECTS = STRUCTURES + ACTORS + PEOPLE + ANIMALS + PROPS + EFFECTS
@@ -190,6 +190,75 @@ ERA_ONLY.update({
     "radiotower": {"wartime"},
     "rocket": {"wartime"},
 })
+ERA_ONLY.update({
+    "neanderthal": {"prehistory"},
+    "shaman": {"prehistory"},
+    "cave_painter": {"prehistory"},
+    "mammoth_hunter": {"prehistory"},
+    "banker": {"renaissance"},
+    "courtier": {"renaissance"},
+    "condottiero": {"renaissance"},
+    "printer": {"renaissance"},
+    "geisha": {"orient"},
+    "rice_farmer": {"orient"},
+    "tang_scholar": {"orient"},
+    "shaolin_monk": {"orient"},
+    "sheriff": {"frontier"},
+    "outlaw": {"frontier"},
+    "prospector": {"frontier"},
+    "settler": {"frontier"},
+    "pioneer_woman": {"frontier"},
+    "trapper": {"frontier"},
+    "railroad_worker": {"frontier"},
+    "native_warrior": {"frontier"},
+    "cosmonaut": {"spaceage"},
+    "scientist": {"spaceage"},
+    "programmer": {"spaceage"},
+    "protester": {"spaceage"},
+    "president": {"spaceage"},
+    "reporter": {"spaceage"},
+    "test_pilot": {"spaceage"},
+    "mammoth": {"prehistory"},
+    "sabertooth": {"prehistory"},
+    "cave": {"prehistory"},
+    "menhir": {"prehistory"},
+    "duomo": {"renaissance", "seachart", "empire"},
+    "pavilion": {"orient"},
+    "dojo": {"orient"},
+    "saloon": {"frontier"},
+    "general_store": {"frontier", "industrial"},
+    "water_tower": {"frontier", "industrial", "wartime"},
+    "radar_dish": {"wartime", "spaceage"},
+    "cooling_tower": {"wartime", "spaceage"},
+    "wagon": {"frontier", "industrial"},
+    "junk": {"orient", "manuscript", "seachart"},
+    "lander": {"spaceage"},
+    "satellite": {"spaceage"},
+})
+# Eras added later: the age of exploration also covers the Renaissance, the industrial age the frontier, the 20th century the space age.
+# The prehistory and orient looks are special: prehistory draws ONLY what PREHISTORY_OK lists, orient draws what ORIENT_OK lists plus everything with no era restriction.
+for _name, _looks in ERA_ONLY.items():
+    if "seachart" in _looks:
+        _looks.add("renaissance")
+    if "industrial" in _looks:
+        _looks.add("frontier")
+    if "wartime" in _looks:
+        _looks.add("spaceage")
+ERA_ONLY["cavalry"] = {"antiquity", "manuscript", "seachart", "empire", "industrial", "wartime", "renaissance", "orient", "frontier"}
+PREHISTORY_OK = set(ANIMALS) | set(HUMANS_PREHISTORIC := ("caveman", "neanderthal", "shaman", "cave_painter", "mammoth_hunter")) | {"crowd", "farmer", "fire", "smoke", "birds", "comet", "eclipse", "volcano", "torch", "tents", "hut", "tipi", "cave", "menhir", "stonehenge", "village"}
+ORIENT_OK = {"samurai", "ninja", "shogun", "mongol_horseman", "khan", "silk_trader", "mandarin", "chinese_emperor", "qin_warrior", "geisha", "rice_farmer", "tang_scholar", "shaolin_monk", "pagoda", "torii", "japanese_castle", "great_wall", "yurt",
+              "fortress", "palace", "trebuchet", "catapult", "siege_tower", "cannon", "pavilion", "dojo", "junk", "galley", "sailor", "peasant", "blacksmith", "scribe", "philosopher", "library", "forge", "tavern", "printing_press", "observatory", "gate"}
+
+
+def era_allows(subject: str, look: str) -> bool:
+    """Whether a picture subject can be drawn in an era: prehistory only draws its own list, orient only the Eastern and the timeless ones, every other look obeys ERA_ONLY."""
+    if look == "prehistory":
+        return subject in PREHISTORY_OK
+    if look == "orient":
+        return subject in ORIENT_OK or subject not in ERA_ONLY
+    return subject not in ERA_ONLY or look in ERA_ONLY[subject]
+
+
 ART_OPTIONAL = ("flash", "map", "outro")  # every other scene carries 1-2 illustration shots
 
 ICONS = ("column", "laurel", "sword", "ship", "crown", "scroll", "hourglass", "castle", "quill", "key", "coin", "compass", "pyramid", "book", "gear", "sun")
@@ -324,12 +393,13 @@ STORY (11 to 19 scenes, aim for 13+, each 60-150 frames at 30 fps), using a vari
 - Last scene: type outro. `text` and `accentText` are replaced by the vote cards (see VOTE).
 ART DIRECTION (the video is mostly ANIMATED VECTOR DRAWINGS): behind every scene a picture is drawn and moves, and it changes as the narration moves on, so the viewer SEES the story. Every scene except flash, map and outro carries `art`:
 one or two SHOTS. A shot = `place` (desert, sea, coast, plains, mountains, forest, snow, city, plaza, interior, battlefield) + `time` (dawn, day, dusk, night) + optional `weather` (clear, rain, snow, storm, smoke) + 1-4 `subjects`:
-structures (castle temple pyramids tower gate windmill factory lighthouse tents bridge ruins + ziggurat colosseum aqueduct obelisk sphinx great_wall triumphal_arch stonehenge hut palisade harbor market well library theater adobe tomb palace cathedral church mosque pagoda monastery longhouse fortress siege_tower catapult trebuchet forge tavern village tipi yurt igloo torii japanese_castle star_fort observatory printing_press gallows guillotine clocktower mine skyscraper derrick barn telegraph bunker radiotower rocket),
-generic people and vehicles (soldiers cavalry king crowd caravan scholar monk farmer merchant ship fleet galley elephants train tank plane), animals (dog wolf fox lion tiger bear deer boar pig cow ox sheep goat donkey rat eagle raven snake crocodile whale),
-and ONE HUNDRED NAMED HISTORICAL CHARACTERS (a leader alone, the rest with two companions): ancient: caveman pharaoh egyptian_priest scribe pyramid_builder gladiator legionary centurion senator roman_emperor vestal hoplite philosopher athlete persian_immortal babylonian celt carthaginian oracle druid qin_warrior;
+structures (castle temple pyramids tower gate windmill factory lighthouse tents bridge ruins + ziggurat colosseum aqueduct obelisk sphinx great_wall triumphal_arch stonehenge hut palisade harbor market well library theater adobe tomb palace cathedral church mosque pagoda monastery longhouse fortress siege_tower catapult trebuchet forge tavern village tipi yurt igloo torii japanese_castle star_fort observatory printing_press gallows guillotine clocktower mine skyscraper derrick barn telegraph bunker radiotower rocket + cave menhir duomo pavilion dojo saloon general_store water_tower radar_dish cooling_tower),
+generic people and vehicles (soldiers cavalry king crowd caravan scholar monk farmer merchant ship fleet galley elephants train tank plane wagon junk lander satellite), animals (dog wolf fox lion tiger bear deer boar pig cow ox sheep goat donkey rat eagle raven snake crocodile whale mammoth sabertooth bison horse camel),
+and 127 NAMED HISTORICAL CHARACTERS (a leader alone, the rest with two companions): ancient: caveman pharaoh egyptian_priest scribe pyramid_builder gladiator legionary centurion senator roman_emperor vestal hoplite philosopher athlete persian_immortal babylonian celt carthaginian oracle druid qin_warrior;
 medieval: knight crusader templar viking jarl bishop pope friar peasant blacksmith longbowman crossbowman castle_guard queen princess jester executioner alchemist plague_doctor samurai ninja shogun mongol_horseman khan saracen sultan byzantine_emperor aztec_warrior aztec_priest inca_noble maya_priest silk_trader mandarin chinese_emperor;
 exploration: conquistador explorer navigator pirate buccaneer sailor admiral native_chief missionary renaissance_artist inventor astronomer merchant_prince musketeer; empires: redcoat grenadier minuteman general nobleman revolutionary frontiersman cowboy;
-industrial: factory_worker miner engineer gentleman lady surgeon tycoon suffragette; 20th century: ww1_infantry ww1_officer ww2_soldier paratrooper pilot nurse resistance_fighter spy codebreaker factory_woman navy_sailor tank_commander field_marshal refugee astronaut.
+industrial: factory_worker miner engineer gentleman lady surgeon tycoon suffragette; 20th century: ww1_infantry ww1_officer ww2_soldier paratrooper pilot nurse resistance_fighter spy codebreaker factory_woman navy_sailor tank_commander field_marshal refugee astronaut;
+prehistory: neanderthal shaman cave_painter mammoth_hunter; renaissance: banker courtier condottiero printer; the East: geisha rice_farmer tang_scholar shaolin_monk; the frontier: sheriff outlaw prospector settler pioneer_woman trapper railroad_worker native_warrior; space age: cosmonaut scientist programmer protester president reporter test_pilot.
 Pick the character who WAS THERE: "Caesar crossed the Rubicon" = legionary or centurion, "the Vikings raided" = viking, jarl; never a samurai in Rome. Characters, structures and animals of the wrong era are removed automatically, so choose the right ones. `action` and `view` apply to every person (the 100 characters included),
 props (scroll crown sword chest torch banner throne map cannon) and effects (fire smoke birds comet eclipse volcano). The first subject is the hero of the picture. Choose what the narrator is saying AT THAT MOMENT:
 "the army crossed the Alps" = mountains, dawn, [elephants, soldiers]; "the city burned" = city, dusk, smoke, [crowd, fire, gate]; "the king grew afraid" = interior, night, [throne, king, torch]. A scene with two ideas gets two shots in the order of the narration.
@@ -676,7 +746,7 @@ def fix_art_for_era(project: Any) -> int:
     dropped = 0
     for s in project.scenes:
         for sh in s.art or []:
-            keep = [x for x in sh.subjects if x not in ERA_ONLY or (project.look or "manuscript") in ERA_ONLY[x]]
+            keep = [x for x in sh.subjects if era_allows(x, project.look or "manuscript")]
             dropped += len(sh.subjects) - len(keep)
             sh.subjects = keep or ["crowd"]
     return dropped

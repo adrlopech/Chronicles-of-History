@@ -5,7 +5,8 @@ import { Cloth } from './draw';
 export type Item =
   | 'none' | 'spear' | 'sword' | 'torch' | 'scroll' | 'shield' | 'tool' | 'sack'
   | 'cup' | 'trophy' | 'shovel' | 'hammer' | 'quill' | 'stone'
-  | 'club' | 'staff' | 'bow' | 'crossbow' | 'axe' | 'pistol' | 'rifle' | 'lantern' | 'book' | 'cane' | 'whip' | 'bag' | 'banner' | 'katana';
+  | 'club' | 'staff' | 'bow' | 'crossbow' | 'axe' | 'pistol' | 'rifle' | 'lantern' | 'book' | 'cane' | 'whip' | 'bag' | 'banner' | 'katana'
+  | 'pickaxe' | 'laptop' | 'placard' | 'flask' | 'fan' | 'mic';
 /** What a person can hold in the hand (the shield is drawn on the arm by `Person`). */
 export type Hold = Item;
 
@@ -40,6 +41,12 @@ export const ItemShape: React.FC<{ item: Item; c: Colors; t: number; seed: numbe
     case 'bag': return <><path d="M-10 4 Q-12 -10 0 -12 Q12 -10 10 4Z" fill={mix(c.near, c.light, 0.2)} stroke={c.shadow} strokeWidth={1.3} /><path d="M-4 -11 Q0 -17 4 -11" stroke={c.shadow} strokeWidth={1.4} fill="none" /></>;
     case 'banner': return <><path d="M0 50 L0 -100" stroke={c.shadow} strokeWidth={3.4} /><circle cx={0} cy={-103} r={4.4} fill={c.gold} /><g transform="translate(0 -96)"><Cloth len={46} h={30} t={t} seed={seed} fill={c.accent} stroke={c.shadow} /></g></>;
     case 'katana': return <><path d="M0 6 Q-6 -20 -2 -50" stroke={steel} strokeWidth={3.6} fill="none" strokeLinecap="round" /><path d="M-6 -2 L6 -4" stroke={c.shadow} strokeWidth={3} strokeLinecap="round" /></>;
+    case 'pickaxe': return <><path d="M0 24 L0 -40" stroke={wood} strokeWidth={4.2} strokeLinecap="round" /><path d="M-24 -34 Q0 -50 24 -34 Q0 -44 -24 -34Z" fill={steel} stroke={c.shadow} strokeWidth={1.4} /></>;
+    case 'laptop': return <g transform="rotate(-8)"><path d="M-12 -2 L12 -2 L10 -14 L-10 -14Z" fill={mix(c.light, c.shadow, 0.3)} stroke={c.shadow} strokeWidth={1.2} /><rect x={-9} y={-12.5} width={18} height={9} fill={c.glow} opacity={0.7} /><path d="M-14 -2 H14 L12 3 H-12Z" fill={mix(c.light, c.shadow, 0.5)} stroke={c.shadow} strokeWidth={1} /></g>;
+    case 'placard': return <><path d="M0 40 L0 -52" stroke={wood} strokeWidth={3.4} /><rect x={-24} y={-90} width={48} height={40} rx={2} fill={c.light} stroke={c.shadow} strokeWidth={1.6} /><path d="M-16 -80 h32 M-16 -70 h24 M-16 -60 h30" stroke={c.accent} strokeWidth={3.4} strokeLinecap="round" /></>;
+    case 'flask': return <><path d="M-3 -4 L-3 -16 L3 -16 L3 -4 L10 10 Q10 14 0 14 Q-10 14 -10 10Z" fill={mix(c.glow, c.light, 0.3)} stroke={c.shadow} strokeWidth={1.3} opacity={0.95} /><path d="M-8 6 H8" stroke={c.shadow} strokeWidth={1} opacity={0.6} /><circle cx={2} cy={9} r={2} fill="#ffffff" opacity={0.6} /></>;
+    case 'fan': return <g transform="rotate(-20)"><path d="M0 4 L-22 -22 Q0 -34 22 -22Z" fill={c.accent} stroke={c.shadow} strokeWidth={1.3} />{[-14, -7, 0, 7, 14].map((x) => <path key={x} d={`M0 4 L${x * 1.5} ${-26 + Math.abs(x) * 0.4}`} stroke={c.gold} strokeWidth={0.9} />)}</g>;
+    case 'mic': return <><path d="M0 12 L0 -12" stroke={c.shadow} strokeWidth={3.4} strokeLinecap="round" /><ellipse cx={0} cy={-18} rx={6} ry={7.5} fill={mix(c.light, c.shadow, 0.35)} stroke={c.shadow} strokeWidth={1.3} /><path d="M-6 -18 H6" stroke={c.shadow} strokeWidth={0.9} /></>;
     default: return null;
   }
 };
