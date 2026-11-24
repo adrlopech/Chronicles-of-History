@@ -72,6 +72,20 @@ def skyline() -> str:
 
 
 # ---------------------------------------------------------------- content
+ICONS = {
+    "Prehistory": '<path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 2 2 1-1-2-1-3 0-5z"/><path d="M6 21h12"/>',
+    "Antiquity": '<path d="M3 8l9-5 9 5zM5 8v10M9.5 8v10M14.5 8v10M19 8v10M3 21h18"/>',
+    "Middle Ages": '<path d="M5 21V9h3V6h3v3h2V6h3v3h3v12zM10 21v-5h4v5"/>',
+    "The Orient": '<path d="M12 2v3M5 8h14l-2-3H7zM7 13h10l-2-3H9zM8 18h8l-1.5-2h-5zM6 21h12"/>',
+    "Renaissance": '<path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v13c-3-1-6-1-8 1-2-2-5-2-8-1zM12 6v13"/>',
+    "Age of Sail": '<path d="M12 3v14M12 4l7 9h-7M12 7l-5 6h5M3 17h18l-3 4H6z"/>',
+    "Empires": '<path d="M3 18l1-10 5 5 3-8 3 8 5-5 1 10zM3 21h18"/>',
+    "Industrial Age": '<circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+    "The Frontier": '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.5 6.8 19.2l1-5.9L3.5 9.2l5.9-.8z"/>',
+    "World Wars": '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM12 8v8M8.5 12h7"/>',
+    "Space Age": '<path d="M12 2c3 3 4 7 4 11l-4 3-4-3c0-4 1-8 4-11zM8 14l-3 4 4-1M16 14l3 4-4-1M12 17v4"/><circle cx="12" cy="10" r="1.6"/>',
+}
+
 ERAS = [
     ("Prehistory", "before 3000 BC", "Cave painters, mammoth hunters and the first fires.", "#E4693A", "#F0C27A"),
     ("Antiquity", "3000 BC – 476 AD", "Pharaohs, legions and philosophers: Egypt, Greece and Rome.", "#FF8A55", "#FFC857"),
@@ -130,9 +144,10 @@ def head(title: str, desc: str, fname: str) -> str:
 <meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:image" content="{BASE}/og-image.png"><meta property="og:type" content="website"><meta property="og:url" content="{canon}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="site.css">
+<noscript><style>.rv{{opacity:1;transform:none}}.title .w{{opacity:1;transform:none;animation:none}}</style></noscript>
 </head>
 <body>
-<div id="progress"></div><div class="grain"></div><div class="glow" id="glow"></div><canvas id="embers" aria-hidden="true"></canvas>
+<a class="skip" href="#main">Skip to content</a><div id="progress"></div><div class="grain"></div><div class="glow" id="glow"></div><canvas id="embers" aria-hidden="true"></canvas>
 <header class="top"><nav aria-label="Main"><a href="index.html" class="brand"><img src="logo.png" alt="" width="40" height="40"><span>The Chronicles <b>of History</b></span></a>
 <ul id="menu"><li><a href="index.html#stories">Stories</a></li><li><a href="index.html#eras">Eras</a></li><li><a href="index.html#how">How it&rsquo;s made</a></li><li><a href="index.html#colour">Colours</a></li><li><a href="index.html#faq">FAQ</a></li></ul>
 <a class="btn sm" href="{YT}" target="_blank" rel="noopener"><span>Watch</span></a><button class="burger" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false"><i></i><i></i></button></nav></header>
@@ -142,6 +157,7 @@ def head(title: str, desc: str, fname: str) -> str:
 def foot() -> str:
     return f'''<footer><div class="container foot"><div class="fbrand"><img src="logo.png" alt="" width="54" height="54"><div>&copy; 2026 The Chronicles of History. All rights reserved.<br><small>Narrated, hand-drawn history. Facts first.</small></div></div>
 <ul><li><a href="index.html">Home</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="{REPO}/issues" target="_blank" rel="noopener">Contact</a></li><li><a href="{REPO}" target="_blank" rel="noopener">GitHub</a></li><li><a href="{TT}" target="_blank" rel="noopener">TikTok</a></li><li><a href="{YT}" target="_blank" rel="noopener">YouTube</a></li></ul></div></footer>
+<button class="backtop" type="button" aria-label="Back to top">&#8593;</button>
 <script src="site.js"></script>
 </body>
 </html>
@@ -153,12 +169,12 @@ def kicker(n: str, text: str) -> str:
 
 
 def index() -> str:
-    ring = "TRUE STORIES &#10022; DRAWN ALIVE &#10022; A NEW ONE EVERY DAY &#10022; "
+    ring = "TRUE STORIES &#10022; DRAWN ALIVE &#10022; A NEW STORY EVERY DAY &#10022;"
     hero = f'''<section class="hero" id="top">
 <div class="rays"></div><div class="sun" data-speed="0.12"></div>
 <div class="skyline s1" data-speed="0.10" data-mx="10">{skyline()}</div>
 <div class="hero-in">
-<div class="seal rv zoom" data-mx="-14"><svg class="ring" viewBox="0 0 300 300" aria-hidden="true"><defs><path id="circ" d="M150,150 m-122,0 a122,122 0 1,1 244,0 a122,122 0 1,1 -244,0"/></defs><text><textPath href="#circ" startOffset="0">{ring}{ring}</textPath></text></svg><img src="logo.png" alt="The Chronicler, mascot of The Chronicles of History" width="220" height="220"></div>
+<div class="seal rv zoom" data-mx="-14"><svg class="ring" viewBox="0 0 300 300" aria-hidden="true"><defs><path id="circ" d="M150,150 m-122,0 a122,122 0 1,1 244,0 a122,122 0 1,1 -244,0"/></defs><text><textPath href="#circ" startOffset="0" textLength="765" lengthAdjust="spacing">{ring}</textPath></text></svg><img src="logo.png" alt="The Chronicler, mascot of The Chronicles of History" width="220" height="220"></div>
 <h1 class="title"><span class="w">The</span> <span class="w">Chronicles</span> <span class="w">of</span> <span class="w">History</span></h1>
 <p class="tag rv" style="--d:.7s">Short, narrated, hand-drawn stories from every age of the world.<br>A new true story every day, in just over a minute.</p>
 <div class="cta rv" style="--d:.9s"><a class="btn" href="{YT}" target="_blank" rel="noopener"><span>Watch on YouTube</span></a><a class="btn ghost" href="{TT}" target="_blank" rel="noopener"><span>Follow on TikTok</span></a></div>
@@ -181,7 +197,7 @@ def index() -> str:
 <div class="fmts rv">{"".join(f"<div><b>{a}</b><span>{b}</span></div>" for a, b in FORMATS)}</div></div></section>'''
 
     eras = "".join(
-        f'<article class="era rv {"l" if i % 2 == 0 else "r"}" style="--a:{a};--b:{b}"><span class="dot"></span><div class="card"><small>{yrs}</small><h3>{n}</h3><p>{d}</p><i class="bar"></i></div></article>'
+        f'<article class="era rv {"l" if i % 2 == 0 else "r"}" style="--a:{a};--b:{b}"><span class="dot"></span><div class="card"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">{ICONS[n]}</svg><small>{yrs}</small><h3>{n}</h3><p>{d}</p><i class="bar"></i></div></article>'
         for i, (n, yrs, d, a, b) in enumerate(ERAS)
     )
     era_sec = f'''<section class="block" id="eras"><div class="container">{kicker("III", "Eleven eras")}<h2 class="rv">Travel through <em>time</em></h2>
@@ -224,12 +240,12 @@ def index() -> str:
 <div class="cta rv"><a class="btn" href="{YT}" target="_blank" rel="noopener"><span>Subscribe on YouTube</span></a><a class="btn ghost" href="{TT}" target="_blank" rel="noopener"><span>Follow on TikTok</span></a></div></div></section>'''
 
     return (head("The Chronicles of History | true stories, drawn alive", "Narrated, hand-drawn history shorts of just over a minute on YouTube and TikTok. A new real story every day.", "index.html")
-            + hero + "<main>" + stories + numbers + era_sec + how + mapsec + colour + faq_sec + cta + "</main>" + foot())
+            + hero + '<main id="main">' + stories + numbers + era_sec + how + mapsec + colour + faq_sec + cta + "</main>" + foot())
 
 
 def legal(fname: str, title: str, desc: str, intro: str, body: str, meta: str) -> str:
     return (head(f"{title} | The Chronicles of History", desc, fname)
-            + f'<main class="legalpage"><section class="lhero"><div class="rays small"></div><div class="container narrow"><p class="kicker"><i></i>The fine print<i></i></p><h1>{title}</h1><p class="sub">{intro}</p><p class="meta">{meta}</p></div></section>'
+            + f'<main id="main" class="legalpage"><section class="lhero"><div class="rays small"></div><div class="container narrow"><p class="kicker"><i></i>The fine print<i></i></p><h1>{title}</h1><p class="sub">{intro}</p><p class="meta">{meta}</p></div></section>'
             + f'<div class="container doc">{body}</div></main>' + foot())
 
 
@@ -260,7 +276,8 @@ TERMS = f'''<section class="rv"><h2><i>01</i>Acceptance of these terms</h2><p>Th
 CSS = r'''*{box-sizing:border-box;margin:0}
 :root{--ink:#100B07;--leather:#1E140C;--panel:#2A1C10;--line:#5A4126;--gold:#D9A441;--gold2:#F0CB7A;--gold3:#FFE9A8;--paper:#F2E3BF;--paper2:#C9B38A;--brick:#B8533A;--disp:"Cinzel","Trajan Pro","Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;--body:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif}
 html{scroll-behavior:smooth;scroll-padding-top:70px}
-body{background:var(--ink);color:var(--paper);font:18px/1.7 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html,body{overflow-x:clip}
+body{background:var(--ink);color:var(--paper);font:18px/1.7 var(--body);-webkit-font-smoothing:antialiased}
 a{color:var(--gold2);text-underline-offset:3px}a:hover{color:#fff}
 .container{max-width:1120px;margin:0 auto;padding:0 24px}.narrow{max-width:800px}
 #progress{position:fixed;left:0;top:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--brick),var(--gold),var(--gold3));box-shadow:0 0 14px var(--gold)}
@@ -270,10 +287,10 @@ a{color:var(--gold2);text-underline-offset:3px}a:hover{color:#fff}
 header.top{position:fixed;top:0;left:0;right:0;z-index:40;transition:background .3s,backdrop-filter .3s,border-color .3s;border-bottom:1px solid transparent}
 header.top.stuck{background:rgba(16,11,7,.82);backdrop-filter:blur(10px);border-color:var(--line)}
 nav{display:flex;align-items:center;gap:22px;max-width:1220px;margin:0 auto;padding:10px 24px}
-.brand{display:flex;align-items:center;gap:11px;color:var(--gold2);text-decoration:none;font:700 17px var(--disp);letter-spacing:.06em}
+.brand{white-space:nowrap;display:flex;align-items:center;gap:11px;color:var(--gold2);text-decoration:none;font:700 17px var(--disp);letter-spacing:.06em}
 .brand b{color:var(--paper);font-weight:600}.brand img{border-radius:50%;border:2px solid var(--gold);box-shadow:0 0 18px rgba(217,164,65,.5)}
 nav ul{display:flex;gap:6px;list-style:none;padding:0;margin-left:auto}
-nav ul a{color:var(--paper2);text-decoration:none;font:600 13px var(--disp);letter-spacing:.12em;text-transform:uppercase;padding:8px 12px;border-radius:999px;transition:.25s}
+nav ul a{white-space:nowrap;color:var(--paper2);text-decoration:none;font:600 13px var(--disp);letter-spacing:.12em;text-transform:uppercase;padding:8px 12px;border-radius:999px;transition:.25s}
 nav ul a:hover{color:var(--gold3);background:rgba(217,164,65,.14)}
 .burger{display:none;background:none;border:1px solid var(--line);border-radius:10px;width:42px;height:38px;margin-left:auto;cursor:pointer;flex-direction:column;gap:6px;align-items:center;justify-content:center}.burger i{display:block;width:20px;height:2px;background:var(--gold2)}
 .btn{position:relative;display:inline-block;overflow:hidden;background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,#B07F22);color:#2A1A08!important;font:700 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;padding:15px 30px;border-radius:999px;text-decoration:none;border:1px solid #8a6420;box-shadow:0 8px 30px rgba(217,164,65,.35),inset 0 1px 0 #fff8;transition:transform .25s,box-shadow .25s}
@@ -283,11 +300,17 @@ nav ul a:hover{color:var(--gold3);background:rgba(217,164,65,.14)}
 .btn.ghost{background:rgba(16,11,7,.5);color:var(--gold2)!important;border:1px solid var(--gold);box-shadow:inset 0 0 0 1px rgba(217,164,65,.15)}.btn.ghost:after{display:none}
 .btn.ghost:hover{background:rgba(217,164,65,.16)}.btn.sm{padding:10px 20px;font-size:12px}
 .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--gold3);outline-offset:3px;border-radius:6px}
+.skip{position:fixed;left:12px;top:-60px;z-index:100;background:var(--gold);color:#2A1A08;padding:10px 16px;border-radius:8px;font:700 13px var(--disp);transition:top .2s}.skip:focus{top:12px}
+.block+.block:before{content:"";position:absolute;top:0;left:50%;width:min(520px,70%);height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7}
+.backtop{position:fixed;right:20px;bottom:20px;z-index:45;width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:rgba(16,11,7,.85);color:var(--gold2);font-size:20px;cursor:pointer;opacity:0;transform:translateY(20px);pointer-events:none;transition:.3s;backdrop-filter:blur(6px)}.backtop.show{opacity:1;transform:none;pointer-events:auto}.backtop:hover{background:var(--gold);color:#2A1A08}
+nav ul a.on{color:var(--gold3);background:rgba(217,164,65,.18)}
+.burger i{transition:.3s}.burger[aria-expanded=true] i:first-child{transform:translateY(4px) rotate(45deg)}.burger[aria-expanded=true] i:last-child{transform:translateY(-4px) rotate(-45deg)}
 /* reveal */
 .rv{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.7,.2,1) var(--d,0s),transform .9s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
 .rv.zoom{transform:scale(.8)}.rv.in{opacity:1;transform:none}
 /* hero */
-.hero{position:relative;min-height:100vh;display:grid;place-items:center;overflow:hidden;background:radial-gradient(1000px 700px at 50% 62%,#6B4220 0,#2A190C 45%,var(--ink) 80%);padding:110px 0 190px}
+.hero{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;overflow:hidden;background:radial-gradient(1000px 700px at 50% 62%,#6B4220 0,#2A190C 45%,var(--ink) 80%);padding:110px 0 190px}
 .rays{position:absolute;left:50%;top:62%;width:260vmax;height:260vmax;margin:-130vmax 0 0 -130vmax;background:repeating-conic-gradient(from 0deg,rgba(240,203,122,.16) 0 3deg,transparent 3deg 9deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 36%);mask:radial-gradient(circle,#000 0,transparent 36%);animation:spin 160s linear infinite;pointer-events:none}
 .rays.small{top:50%;width:150vmax;height:150vmax;margin:-75vmax 0 0 -75vmax;opacity:.55}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -296,9 +319,9 @@ nav ul a:hover{color:var(--gold3);background:rgba(217,164,65,.14)}
 .skyline{position:absolute;left:-4vw;right:-4vw;bottom:-2px;height:46vh;min-height:260px;pointer-events:none}.sky-svg{width:100%;height:100%;display:block}
 .sky-svg .blades{animation:spin 14s linear infinite}
 .hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,var(--ink))}
-.hero-in{position:relative;z-index:5;text-align:center;padding:0 22px}
+.hero-in{position:relative;z-index:5;text-align:center;padding:0 22px}.hero-in:before{content:"";position:absolute;inset:-40px -10%;z-index:-1;background:radial-gradient(closest-side,rgba(16,11,7,.62),transparent);pointer-events:none}
 .seal{position:relative;width:min(300px,64vw);aspect-ratio:1;margin:0 auto 14px}.seal img{position:absolute;left:15%;top:15%;width:70%;height:70%;display:block;border-radius:50%;border:4px solid var(--gold);box-shadow:0 0 0 8px rgba(217,164,65,.18),0 0 60px rgba(240,203,122,.6),0 20px 50px #000a;animation:float 6s ease-in-out infinite}
-.seal .ring{position:absolute;inset:0;width:100%;height:100%;animation:spin 44s linear infinite}.ring text{fill:var(--gold2);font:700 13px var(--disp);letter-spacing:.2em}
+.seal .ring{position:absolute;inset:0;width:100%;height:100%;animation:spin 44s linear infinite}.ring text{fill:var(--gold2);font:700 13px var(--disp)}
 @keyframes float{50%{transform:translateY(-12px)}}
 .title{font:900 clamp(40px,8.6vw,108px)/1 var(--disp);letter-spacing:.03em;text-transform:uppercase;margin:6px 0 20px;filter:drop-shadow(0 4px 0 #3b230b) drop-shadow(0 12px 30px rgba(0,0,0,.6))}
 .title .w{background:linear-gradient(180deg,#FFF3C8 0,var(--gold2) 38%,var(--gold) 62%,#8F5F18);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;opacity:0;transform:translateY(60px) rotateX(-70deg);animation:word 1s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.12s * var(--k,0) + .25s)}
@@ -315,14 +338,15 @@ main{position:relative;z-index:3}
 .block{position:relative;padding:120px 0}
 .kicker{display:flex;align-items:center;justify-content:center;gap:14px;font:700 13px var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
 .kicker i{display:block;width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}.kicker i:last-child{transform:scaleX(-1)}
+h2,.sub,.tag{text-wrap:balance}
 h2{font:800 clamp(32px,5.4vw,62px)/1.08 var(--disp);text-align:center;color:var(--paper);margin-bottom:16px;text-transform:uppercase;letter-spacing:.02em}
 h2 em{font-style:normal;background:linear-gradient(180deg,#FFF3C8,var(--gold) 70%,#9A6B1F);-webkit-background-clip:text;background-clip:text;color:transparent}
 .sub{color:var(--paper2);text-align:center;max-width:680px;margin:0 auto 40px;font-size:19px}
 /* pinned fan */
 .pin{position:relative;height:300vh}.stick{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:70px;background:radial-gradient(900px 500px at 50% 80%,rgba(120,70,25,.45),transparent 70%)}
 .stick .sub{margin-bottom:10px}
-.fan{position:relative;height:min(56vh,520px);margin-top:10px}
-.phone{position:absolute;left:50%;top:0;width:min(27vh,230px);margin-left:calc(min(27vh,230px) / -2);display:block;text-decoration:none;color:inherit;transform:translateX(calc(var(--i) * var(--p,0) * 1.08 * min(27vh,230px) + var(--i) * var(--p,0) * 18px)) translateY(calc(var(--p,0) * (var(--i) * var(--i)) * 14px)) rotate(calc(var(--i) * var(--p,0) * 6deg));transition:filter .3s;z-index:calc(10 - var(--i) * var(--i))}
+.fan{position:relative;height:min(62vh,640px);margin-top:10px}
+.phone{position:absolute;left:50%;top:0;width:min(30vh,290px);margin-left:calc(min(30vh,290px) / -2);display:block;text-decoration:none;color:inherit;transform:translateX(calc(var(--i) * var(--p,0) * 1.08 * min(30vh,290px) + var(--i) * var(--p,0) * 18px)) translateY(calc(var(--p,0) * (var(--i) * var(--i)) * 14px)) rotate(calc(var(--i) * var(--p,0) * 6deg));transition:filter .3s;z-index:calc(10 - var(--i) * var(--i))}
 .phone:hover{filter:brightness(1.12);z-index:30}.phone:hover .bezel{transform:translateY(-14px) scale(1.06)}
 .bezel{position:relative;overflow:hidden;aspect-ratio:9/16;border-radius:24px;padding:5px;background:linear-gradient(145deg,#6a4a20,#2a1a0a 40%,#8a6420);box-shadow:0 22px 50px #000c,0 0 0 1px #000;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .bezel img{display:block;width:100%;height:100%;object-fit:cover;border-radius:19px}.bezel:before{content:"";position:absolute;z-index:3;top:11px;left:50%;width:34%;height:7px;margin-left:-17%;border-radius:6px;background:#000a}
@@ -345,6 +369,7 @@ h2 em{font-style:normal;background:linear-gradient(180deg,#FFF3C8,var(--gold) 70
 .era.in .dot{background:var(--a);box-shadow:0 0 22px 4px var(--b)}
 .era .card{position:relative;padding:22px 24px;border-radius:16px;border:1px solid color-mix(in srgb,var(--b) 45%,transparent);background:linear-gradient(145deg,rgba(42,28,16,.95),rgba(24,15,8,.95));overflow:hidden;transition:transform .35s,box-shadow .35s}
 .era .card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 18px 50px color-mix(in srgb,var(--b) 30%,transparent)}
+.era .ico{position:absolute;right:18px;top:18px;width:38px;height:38px;fill:none;stroke:var(--b);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.75;transition:.4s}.era .card:hover .ico{opacity:1;transform:rotate(-8deg) scale(1.12)}
 .era small{font:700 12px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--b)}.era h3{font:800 28px/1.1 var(--disp);letter-spacing:.03em;margin:4px 0 6px;color:var(--paper);text-transform:uppercase}.era p{color:var(--paper2);font-size:16px;line-height:1.5}
 .era .bar{position:absolute;left:0;bottom:0;height:4px;width:100%;background:linear-gradient(90deg,var(--a),var(--b));transform:scaleX(0);transform-origin:left;transition:transform 1.2s .3s}.era.in .bar{transform:scaleX(1)}
 .rv.l:not(.in){transform:translateX(-70px)}.rv.r:not(.in){transform:translateX(70px)}
@@ -386,13 +411,15 @@ footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#
 .doc h2{text-align:left;font-size:22px;margin:0 0 10px;color:var(--gold2);display:flex;gap:14px;align-items:baseline}.doc h2 i{font:700 14px var(--disp);color:var(--brick);font-style:normal}
 .doc p,.doc li{color:#E8D8B2;margin:8px 0}.doc ul{padding-left:22px}
 .e404{min-height:100vh;display:grid;place-items:center;text-align:center;padding:120px 24px}
+@media(max-width:1020px){
+ nav ul{position:fixed;left:0;right:0;top:62px;flex-direction:column;background:rgba(16,11,7,.97);padding:16px;border-bottom:1px solid var(--gold);transform:translateY(-130%);transition:.35s;margin:0}nav ul.open{transform:none}nav .btn.sm{display:none}.burger{display:flex}}
 @media(max-width:860px){
- nav ul{position:fixed;left:0;right:0;top:62px;flex-direction:column;background:rgba(16,11,7,.97);padding:16px;border-bottom:1px solid var(--gold);transform:translateY(-130%);transition:.35s;margin:0}nav ul.open{transform:none}nav .btn.sm{display:none}.burger{display:flex}
  .brand span{font-size:14px}.block{padding:80px 0}.two{grid-template-columns:1fr;gap:30px}.two.rev .copy{order:0}.two .copy .kicker{justify-content:center}.two .copy h2,.two .copy .sub{text-align:center}
  .pin{height:auto}.stick{position:static;height:auto;display:block;padding:100px 0 40px}.fan{height:auto;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:20px 24px 30px}
  .phone{position:static;flex:none;width:200px;margin:0;transform:none!important;scroll-snap-align:center}.cap{position:static;opacity:1;width:auto;margin:12px 0 0;background:none;border:0}.fanhint{display:none}
  .tl .line{left:18px}.era,.era.r{width:100%;margin-left:0;padding:0 0 22px 48px}.era .dot,.era.r .dot{left:9px;right:auto}.rv.l:not(.in),.rv.r:not(.in){transform:translateY(34px)}
- .skyline{height:34vh}.ribbon{margin-top:-14px}}
+ .skyline{height:34vh}.ribbon{margin-top:-14px}.sun{width:360px;height:360px;margin:-180px 0 0 -180px;opacity:.5}.kicker{letter-spacing:.18em;font-size:11px}.kicker i{width:22px}.track{font-size:17px}h2{overflow-wrap:anywhere}.btn{padding:14px 24px}.cta .btn{width:100%;max-width:340px;text-align:center}.fanhint2{display:block}}
+@media(hover:none){.glow{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.title .w{opacity:1;transform:none}.rays,.sun{animation:none}#embers{display:none}}
 '''
 
@@ -441,7 +468,7 @@ JS = r'''(function () {
       par.forEach(function (el) { var s = +el.dataset.speed, m = +el.dataset.mx || 0; el.style.transform = 'translate3d(' + (mx * m) + 'px,' + (y * s + my * m * 0.5) + 'px,0)'; });
       $$('[data-mx]:not([data-speed])').forEach(function (el) { var m = +el.dataset.mx; el.style.translate = (mx * m) + 'px ' + (my * m * .5) + 'px'; });
     }
-    if (pin && fan && window.innerWidth > 860) { var r = pin.getBoundingClientRect(); var p = clamp(-r.top / (r.height - vh()) * 1.7, 0, 1); fan.parentNode.style.setProperty('--p', reduce ? 1 : p.toFixed(3)); }
+    if (pin && fan && window.innerWidth > 860) { var r = pin.getBoundingClientRect(); var p = clamp(-r.top / (r.height - vh()) * 1.3, 0, 1); fan.parentNode.style.setProperty('--p', reduce ? 1 : p.toFixed(3)); }
     else if (fan) fan.parentNode.style.setProperty('--p', 1);
     if (tl && tlf) tlf.style.height = (frac(tl, 0.65, 0.35) * 100) + '%';
     if (st && stf) { var f = frac(st, 0.7, 0.4); stf.style.height = (f * 100) + '%'; }
@@ -463,6 +490,15 @@ JS = r'''(function () {
     c.addEventListener('mouseleave', function () { c.style.transform = ''; });
   });
 
+  // back to top and menu scroll-spy
+  var bt = $('.backtop');
+  if (bt) { bt.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); }); addEventListener('scroll', function () { bt.classList.toggle('show', scrollY > 900); }, { passive: true }); }
+  var links = $$('#menu a'), secs = links.map(function (a) { var h = a.getAttribute('href'); return h.indexOf('#') > -1 && h.indexOf('index.html') === 0 ? $(h.slice(h.indexOf('#'))) : null; });
+  if (secs.some(Boolean) && 'IntersectionObserver' in window) {
+    var spy = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) links.forEach(function (a, i) { a.classList.toggle('on', secs[i] === e.target); }); }); }, { rootMargin: '-45% 0px -50% 0px' });
+    secs.forEach(function (s) { if (s) spy.observe(s); });
+  }
+
   // menu
   var bg = $('.burger'), menu = $('#menu');
   if (bg) { bg.addEventListener('click', function () { var o = menu.classList.toggle('open'); bg.setAttribute('aria-expanded', o); }); $$('#menu a').forEach(function (a) { a.addEventListener('click', function () { menu.classList.remove('open'); }); }); }
@@ -477,20 +513,26 @@ JS = r'''(function () {
   tbs.forEach(function (b, i) { b.addEventListener('click', function () { auto = false; idx = i; pick(b.dataset.k); }); });
   if (tbs.length && !reduce) setInterval(function () { if (!auto) return; idx = (idx + 1) % tbs.length; pick(tbs[idx].dataset.k); }, 3200);
 
-  // embers
+  // embers (a glow sprite drawn once and stamped per frame; paused while the tab is hidden)
   var cv = $('#embers');
   if (cv && !reduce) {
-    var cx = cv.getContext('2d'), W, H, P = [], dpr = Math.min(2, window.devicePixelRatio || 1);
+    var cx = cv.getContext('2d'), W, H, P = [], dpr = Math.min(2, window.devicePixelRatio || 1), spr = document.createElement('canvas');
+    spr.width = spr.height = 64; var sg = spr.getContext('2d'), gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(255,225,150,1)'); gr.addColorStop(0.35, 'rgba(240,180,80,.45)'); gr.addColorStop(1, 'rgba(217,164,65,0)'); sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
     function size() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; }
     size(); addEventListener('resize', size);
-    for (var i = 0; i < 70; i++) P.push({ x: Math.random(), y: Math.random(), r: Math.random() * 2.2 + .5, v: Math.random() * .00035 + .00012, a: Math.random() * 6.28, s: Math.random() * .8 + .2 });
-    (function loop(t) {
-      cx.clearRect(0, 0, W, H);
-      P.forEach(function (p) { p.y -= p.v * 16; p.a += .01; if (p.y < -0.05) { p.y = 1.05; p.x = Math.random(); }
-        var x = (p.x + Math.sin(p.a) * .02) * W, y = p.y * H, g = cx.createRadialGradient(x, y, 0, x, y, p.r * 6 * dpr);
-        g.addColorStop(0, 'rgba(255,220,140,' + (.75 * p.s) + ')'); g.addColorStop(1, 'rgba(217,164,65,0)'); cx.fillStyle = g; cx.beginPath(); cx.arc(x, y, p.r * 6 * dpr, 0, 6.28); cx.fill(); });
+    var n = innerWidth < 700 ? 34 : 64;
+    for (var i = 0; i < n; i++) P.push({ x: Math.random(), y: Math.random(), r: Math.random() * 12 + 5, v: Math.random() * .00035 + .00012, a: Math.random() * 6.28, s: Math.random() * .7 + .25 });
+    (function loop() {
+      if (!document.hidden) {
+        cx.clearRect(0, 0, W, H);
+        P.forEach(function (p) {
+          p.y -= p.v * 16; p.a += .01; if (p.y < -0.05) { p.y = 1.05; p.x = Math.random(); }
+          cx.globalAlpha = p.s; var r = p.r * dpr; cx.drawImage(spr, (p.x + Math.sin(p.a) * .02) * W - r, p.y * H - r, r * 2, r * 2);
+        });
+      }
       requestAnimationFrame(loop);
-    })(0);
+    })();
   }
 })();
 '''
@@ -505,7 +547,7 @@ def build() -> None:
     (D / "terms.html").write_text(legal("terms.html", "Terms of Service", "The rules for the Chronicles of History website and channels, in plain words.",
                                         "The rules for this website and the channels, in plain words: what the project is and how to read the videos.", TERMS, "Last updated: 24 November 2026"), encoding="utf-8")
     e404 = (head("Page not found | The Chronicles of History", "Page not found.", "404.html")
-            + '<main class="e404"><div><div class="rays small"></div><p class="kicker"><i></i>Error 404<i></i></p><h1 class="title" style="font-size:clamp(40px,9vw,100px)">Lost to history</h1><p class="sub">This page is not in the archive.</p><div class="cta"><a class="btn" href="index.html"><span>Back to the chronicles</span></a></div></div></main>' + foot())
+            + '<main id="main" class="e404"><div><div class="rays small"></div><p class="kicker"><i></i>Error 404<i></i></p><h1 class="title" style="font-size:clamp(40px,9vw,100px)"><span class="w">Lost</span> <span class="w">to</span> <span class="w">history</span></h1><p class="sub">This page is not in the archive.</p><div class="cta"><a class="btn" href="index.html"><span>Back to the chronicles</span></a></div></div></main>' + foot())
     (D / "404.html").write_text(e404, encoding="utf-8")
     (D / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n", encoding="utf-8")
     (D / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}/{p}</loc></url>\n" for p in ["", "terms.html", "privacy.html"]) + "</urlset>\n", encoding="utf-8")
