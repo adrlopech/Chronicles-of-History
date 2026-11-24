@@ -1,8 +1,10 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { Engraving } from '../chronicle/icons';
-import { PLAYFAIR, PLAYFAIR_ITALIC, SPACE } from '../chronicle/fonts';
-import { IconName } from '../chronicle/types';
+import { Aqueduct, Cathedral, Colosseum, GreatWall, Obelisk, Pagoda } from '../chronicle/art/structures2';
+import { Castle, Pyramids, Temple, Windmill } from '../chronicle/art/things';
+import { Colors, mix } from '../chronicle/art/palette';
+import { CINZEL_DECO, CORMORANT } from '../chronicle/fonts';
+import { Corners } from '../chronicle/ink';
 
 /**
  * The brand of The Chronicles of History, in the spirit of the sister channel's: a bold emblem that glows, on a deep gradient with sparkles and a fine grid, glass tiles around it,
@@ -145,34 +147,77 @@ export const Watermark: React.FC = () => (
   <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 300, height: 300 }}><Seal id="wm" simple /></div></AbsoluteFill>
 );
 
-const TILES: { x: number; y: number; r: number; icon: IconName; o: number; s: number }[] = [
-  { x: 120, y: 390, r: -9, icon: 'column', o: 1, s: 215 }, { x: 360, y: 700, r: 7, icon: 'scroll', o: 0.85, s: 190 }, { x: 150, y: 1010, r: -5, icon: 'ship', o: 0.6, s: 175 },
-  { x: 640, y: 120, r: 8, icon: 'hourglass', o: 0.55, s: 170 }, { x: 1560, y: 150, r: -7, icon: 'compass', o: 0.5, s: 170 },
-  { x: 2330, y: 360, r: 8, icon: 'sword', o: 1, s: 230 }, { x: 2140, y: 740, r: -6, icon: 'castle', o: 0.8, s: 190 }, { x: 2380, y: 1020, r: 6, icon: 'pyramid', o: 0.6, s: 180 },
-  { x: 1750, y: 1120, r: -8, icon: 'quill', o: 0.5, s: 165 },
+/** The palette the monuments are drawn in for the banner: sepia, leather and bronze, with gold light. */
+const sepia = (): Colors => ({
+  night: false, skyTop: '#2a170a', skyMid: '#8a5a2a', skyBottom: '#f0c25e', sun: '#fff1c8',
+  far: '#9a6a3a', mid: '#6a4424', near: '#44281a', fore: '#26160c', shadow: '#1a0f07', light: '#e7c98c',
+  accent: '#a8442a', accent2: '#8a5a2a', gold: '#f0c25e', skin: '#d9a877', water: '#6a4424', water2: '#8a5a2a', glow: '#ffd27a',
+});
+
+const SKYLINE: { C: React.FC<any>; x: number; s: number; layer: 'far' | 'near' }[] = [
+  { C: Obelisk, x: 120, s: 1.7, layer: 'near' }, { C: Pyramids, x: 470, s: 1.15, layer: 'far' }, { C: Temple, x: 700, s: 1.0, layer: 'near' }, { C: Aqueduct, x: 1010, s: 0.85, layer: 'far' },
+  { C: Colosseum, x: 1230, s: 0.78, layer: 'near' }, { C: GreatWall, x: 1550, s: 1.0, layer: 'far' }, { C: Cathedral, x: 1700, s: 0.85, layer: 'near' }, { C: Windmill, x: 1960, s: 0.9, layer: 'far' },
+  { C: Pagoda, x: 2150, s: 1.5, layer: 'near' }, { C: Castle, x: 2470, s: 0.9, layer: 'near' },
 ];
 
-/** The YouTube channel art (2560 x 1440). Title, monogram and tagline sit in the 1546 x 423 box every device shows; the glass tiles are the atmosphere. */
-export const Banner: React.FC = () => (
-  <AbsoluteFill>
-    <Cosmos w={2560} h={1440} wide />
-    <div style={{ position: 'absolute', left: 300, top: 230, fontFamily: SPACE, fontWeight: 500, fontSize: 30, letterSpacing: 6, color: 'rgba(244,226,190,0.5)' }}>THE CHRONICLER  ·  HISTORY · MYSTERY · TURNING POINTS</div>
-    {TILES.map((t, i) => (
-      <div key={i} style={{ position: 'absolute', left: t.x - t.s / 2, top: t.y - t.s / 2, width: t.s, height: t.s, transform: `rotate(${t.r}deg)`, opacity: t.o, borderRadius: t.s * 0.24, background: 'linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03))', border: `2px solid ${DUSK.low}66`, boxShadow: `0 18px 40px rgba(0,0,0,0.5), inset 0 0 40px ${DUSK.low}1a`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ filter: `drop-shadow(0 0 14px ${DUSK.low}cc)` }}><Engraving name={t.icon} size={t.s * 0.56} color={GOLD.hi} accent={DUSK.low} at={0} len={1} thick={4.6} /></div>
-      </div>
-    ))}
-    {/* the safe box */}
-    <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423, display: 'flex', alignItems: 'center', gap: 30 }}>
-      <div style={{ width: 390, height: 390, flex: '0 0 auto', marginLeft: -20 }}><Seal id="bn" /></div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.98 }}>
-          <span style={{ fontFamily: PLAYFAIR, fontWeight: 900, fontSize: 138, color: '#FFF4D8', letterSpacing: -2 }}>The Chronicles</span>
-          <span style={{ fontFamily: PLAYFAIR_ITALIC, fontWeight: 700, fontSize: 138, color: GOLD.mid, textShadow: `0 0 34px ${DUSK.low}77`, marginTop: -4 }}>of History</span>
+/** The YouTube channel art (2560 x 1440): an illuminated panorama of history. Monuments of every age stand in a row under a gold sun, in sepia and bronze; the title is inked on a parchment scroll held at the centre
+ *  with the Chronicler's badge. Badge, scroll and tagline sit in the 1546 x 423 box every device shows. */
+export const Banner: React.FC = () => {
+  const c = sepia();
+  const haze = (layer: 'far' | 'near') => (layer === 'far' ? 0.62 : 1);
+  return (
+    <AbsoluteFill style={{ background: 'linear-gradient(180deg, #1c1008 0%, #4a2c12 34%, #a8702e 62%, #f0c25e 82%, #ffe6a8 100%)' }}>
+      {/* the sun and its rays */}
+      <svg width={2560} height={1440} style={{ position: 'absolute', inset: 0 }}>
+        <defs>
+          <radialGradient id="sunc" cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#fff6d6" /><stop offset="0.55" stopColor="#ffdc88" /><stop offset="1" stopColor="#f0c25e" stopOpacity="0.0" /></radialGradient>
+          <radialGradient id="vig" cx="50%" cy="48%" r="75%"><stop offset="0.55" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#0b0603" stopOpacity="0.75" /></radialGradient>
+        </defs>
+        {Array.from({ length: 28 }, (_, i) => { const a = Math.PI * (1.04 + (i / 27) * 0.92), d = a + 0.03; return <path key={i} d={`M1280 1010 L${1280 + Math.cos(a) * 1900} ${1010 + Math.sin(a) * 1900} L${1280 + Math.cos(d) * 1900} ${1010 + Math.sin(d) * 1900}Z`} fill="#fff1c8" opacity={0.1} />; })}
+        <circle cx={1280} cy={1010} r={460} fill="url(#sunc)" opacity={0.75} />
+        <circle cx={1280} cy={1010} r={250} fill="#fff1c8" opacity={0.95} />
+      </svg>
+      {/* the monuments, far then near */}
+      <svg width={2560} height={1440} viewBox="0 0 2560 1440" style={{ position: 'absolute', inset: 0 }}>
+        {(['far', 'near'] as const).map((layer) => (
+          <g key={layer} opacity={haze(layer)}>
+            {SKYLINE.filter((m) => m.layer === layer).map((m, i) => (
+              <g key={i} transform={`translate(${m.x} ${layer === 'far' ? 1250 : 1320}) scale(${m.s * (layer === 'far' ? 1.1 : 1.25)})`}>
+                <m.C c={layer === 'far' ? { ...c, near: c.far, mid: mix(c.far, '#f0c25e', 0.2), light: '#f1d79a', fore: c.mid } : c} t={0} seed={i + 1} />
+              </g>
+            ))}
+          </g>
+        ))}
+        <path d="M0 1320 Q640 1296 1280 1316 T2560 1308 V1440 H0Z" fill="#1c1008" />
+        <path d="M0 1338 Q640 1314 1280 1334 T2560 1326" stroke="#f0c25e" strokeWidth={3} fill="none" opacity={0.5} />
+        <rect width={2560} height={1440} fill="url(#vig)" />
+      </svg>
+      {/* an aged-paper grain over everything */}
+      <AbsoluteFill style={{ opacity: 0.1, mixBlendMode: 'multiply', backgroundImage: 'repeating-radial-gradient(circle at 23% 31%, #3a2210 0 1px, transparent 1px 3px)' }} />
+      {/* the double gold frame with its corner brackets */}
+      <div style={{ position: 'absolute', left: 34, top: 34, right: 34, bottom: 34, border: `5px solid ${GOLD.mid}`, boxShadow: `inset 0 0 0 10px #1c1008, inset 0 0 0 13px ${GOLD.lo}`, borderRadius: 6 }} />
+      <div style={{ position: 'absolute', inset: 0 }}><Corners color={GOLD.hi} size={110} inset={46} weight={7} /></div>
+      {/* the safe box: the badge and the scroll */}
+      <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423 }}>
+        <svg width={1546} height={423} viewBox="0 0 1546 423" style={{ position: 'absolute', inset: 0, overflow: 'visible', filter: 'drop-shadow(0 18px 26px rgba(0,0,0,0.55))' }}>
+          <defs><linearGradient id="parch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f7ebc9" /><stop offset="1" stopColor="#e3c88c" /></linearGradient></defs>
+          <path d="M330 48 Q760 20 1220 48 L1220 372 Q760 400 330 372Z" fill="url(#parch)" stroke="#9a7440" strokeWidth={4} />
+          <path d="M342 62 Q760 38 1208 62 M342 358 Q760 382 1208 358" stroke="#b58a4a" strokeWidth={3} fill="none" />
+          {/* the curled ends */}
+          <path d="M330 48 Q290 40 276 80 L276 340 Q290 384 330 372Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
+          <ellipse cx={288} cy={210} rx={22} ry={130} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={288} cy={210} rx={9} ry={64} fill="none" stroke="#9a7440" strokeWidth={3} />
+          <path d="M1220 48 Q1260 40 1274 80 L1274 340 Q1260 384 1220 372Z" fill="#d9bb7c" stroke="#9a7440" strokeWidth={4} />
+          <ellipse cx={1262} cy={210} rx={22} ry={130} fill="#c9a866" stroke="#9a7440" strokeWidth={4} /><ellipse cx={1262} cy={210} rx={9} ry={64} fill="none" stroke="#9a7440" strokeWidth={3} />
+        </svg>
+        <div style={{ position: 'absolute', left: 335, top: 56, width: 880, height: 310, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 80, lineHeight: 1.06, textAlign: 'center', color: '#3a2210', letterSpacing: 1, whiteSpace: 'nowrap', textShadow: '0 2px 0 rgba(255,244,216,0.7)' }}>THE CHRONICLES<br />OF HISTORY</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 14 }}>
+            <div style={{ width: 120, height: 3, background: 'linear-gradient(90deg, transparent, #8a5a2a)' }} /><div style={{ width: 14, height: 14, background: '#a8442a', transform: 'rotate(45deg)' }} /><div style={{ width: 120, height: 3, background: 'linear-gradient(270deg, transparent, #8a5a2a)' }} />
+          </div>
+          <div style={{ fontFamily: CORMORANT, fontWeight: 700, fontStyle: 'italic', fontSize: 42, color: '#5a3a1c', marginTop: 6, whiteSpace: 'nowrap' }}>True stories, drawn alive. A new one every day.</div>
         </div>
-        <div style={{ marginTop: 22, width: 150, height: 5, background: `linear-gradient(90deg, ${DUSK.low}, ${DUSK.mid})` }} />
-        <div style={{ marginTop: 14, fontFamily: SPACE, fontWeight: 500, fontSize: 34, letterSpacing: 8, color: 'rgba(244,226,190,0.68)' }}>TRUE STORIES / DRAWN ALIVE / ONE EVERY DAY</div>
+        <div style={{ position: 'absolute', left: -62, top: 8, width: 408, height: 408, filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.6))' }}><Seal id="bn" /></div>
       </div>
-    </div>
-  </AbsoluteFill>
-);
+    </AbsoluteFill>
+  );
+};
