@@ -26,7 +26,7 @@ export const ArtStage: React.FC<{ shots: ArtShot[]; dur: number; look: Look; see
           </AbsoluteFill>
         );
       })}
-      <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(5,8,20,0.3) 0%, rgba(5,8,20,0) 16%, rgba(5,8,20,0) 58%, rgba(5,8,20,0.55) 80%, rgba(5,8,20,0.72) 100%)' }} />
+      <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(17,12,8,0.3) 0%, rgba(17,12,8,0) 16%, rgba(17,12,8,0) 58%, rgba(17,12,8,0.55) 80%, rgba(17,12,8,0.72) 100%)' }} />
     </AbsoluteFill>
   );
 };

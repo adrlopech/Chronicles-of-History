@@ -42,7 +42,7 @@ export const Pavilion: React.FC<P> = ({ c, t }) => (
   <g>
     <path d={rect(-110, -16, 220, 16)} fill={stone(c, 1)} stroke={c.shadow} strokeWidth={2} />
     {[-86, -30, 30, 86].map((x) => <path key={x} d={rect(x - 7, -126, 14, 110)} fill={mix('#c13a2a', c.mid, 0.25)} stroke={c.shadow} strokeWidth={1.6} />)}
-    <path d="M-150 -118 Q-100 -118 -92 -150 L0 -200 L92 -150 Q100 -118 150 -118 Q70 -128 0 -168 Q-70 -128 -150 -118Z" fill={mix('#2f6a62', c.mid, 0.3)} stroke={c.shadow} strokeWidth={2} />
+    <path d="M-150 -118 Q-100 -118 -92 -150 L0 -200 L92 -150 Q100 -118 150 -118 Q70 -128 0 -168 Q-70 -128 -150 -118Z" fill={mix('#6a542f', c.mid, 0.3)} stroke={c.shadow} strokeWidth={2} />
     <path d="M-150 -118 Q-100 -112 -60 -126 L60 -126 Q100 -112 150 -118" stroke={c.gold} strokeWidth={3} fill="none" />
     <path d="M0 -200 v-22" stroke={c.gold} strokeWidth={4} />
     <path d="M-170 6 q22 -8 44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0 t44 0" stroke={c.water2} strokeWidth={3} fill="none" opacity={0.6 + Math.sin(t) * 0.1} />
@@ -53,7 +53,7 @@ export const Dojo: React.FC<P> = ({ c }) => (
     <path d={rect(-150, -80, 300, 80)} fill={mix('#d9c6a0', c.mid, 0.3)} stroke={c.shadow} strokeWidth={2.5} />
     {Array.from({ length: 5 }, (_, i) => <path key={i} d={rect(-136 + i * 56, -70, 48, 66)} fill={mix('#f2eadb', c.light, 0.3)} stroke={c.shadow} strokeWidth={1.6} />)}
     {Array.from({ length: 5 }, (_, i) => <path key={i} d={`M${-112 + i * 56} -70 V-4 M${-136 + i * 56} -38 H${-88 + i * 56}`} stroke={wood(c, 2)} strokeWidth={1.4} />)}
-    <path d="M-190 -78 Q-120 -80 -96 -128 L96 -128 Q120 -80 190 -78 Q100 -92 0 -102 Q-100 -92 -190 -78Z" fill={mix('#3a4750', c.mid, 0.3)} stroke={c.shadow} strokeWidth={2.2} />
+    <path d="M-190 -78 Q-120 -80 -96 -128 L96 -128 Q120 -80 190 -78 Q100 -92 0 -102 Q-100 -92 -190 -78Z" fill={mix('#50443a', c.mid, 0.3)} stroke={c.shadow} strokeWidth={2.2} />
     <path d="M-150 -80 H150" stroke={wood(c, 2)} strokeWidth={5} />
   </g>
 );
@@ -160,7 +160,7 @@ export const Lander: React.FC<P> = ({ c, t }) => (
 );
 export const Satellite: React.FC<P> = ({ c, t, seed }) => (
   <g transform={`translate(0 ${-250 + Math.sin(t * 0.8 + seed) * 12}) rotate(${Math.sin(t * 0.5 + seed) * 10})`}>
-    {[-1, 1].map((s) => <g key={s}><path d={`M${s * 18} -4 H${s * 40}`} stroke={c.shadow} strokeWidth={3} /><path d={`M${s * 40} -22 H${s * 150} V22 H${s * 40}Z`} fill={mix('#27407a', c.mid, 0.2)} stroke={c.shadow} strokeWidth={2.2} />{[1, 2, 3, 4].map((k) => <path key={k} d={`M${s * (40 + k * 22)} -22 V22`} stroke={mix(c.light, '#ffffff', 0.2)} strokeWidth={1.2} opacity={0.7} />)}<path d={`M${s * 40} 0 H${s * 150}`} stroke={mix(c.light, '#ffffff', 0.2)} strokeWidth={1.2} opacity={0.7} /></g>)}
+    {[-1, 1].map((s) => <g key={s}><path d={`M${s * 18} -4 H${s * 40}`} stroke={c.shadow} strokeWidth={3} /><path d={`M${s * 40} -22 H${s * 150} V22 H${s * 40}Z`} fill={mix('#764c2b', c.mid, 0.2)} stroke={c.shadow} strokeWidth={2.2} />{[1, 2, 3, 4].map((k) => <path key={k} d={`M${s * (40 + k * 22)} -22 V22`} stroke={mix(c.light, '#ffffff', 0.2)} strokeWidth={1.2} opacity={0.7} />)}<path d={`M${s * 40} 0 H${s * 150}`} stroke={mix(c.light, '#ffffff', 0.2)} strokeWidth={1.2} opacity={0.7} /></g>)}
     <path d={rect(-20, -22, 40, 44)} fill={mix('#d6a93f', c.mid, 0.2)} stroke={c.shadow} strokeWidth={2.4} />
     <path d="M0 -22 V-46" stroke={c.shadow} strokeWidth={2.4} /><path d="M-14 -46 Q0 -60 14 -46Z" fill={c.light} stroke={c.shadow} strokeWidth={1.6} /><circle cx={0} cy={-8} r={6} fill={c.accent} />
   </g>

@@ -14,7 +14,7 @@ import { Engraving } from '../chronicle/icons';
  * a two-tone wordmark (cream roman + gold italic) and a monospaced tagline. The emblem is THE CHRONICLER, a character; the colours are brown leather, bronze and gold leaf.
  */
 export const GOLD = { hi: '#FFF1BF', mid: '#F0C25E', lo: '#B9822A', deep: '#6B430A' };
-export const OBSIDIAN = '#0A0710';
+export const OBSIDIAN = '#100b07';
 /** The brown and gold of the brand: leather, bronze and gold leaf. */
 export const DUSK = { top: '#3A2210', mid: '#B9822A', low: '#F0C25E' };
 export const EMBER = '#FF7A55';
@@ -39,8 +39,8 @@ export const Seal: React.FC<{ id?: string; simple?: boolean }> = ({ id = 's', si
         <ellipse cx={400} cy={330} rx={150} ry={165} fill={`url(#${id}-g)`} />
         <path d="M255 360 Q250 540 330 600 Q400 640 470 600 Q550 540 545 360 Q500 430 400 435 Q300 430 255 360Z" fill={`url(#${id}-g)`} />
         <path d="M70 700 Q120 600 240 585 Q400 560 560 585 Q680 600 730 700 Q640 760 400 770 Q160 760 70 700Z" fill={`url(#${id}-g)`} />
-        {laurel.map((l) => <ellipse key={l.k} cx={l.x} cy={l.y} rx={11} ry={30} transform={`rotate(${l.rot} ${l.x} ${l.y})`} fill="#14091c" />)}
-        <circle cx={346} cy={322} r={16} fill="#14091c" /><circle cx={454} cy={322} r={16} fill="#14091c" />
+        {laurel.map((l) => <ellipse key={l.k} cx={l.x} cy={l.y} rx={11} ry={30} transform={`rotate(${l.rot} ${l.x} ${l.y})`} fill="#1b0c0a" />)}
+        <circle cx={346} cy={322} r={16} fill="#1b0c0a" /><circle cx={454} cy={322} r={16} fill="#1b0c0a" />
       </svg>
     );
   }

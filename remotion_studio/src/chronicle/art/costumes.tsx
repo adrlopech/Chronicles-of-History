@@ -8,7 +8,7 @@ import { Hold } from './items';
 
 /** The hundred historical characters (the PEOPLE list of vocab.ts): each is a costume for the one figure drawn by `Person`. Colours are mixed toward the palette so they follow the time of day. */
 interface Costume { hat?: Hat; hold?: Hold; robe?: string; body?: string; cloak?: string; armor?: string; hatColor?: string; skin?: number; beard?: boolean; female?: boolean; shield?: boolean }
-const HEX: Record<string, string> = { R: '#a8232b', B: '#2c4a86', W: '#e6dfcc', K: '#2b2623', G: '#3f6b3a', Y: '#d6b03a', P: '#6b2d7a', O: '#c8642a', N: '#6a4a2e', S: '#9aa3ad', T: '#2b7a78', KH: '#6b6a45', OL: '#55603d', GR: '#6c6f73' };
+const HEX: Record<string, string> = { R: '#a8232b', B: '#825430', W: '#e6dfcc', K: '#2b2623', G: '#6b603a', Y: '#d6b03a', P: '#7a372d', O: '#c8642a', N: '#6a4a2e', S: '#ada29a', T: '#785d2d', KH: '#6b6a45', OL: '#60583d', GR: '#6c6f73' };
 
 /** Leaders and rulers stand alone; everyone else comes with two companions. */
 export const SOLO: readonly string[] = ['pharaoh', 'roman_emperor', 'jarl', 'pope', 'queen', 'shogun', 'khan', 'sultan', 'byzantine_emperor', 'chinese_emperor', 'admiral', 'merchant_prince', 'tycoon', 'field_marshal', 'president'];

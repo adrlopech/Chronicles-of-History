@@ -54,7 +54,7 @@ export const Captions: React.FC<{ chunks: Chunk[] }> = ({ chunks }) => {
   const isLast = chunk === chunks[chunks.length - 1];
   const pop = spring({ frame: Math.max(0, frame - chunk.s), fps, config: { damping: 15, stiffness: 220, mass: 0.6 } });
   const fade = isLast ? interpolate(frame, [chunk.e + 20, chunk.e + 30], [1, 0], clamp) : 1;
-  const edge = '#0a0710';
+  const edge = '#100b07';
   const len = chunk.words.map((w) => w.w).join(' ').length;
   const size = Math.max(38, Math.min(56, Math.floor(860 / (Math.max(8, len) * look.k * 1.08))));
   const rule = look.accent2;

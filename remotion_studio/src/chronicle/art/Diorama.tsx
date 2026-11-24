@@ -135,7 +135,7 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
         <Weather kind={shot.weather ?? (place === 'snow' ? 'snow' : 'clear')} t={t} c={c} />
       </g>
       <Atmosphere c={c} time={shot.time} place={place} t={t} sx={640 + ((seed % 5) - 2) * 90 + 260 - 260 + cam * 30} sy={shot.time === 'day' ? GY - 190 : shot.time === 'night' ? GY - 200 : GY - 50} embers={subj.includes('fire') || subj.includes('volcano') || subj.includes('cannon') || place === 'battlefield' || shot.weather === 'smoke'} weather={shot.weather ?? 'clear'} />
-      <rect width={1080} height={H} fill={c.night ? '#05070f' : c.shadow} opacity={c.night ? 0.12 : 0.06} />
+      <rect width={1080} height={H} fill={c.night ? '#0f0905' : c.shadow} opacity={c.night ? 0.12 : 0.06} />
     </svg>
   );
 };

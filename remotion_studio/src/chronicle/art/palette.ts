@@ -1,5 +1,6 @@
 import { Look } from '../looks';
 import { TimeOfDay, Weather } from './vocab';
+import { SKIES } from '../palette';
 
 export const hex = (c: string): [number, number, number] => {
   const h = c.replace('#', '');
@@ -35,19 +36,14 @@ export interface Colors {
   glow: string; // fire and windows
 }
 
-const SKY: Record<TimeOfDay, { top: string; mid: string; bottom: string; sun: string }> = {
-  dawn: { top: '#4a3aa8', mid: '#e0629a', bottom: '#ffc58a', sun: '#fff0b8' },
-  day: { top: '#2f7fe8', mid: '#7fbcf0', bottom: '#d6efff', sun: '#fff7d0' },
-  dusk: { top: '#2a1260', mid: '#c4388c', bottom: '#ff9a4a', sun: '#ffc27a' },
-  night: { top: '#040820', mid: '#141f5a', bottom: '#2c3f8f', sun: '#f6f1d8' },
-};
+const SKY: Record<TimeOfDay, { top: string; mid: string; bottom: string; sun: string }> = SKIES;
 
 /** The illustration palette of one shot: a time-of-day sky graded toward the look's own colours, silhouettes that get darker toward the viewer, and the look's accents for cloaks and flags. */
 export const makeColors = (look: Look, time: TimeOfDay, weather: Weather = 'clear'): Colors => {
   const sky = SKY[time];
   const grade = (c: string, t = 0.1) => mix(c, look.accent2, t);
   const storm = weather === 'storm' ? 0.55 : weather === 'rain' ? 0.35 : weather === 'smoke' ? 0.3 : weather === 'snow' ? 0.25 : 0;
-  const gray = (c: string) => mix(c, '#4d5058', storm);
+  const gray = (c: string) => mix(c, '#5a4a3a', storm);
   const night = time === 'night';
   const skyTop = gray(grade(sky.top));
   const skyMid = gray(grade(sky.mid));

@@ -321,7 +321,7 @@ export const ListScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
 
 const VERDICTS = {
   myth: { label: 'Myth', dark: '#E0574B', light: '#A3201D' },
-  fact: { label: 'Fact', dark: '#5BB58A', light: '#2E6B4F' },
+  fact: { label: 'Fact', dark: '#b5945b', light: '#6b552e' },
   partly: { label: 'Half true', dark: '#E3BC5C', light: '#A87618' },
 } as const;
 const VERDICT_ALIAS: Record<string, keyof typeof VERDICTS> = { myth: 'myth', fact: 'fact', partly: 'partly', buy: 'fact', wait: 'partly', skip: 'myth' };

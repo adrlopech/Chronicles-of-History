@@ -61,7 +61,7 @@ const Rail: React.FC<{ starts: number[]; scenes: MotionScene[]; total: number }>
       {starts.map((s, i) => {
         const y = (s / Math.max(1, total)) * h;
         const done = frame >= s;
-        return <div key={i} style={{ position: 'absolute', left: -7, top: y - 9, width: 18, height: 18, transform: 'rotate(45deg)', background: done ? look.accent : '#0b1226', border: `3px solid ${done ? look.accent : 'rgba(255,255,255,0.5)'}` }} />;
+        return <div key={i} style={{ position: 'absolute', left: -7, top: y - 9, width: 18, height: 18, transform: 'rotate(45deg)', background: done ? look.accent : '#24170d', border: `3px solid ${done ? look.accent : 'rgba(255,255,255,0.5)'}` }} />;
       })}
     </div>
   );

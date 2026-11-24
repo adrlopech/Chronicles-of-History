@@ -10,7 +10,7 @@ Source: `remotion_studio/src/brand/Brand.tsx` (`Seal` is the badge, `Cosmos` the
 ## Wordmark
 **THE CHRONICLES OF HISTORY** in Cinzel Decorative 900, dark brown ink on a parchment scroll, with a gold-brown rule and the tagline *True stories, drawn alive. A new one every day.* in Cormorant italic. On dark grounds the same words are set cream (Playfair Display 900) with **of History** in gold italic.
 
-## Palette: brown and gold
+## Palette: brown and gold (the official palette is in `guide/palette.md`)
 Brown leather, bronze and gold leaf on a dark ground; cream for text.
 | Role | Colour |
 |---|---|

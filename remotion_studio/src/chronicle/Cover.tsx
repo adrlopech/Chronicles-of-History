@@ -48,14 +48,14 @@ export const Cover: React.FC<MotionGraphicProps & { coverScene?: number }> = ({ 
           <AbsoluteFill style={{ background: `radial-gradient(ellipse 60% 36% at 50% 38%, ${look.accent2}30 0%, transparent 70%)`, mixBlendMode: 'screen' }} />
           <AbsoluteFill style={{ background: `repeating-conic-gradient(from 200deg at 50% 30%, ${look.accent2}26 0deg 5deg, transparent 5deg 17deg)`, mixBlendMode: 'screen', opacity: 0.3, maskImage: 'radial-gradient(ellipse 80% 55% at 50% 35%, #000 0%, transparent 72%)' }} />
           {/* scrims for the type, a vignette and grain */}
-          <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(4,3,8,0.78) 0%, rgba(4,3,8,0) 17%, rgba(4,3,8,0) 40%, rgba(4,3,8,0.78) 66%, rgba(4,3,8,0.96) 100%)' }} />
+          <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(8,5,3,0.78) 0%, rgba(8,5,3,0) 17%, rgba(8,5,3,0) 40%, rgba(8,5,3,0.78) 66%, rgba(8,5,3,0.96) 100%)' }} />
           <AbsoluteFill style={{ background: 'radial-gradient(ellipse at 50% 42%, transparent 52%, rgba(0,0,0,0.6) 100%)' }} />
           <AbsoluteFill style={{ opacity: 0.12, mixBlendMode: 'overlay', backgroundImage: 'repeating-radial-gradient(circle at 17% 23%, #fff 0 1px, transparent 1px 3px)' }} />
 
           {/* the series plate */}
           <div style={{ position: 'absolute', top: 92, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
             <div style={{ clipPath: plate, background: look.accent2, padding: 4 }}>
-              <div style={{ clipPath: plate, background: 'rgba(10,7,14,0.9)', padding: '14px 44px', display: 'flex', alignItems: 'center', gap: 22 }}>
+              <div style={{ clipPath: plate, background: 'rgba(14,8,7,0.9)', padding: '14px 44px', display: 'flex', alignItems: 'center', gap: 22 }}>
                 <div style={{ width: 14, height: 14, background: look.accent, transform: 'rotate(45deg)' }} />
                 <span style={{ fontFamily: look.head, fontWeight: look.weight, fontSize: 44, letterSpacing: 8, color: '#FFF4D8', textTransform: 'uppercase' }}>{series ?? look.era}</span>
                 <div style={{ width: 14, height: 14, background: look.accent, transform: 'rotate(45deg)' }} />
@@ -70,7 +70,7 @@ export const Cover: React.FC<MotionGraphicProps & { coverScene?: number }> = ({ 
               <span style={{ fontFamily: look.date, fontWeight: look.weight, fontSize: 42, letterSpacing: 7, color: look.accent2, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{when}</span>
               <div style={{ height: 3, flex: 1, background: `linear-gradient(270deg, transparent, ${look.accent2})` }} />
             </div>
-            <div style={{ fontFamily: look.head, fontWeight: look.weight, fontSize: tSize, lineHeight: 0.98, textAlign: 'center', textTransform: 'uppercase', letterSpacing: 2, WebkitTextStroke: `${Math.round(tSize / 11)}px #0a0710`, paintOrder: 'stroke fill', ...foilText, transform: 'rotate(-1.5deg)' }}>{title}</div>
+            <div style={{ fontFamily: look.head, fontWeight: look.weight, fontSize: tSize, lineHeight: 0.98, textAlign: 'center', textTransform: 'uppercase', letterSpacing: 2, WebkitTextStroke: `${Math.round(tSize / 11)}px #100b07`, paintOrder: 'stroke fill', ...foilText, transform: 'rotate(-1.5deg)' }}>{title}</div>
             {hook && (
               <div style={{ marginTop: 34 }}>
                 <TornLabel color={look.accent} seed={4} at={0} tilt={1.5}>

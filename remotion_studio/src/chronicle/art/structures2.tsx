@@ -335,10 +335,10 @@ export const Yurt: React.FC<P> = ({ c, t, seed }) => (
 );
 export const Igloo: React.FC<P> = ({ c }) => (
   <g>
-    <path d="M-110 0 A110 100 0 0 1 110 0Z" fill={mix('#f2f7fa', c.light, 0.4)} stroke={c.shadow} strokeWidth={2.5} />
+    <path d="M-110 0 A110 100 0 0 1 110 0Z" fill={mix('#faf5f2', c.light, 0.4)} stroke={c.shadow} strokeWidth={2.5} />
     {[-70, -35, 0, 35, 70].map((x, i) => <path key={i} d={`M${x} -2 L${x * 0.9} -${96 - Math.abs(x) * 0.6}`} stroke={c.shadow} strokeWidth={1.2} opacity={0.35} />)}
     {[-30, -62, -88].map((y) => <path key={y} d={`M${-Math.sqrt(1 - (y / 100) ** 2) * 108} ${y} Q0 ${y - 8} ${Math.sqrt(1 - (y / 100) ** 2) * 108} ${y}`} stroke={c.shadow} strokeWidth={1.2} opacity={0.35} fill="none" />)}
-    <path d="M-110 0 L-110 -34 Q-110 -44 -126 -44 L-170 -44 L-170 0Z" fill={mix('#f2f7fa', c.light, 0.4)} stroke={c.shadow} strokeWidth={2.2} /><path d="M-160 0 V-34 Q-140 -42 -120 -34 V0Z" fill={c.fore} />
+    <path d="M-110 0 L-110 -34 Q-110 -44 -126 -44 L-170 -44 L-170 0Z" fill={mix('#faf5f2', c.light, 0.4)} stroke={c.shadow} strokeWidth={2.2} /><path d="M-160 0 V-34 Q-140 -42 -120 -34 V0Z" fill={c.fore} />
   </g>
 );
 export const Torii: React.FC<P> = ({ c }) => (
@@ -354,7 +354,7 @@ export const JapaneseCastle: React.FC<P> = ({ c }) => (
     {[0, 1, 2, 3].map((i) => {
       const w = 220 - i * 46, y = -90 - i * 62;
       return <g key={i}><path d={rect(-w / 2, y - 44, w, 44)} fill={mix('#f2eee2', c.light, 0.3)} stroke={c.shadow} strokeWidth={2} />{[-0.3, 0, 0.3].map((f) => <path key={f} d={rect(w * f - 8, y - 32, 16, 16)} fill={c.fore} opacity={0.8} />)}
-        <path d={`M${-w / 2 - 30} ${y - 40} Q${-w / 2 + 10} ${y - 38} 0 ${y - 64} Q${w / 2 - 10} ${y - 38} ${w / 2 + 30} ${y - 40} Q0 ${y - 30} ${-w / 2 - 30} ${y - 40}Z`} fill={mix('#3a4750', c.mid, 0.3)} stroke={c.shadow} strokeWidth={2} /></g>;
+        <path d={`M${-w / 2 - 30} ${y - 40} Q${-w / 2 + 10} ${y - 38} 0 ${y - 64} Q${w / 2 - 10} ${y - 38} ${w / 2 + 30} ${y - 40} Q0 ${y - 30} ${-w / 2 - 30} ${y - 40}Z`} fill={mix('#50443a', c.mid, 0.3)} stroke={c.shadow} strokeWidth={2} /></g>;
     })}
     <path d="M-20 -318 q20 -26 40 0" stroke={c.gold} strokeWidth={5} fill="none" strokeLinecap="round" />
   </g>

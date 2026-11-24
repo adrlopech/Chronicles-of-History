@@ -81,7 +81,7 @@ const B = (hex: string, c: Colors, k = 0.25) => mix(hex, c.mid, k);
 const S = (extra: Partial<Q>): Q => ({ spotCol: (cc: Colors) => mix('#241810', cc.mid, 0.2), rx: 30, ry: 14, leg: 26, lw: 6, col: '#888', hr: 11, snout: 12, ear: 'point', tail: 'thin', speed: 6, ...extra });
 
 export const Dog = mk((c) => S({ rx: 30, ry: 14, leg: 26, lw: 6, col: B('#b98a54', c), hr: 11, snout: 12, ear: 'floppy', tail: 'thin', speed: 9 }));
-export const Wolf = mk((c) => S({ rx: 38, ry: 16, leg: 34, lw: 6.5, col: B('#7d8288', c), col2: B('#c4c8cc', c), hr: 12, snout: 17, ear: 'point', tail: 'bushy', speed: 8 }));
+export const Wolf = mk((c) => S({ rx: 38, ry: 16, leg: 34, lw: 6.5, col: B('#7d8288', c), col2: B('#ccc7c4', c), hr: 12, snout: 17, ear: 'point', tail: 'bushy', speed: 8 }));
 export const Fox = mk((c) => S({ rx: 28, ry: 12, leg: 24, lw: 5, col: B('#cf6a2a', c), col2: B('#f2e6d2', c), hr: 10, snout: 14, ear: 'point', tail: 'bushy', speed: 9 }));
 export const Lion = mk((c) => S({ rx: 50, ry: 23, leg: 36, lw: 10, col: B('#c99a52', c), col2: B('#e6cf9a', c), hr: 14, snout: 11, ear: 'round', tail: 'tuft', mane: true, speed: 5 }));
 export const Tiger = mk((c) => S({ rx: 52, ry: 22, leg: 36, lw: 10, col: B('#d9812e', c), col2: B('#f2e6d2', c), hr: 14, snout: 11, ear: 'round', tail: 'thin', stripes: true, speed: 5.5 }));
@@ -122,16 +122,16 @@ export const Eagle: React.FC<P> = ({ c, t, seed }) => {
 };
 export const Raven: React.FC<P> = ({ c, t, seed }) => {
   const f = Math.sin(t * 8 + seed) * 0.6;
-  const col = mix('#1c1a24', c.mid, 0.2);
+  const col = mix('#241e1a', c.mid, 0.2);
   return (
     <g transform={`translate(0 ${-150 + Math.sin(t * 2 + seed) * 12})`}>
-      {[-1, 1].map((s) => <path key={s} d={`M0 -6 Q${s * 26} ${-26 - f * 32} ${s * 62} ${-8 - f * 40} Q${s * 40} 0 ${s * 20} 4 Z`} fill={col} stroke={mix(col, '#6a6aa0', 0.3)} strokeWidth={0.8} />)}
-      <ellipse cx={0} cy={0} rx={22} ry={8} fill={col} /><path d="M-20 0 L-38 6 L-34 -3Z" fill={col} /><circle cx={22} cy={-3} r={7} fill={col} /><path d="M27 -3 L40 1 L27 4Z" fill="#33323a" /><circle cx={24} cy={-5} r={1.5} fill="#e8e0d0" />
+      {[-1, 1].map((s) => <path key={s} d={`M0 -6 Q${s * 26} ${-26 - f * 32} ${s * 62} ${-8 - f * 40} Q${s * 40} 0 ${s * 20} 4 Z`} fill={col} stroke={mix(col, '#a0816a', 0.3)} strokeWidth={0.8} />)}
+      <ellipse cx={0} cy={0} rx={22} ry={8} fill={col} /><path d="M-20 0 L-38 6 L-34 -3Z" fill={col} /><circle cx={22} cy={-3} r={7} fill={col} /><path d="M27 -3 L40 1 L27 4Z" fill="#3a3532" /><circle cx={24} cy={-5} r={1.5} fill="#e8e0d0" />
     </g>
   );
 };
 export const Snake: React.FC<P> = ({ c, t, seed }) => {
-  const col = mix('#4f7d3a', c.mid, 0.25);
+  const col = mix('#7d6d3a', c.mid, 0.25);
   const pts = Array.from({ length: 26 }, (_, i) => [i * 8 - 90, -10 + Math.sin(i * 0.55 - t * 4 + seed) * 12 * (0.4 + i / 40)] as const);
   const d = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x} ${y}`).join(' ');
   const [hx, hy] = pts[pts.length - 1];
@@ -145,7 +145,7 @@ export const Snake: React.FC<P> = ({ c, t, seed }) => {
   );
 };
 export const Crocodile: React.FC<P> = ({ c, t, seed }) => {
-  const col = mix('#4a6a3a', c.mid, 0.25);
+  const col = mix('#6a5f3a', c.mid, 0.25);
   const jaw = 4 + Math.max(0, Math.sin(t * 2 + seed)) * 14;
   return (
     <g>
@@ -160,7 +160,7 @@ export const Crocodile: React.FC<P> = ({ c, t, seed }) => {
   );
 };
 export const Whale: React.FC<P> = ({ c, t, seed }) => {
-  const col = mix('#3b5878', c.mid, 0.3);
+  const col = mix('#78553b', c.mid, 0.3);
   const rise = Math.sin(t * 0.9 + seed) * 10;
   return (
     <g transform={`translate(0 ${rise})`}>

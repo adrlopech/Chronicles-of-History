@@ -3,6 +3,10 @@
 Automatic studio of vertical history videos (Motion Graphics, 62-90 s, English) for the channel **The Chronicles of History**: YouTube `@chroniclesofhistorytv` and TikTok `@chroniclesofhistorytv` (both handles were free on 2026-11-24; the channel still has to be created).
 Sibling of `Silicon Verdict` (`../Silicon Verdict`): same Remotion engine and pipeline, **its own brand, channels, tokens and data**. Never publish from here to the Silicon Verdict channels.
 
+## Regla fija: paleta
+
+Todo el proyecto es **marrón y dorado, con aire histórico** (nada de azules, verdes ni morados: eso es de Silicon Verdict). La paleta oficial está en `guide/palette.md` y en `remotion_studio/src/chronicle/palette.ts`; `tests/test_palette.py` falla si algún color del código no es cálido. Un color nuevo se añade a la paleta y a la guía a la vez.
+
 ## Regla fija: minuto mínimo
 
 Ningún vídeo dura menos de **1 minuto** (monetización; y es la norma del canal). Una sola constante, `FLOOR_SECONDS = 61` en `services/motion_generator.py`, la aplican el validador de guiones, el estirado de la voz (objetivo 62 s) y el QA final antes de subir. Si un vídeo sale por debajo, no se publica: se alarga el guion o se rehace. Los guiones hechos a mano también pasan el validador (`scripts/write_era_scripts.py`).

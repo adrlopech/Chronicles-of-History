@@ -68,7 +68,7 @@ export const Eclipse: React.FC<P> = ({ c, t }) => {
         return <path key={i} d={`M${Math.cos(a) * 62} ${Math.sin(a) * 62} L${Math.cos(a) * l} ${Math.sin(a) * l}`} stroke={c.sun} strokeWidth={3} opacity={0.7} />;
       })}
       <circle r={64} fill={c.sun} opacity={0.4} />
-      <circle r={58} fill="#0a0a12" transform={`translate(${slide} 0)`} />
+      <circle r={58} fill="#120d0a" transform={`translate(${slide} 0)`} />
       <circle r={61} fill="none" stroke={c.sun} strokeWidth={3} opacity={0.9} />
     </g>
   );
@@ -340,7 +340,7 @@ export const Crown: React.FC<P> = ({ c, t }) => (
     <ellipse cx={0} cy={-30} rx={86} ry={26} fill={c.glow} opacity={0.18 + Math.sin(t * 2) * 0.05} />
     <path d="M-60 -20 L-70 -96 L-32 -62 L0 -110 L32 -62 L70 -96 L60 -20Z" fill={c.gold} stroke={c.shadow} strokeWidth={3} />
     <path d="M-62 -20 H62 V0 H-62Z" fill={mix(c.gold, c.shadow, 0.2)} stroke={c.shadow} strokeWidth={3} />
-    {[-30, 0, 30].map((x, i) => <circle key={x} cx={x} cy={-10} r={6} fill={[c.accent, '#3b82c4', c.accent][i]} />)}
+    {[-30, 0, 30].map((x, i) => <circle key={x} cx={x} cy={-10} r={6} fill={[c.accent, '#ba7845', c.accent][i]} />)}
     {[0.2, 0.9, 1.7].map((p, i) => <path key={i} d={`M${-50 + i * 50} ${-80 + i * 10} l4 -10 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4Z`} fill="#fff" opacity={0.5 + Math.sin(t * 4 + p * 3) * 0.5} />)}
   </g>
 );
