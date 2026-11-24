@@ -6,7 +6,7 @@ import { PersonKind } from '../chronicle/art/vocab';
 import { CINZEL_DECO, CORMORANT } from '../chronicle/fonts';
 import { LOOKS } from '../chronicle/looks';
 
-/** The brand of The Chronicles of History: a gold arch, the window into the past, with a traveller looking at a temple under a rising sun. Used for the avatar, the banner, the watermark and the outro. */
+/** The brand of The Chronicles of History: an open book of chronicles with a gold sun rising behind it. Used for the avatar, the banner, the watermark and the outro. */
 export const GOLD = { hi: '#FFF1BF', mid: '#F0C25E', lo: '#B9822A', deep: '#6B430A' };
 export const OBSIDIAN = '#0A0710';
 export const EMBER = '#FF7A55';
@@ -27,58 +27,68 @@ const Defs: React.FC<{ id: string }> = ({ id }) => (
   </defs>
 );
 
-/** The mark: an ARCH, the window into the past. Inside it a traveller stands on a hill and looks at a temple under a rising sun. It is drawn in an 800 x 800 box. `simple` is the one-colour version for the watermark. */
+/** The mark: an open BOOK OF CHRONICLES. A gold sun rises behind it; on the left page an illuminated gold C opens the first line, on the right page a little window shows the story coming alive
+ *  (a traveller walking toward a temple under the same sun); a red ribbon marks the page. Drawn in an 800 x 800 box. `simple` is the one-colour version for the watermark. */
 export const Seal: React.FC<{ id?: string; simple?: boolean }> = ({ id = 's', simple = false }) => {
-  const arch = 'M150 742 V382 A250 250 0 0 1 650 382 V742Z';
-  const inner = 'M176 742 V382 A224 224 0 0 1 624 382 V742Z';
+  const rays = Array.from({ length: 19 }, (_, i) => {
+    const ang = Math.PI * (1.04 + (i / 18) * 0.92);
+    return { a: ang, b: ang + 0.045 };
+  });
   if (simple) {
     return (
       <svg viewBox="0 0 800 800" width="100%" height="100%">
         <Defs id={id} />
-        <path d={arch} fill="none" stroke={`url(#${id}-gold)`} strokeWidth={34} strokeLinejoin="round" />
-        <circle cx={400} cy={560} r={96} fill={`url(#${id}-gold)`} />
-        <path d="M176 650 Q400 612 624 650" stroke={`url(#${id}-gold)`} strokeWidth={30} fill="none" />
+        <circle cx={400} cy={330} r={120} fill={`url(#${id}-gold)`} />
+        <path d="M70 330 Q240 300 400 366 Q560 300 730 330 V610 Q560 570 400 640 Q240 570 70 610Z" fill="none" stroke={`url(#${id}-gold)`} strokeWidth={36} strokeLinejoin="round" />
+        <path d="M400 366 V640" stroke={`url(#${id}-gold)`} strokeWidth={26} />
       </svg>
     );
   }
-  const stars = [[300, 190, 5], [470, 150, 4], [520, 250, 3], [250, 300, 3], [400, 230, 4]];
+  const left = 'M92 318 Q250 296 400 366 V588 Q250 514 92 540Z';
+  const right = 'M708 318 Q550 296 400 366 V588 Q550 514 708 540Z';
   return (
     <svg viewBox="0 0 800 800" width="100%" height="100%">
       <Defs id={id} />
       <defs>
-        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#241347" /><stop offset="0.45" stopColor="#b8347f" /><stop offset="0.8" stopColor="#ff8a4a" /><stop offset="1" stopColor="#ffc26a" /></linearGradient>
-        <clipPath id={`${id}-clip`}><path d={inner} /></clipPath>
+        <linearGradient id={`${id}-page`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#f6e9c8" /><stop offset="0.85" stopColor="#ead7a8" /><stop offset="1" stopColor="#cfb682" /></linearGradient>
+        <linearGradient id={`${id}-pageR`} x1="1" y1="0" x2="0" y2="0"><stop offset="0" stopColor="#f6e9c8" /><stop offset="0.85" stopColor="#ead7a8" /><stop offset="1" stopColor="#cfb682" /></linearGradient>
+        <linearGradient id={`${id}-leather`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#a02a30" /><stop offset="1" stopColor="#4e0f18" /></linearGradient>
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2a1650" /><stop offset="0.55" stopColor="#c4388c" /><stop offset="1" stopColor="#ff9a4a" /></linearGradient>
+        <clipPath id={`${id}-win`}><path d="M470 520 V420 A80 80 0 0 1 630 420 V520Z" /></clipPath>
       </defs>
-      <g transform="translate(400 400) scale(0.9) translate(-400 -400)" filter={`url(#${id}-glow)`}>
-        <path d={arch} fill={`url(#${id}-ring)`} />
-        <path d={inner} fill={`url(#${id}-sky)`} />
-        <g clipPath={`url(#${id}-clip)`}>
-          {stars.map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill="#fff6d8" opacity={0.85} />)}
-          <circle cx={400} cy={560} r={196} fill="#ffe2a0" opacity={0.16} />
-          <circle cx={400} cy={560} r={132} fill="#ffe9b4" opacity={0.28} />
-          <circle cx={400} cy={560} r={98} fill="#fff1c8" />
-          {/* the temple, far away */}
-          <g fill="#2a1233" opacity={0.92}>
-            <path d="M470 626 H624 V644 H470Z" />
-            {[486, 514, 542, 570, 598].map((x) => <rect key={x} x={x - 5} y={570} width={10} height={58} />)}
-            <path d="M462 574 L547 536 L632 574Z" />
-          </g>
-          {/* hills and the road */}
-          <path d="M176 742 V664 Q300 618 430 640 Q540 654 624 626 V742Z" fill="#150a1c" />
-          <path d="M310 742 Q380 700 440 664 Q470 650 500 646" stroke="#ffcf8a" strokeWidth={14} fill="none" opacity={0.5} strokeLinecap="round" />
-          {/* the traveller, seen from behind, a staff in hand */}
-          <g transform="translate(300 690)" fill="#0b0511" stroke="#0b0511">
-            <circle cx={0} cy={-128} r={17} stroke="none" />
-            <path d="M-18 -108 Q0 -120 18 -108 L30 -18 L-30 -18Z" stroke="none" />
-            <path d="M-14 -18 L-18 28 M14 -18 L20 28" strokeWidth={13} strokeLinecap="round" fill="none" />
-            <path d="M24 -100 L70 -140 M70 -150 V30" strokeWidth={6} strokeLinecap="round" fill="none" />
-          </g>
+      <g transform="translate(0 34)">
+      {/* the sun and its rays rise behind the book */}
+      {rays.map((r, i) => <path key={i} d={`M400 340 L${400 + Math.cos(r.a) * 345} ${340 + Math.sin(r.a) * 345} L${400 + Math.cos(r.b) * 345} ${340 + Math.sin(r.b) * 345}Z`} fill={GOLD.mid} opacity={i % 2 ? 0.2 : 0.34} />)}
+      <circle cx={400} cy={340} r={190} fill={GOLD.mid} opacity={0.14} />
+      <circle cx={400} cy={338} r={122} fill={`url(#${id}-gold)`} filter={`url(#${id}-glow)`} />
+      {/* the cover, with its gold edge */}
+      <path d="M62 300 Q250 268 400 340 Q550 268 738 300 V566 Q550 528 400 604 Q250 528 62 566Z" fill={`url(#${id}-leather)`} stroke={`url(#${id}-ring)`} strokeWidth={9} strokeLinejoin="round" />
+      <path d="M76 314 Q250 284 400 354 Q550 284 724 314 V552 Q550 514 400 590 Q250 514 76 552Z" fill="none" stroke={GOLD.mid} strokeWidth={2.5} opacity={0.6} />
+      {/* the pages: a stack of edges under the two leaves */}
+      {[24, 16, 8].map((dy, i) => (
+        <g key={i} transform={`translate(0 ${dy})`} opacity={0.5 + i * 0.15}>
+          <path d={left} fill="#cdb581" /><path d={right} fill="#cdb581" />
         </g>
-        <path d={inner} fill="none" stroke={GOLD.deep} strokeWidth={4} opacity={0.7} />
-        <path d="M110 756 H690" stroke={`url(#${id}-ring)`} strokeWidth={26} strokeLinecap="round" />
-        {/* keystone */}
-        <path d="M370 142 L430 142 L418 98 L382 98Z" fill={`url(#${id}-gold)`} stroke={GOLD.deep} strokeWidth={3} />
-        <path d="M400 62 l12 14 l-12 14 l-12 -14z" fill={EMBER} />
+      ))}
+      <path d={left} fill={`url(#${id}-page)`} stroke="#9a7c46" strokeWidth={3} strokeLinejoin="round" />
+      <path d={right} fill={`url(#${id}-pageR)`} stroke="#9a7c46" strokeWidth={3} strokeLinejoin="round" />
+      <path d="M400 366 V588" stroke="#8a6c3c" strokeWidth={5} />
+      {/* left page: an illuminated initial and lines of script */}
+      <text x={126} y={430} fontFamily={CINZEL_DECO} fontWeight={900} fontSize={118} fill={`url(#${id}-gold)`} stroke="#5a3a0a" strokeWidth={2.4} paintOrder="stroke fill">C</text>
+      {[[212, 372, 372], [212, 396, 372], [212, 420, 372]].map(([x, y, w], i) => <path key={i} d={`M${x} ${y + 2} Q${x + (w - x) / 2} ${y - 4} ${w} ${y + 4}`} stroke="#4a3418" strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.75} />)}
+      {[452, 482, 512].map((y, i) => <path key={y} d={`M126 ${y} Q250 ${y - 8 + i * 3} ${i === 2 ? 300 : 376} ${y + 8 + i * 2}`} stroke="#4a3418" strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.7} />)}
+      {/* right page: a window onto the story */}
+      <path d="M470 520 V420 A80 80 0 0 1 630 420 V520Z" fill={`url(#${id}-sky)`} />
+      <g clipPath={`url(#${id}-win)`}>
+        <circle cx={550} cy={474} r={34} fill="#fff1c8" /><circle cx={550} cy={474} r={52} fill="#ffe2a0" opacity={0.3} />
+        <g fill="#2a1233" opacity={0.9}><path d="M574 492 H632 V499 H574Z" />{[580, 592, 604, 616, 626].map((x) => <rect key={x} x={x - 2.5} y={471} width={5} height={23} />)}<path d="M571 473 L603 458 L635 473Z" /></g>
+        <path d="M470 520 V496 Q520 484 560 494 Q600 502 630 490 V520Z" fill="#150a1c" />
+        <g transform="translate(510 500)" fill="#0b0511" stroke="#0b0511"><circle cx={0} cy={-34} r={6.5} stroke="none" /><path d="M-6 -27 Q0 -31 6 -27 L10 -6 L-10 -6Z" stroke="none" /><path d="M-5 -6 L-6 8 M5 -6 L8 8 M9 -22 L24 -36 M26 -38 V10" strokeWidth={3.4} strokeLinecap="round" fill="none" /></g>
+      </g>
+      <path d="M470 520 V420 A80 80 0 0 1 630 420 V520Z" fill="none" stroke={`url(#${id}-ring)`} strokeWidth={6} />
+      {[[480, 540, 600], [480, 560, 566]].map(([x, y, w], i) => <path key={i} d={`M${x} ${y} Q${(x + w) / 2} ${y - 5} ${w} ${y + 2}`} stroke="#4a3418" strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.7} />)}
+      {/* the ribbon */}
+      <path d="M398 580 H438 V668 L418 650 L398 668Z" fill={EMBER} stroke="#8a2a1a" strokeWidth={3} transform="translate(0 6)" />
       </g>
     </svg>
   );
@@ -86,7 +96,7 @@ export const Seal: React.FC<{ id?: string; simple?: boolean }> = ({ id = 's', si
 
 export const Avatar: React.FC = () => (
   <AbsoluteFill style={{ background: OBSIDIAN, alignItems: 'center', justifyContent: 'center' }}>
-    <div style={{ width: '96%', height: '96%', transform: 'scale(1.08) translateY(-3%)' }}><Seal id="av" /></div>
+    <div style={{ width: '96%', height: '96%', transform: 'scale(1.0)' }}><Seal id="av" /></div>
   </AbsoluteFill>
 );
 
