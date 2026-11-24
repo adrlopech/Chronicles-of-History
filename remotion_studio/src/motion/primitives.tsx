@@ -3,9 +3,9 @@ import { AbsoluteFill, Easing, interpolate, random, spring, useCurrentFrame, use
 import { MONO, SANS, SERIF } from './fonts';
 import { LookCtx, useLook, useSceneCtx } from './looks';
 import { RevealWord } from './reveal';
-import { BRAND_BLUE, MotionTheme, SAFE_BOTTOM, SAFE_TOP } from './types';
+import { BRAND_BRONZE, MotionTheme, SAFE_BOTTOM, SAFE_TOP } from './types';
 
-export const ThemeCtx = createContext<{ theme: MotionTheme; light: boolean }>({ theme: { accent: '#00F0FF', background: '#05070C', text: '#FFF' }, light: false });
+export const ThemeCtx = createContext<{ theme: MotionTheme; light: boolean }>({ theme: { accent: '#E9B949', background: '#120C07', text: '#FFF' }, light: false });
 export const useTheme = () => useContext(ThemeCtx);
 export { LookCtx };
 
@@ -21,7 +21,7 @@ export const Background: React.FC<{ light: boolean; background: string; accent: 
   const frame = useCurrentFrame();
   const look = useLook();
   const { theme } = useTheme();
-  const a2 = theme.accent2 ?? BRAND_BLUE;
+  const a2 = theme.accent2 ?? BRAND_BRONZE;
   const drift = Math.sin(frame / 55) * 70;
   const sweep = interpolate(frame % 120, [0, 120], [-20, 120]);
   const base = light && !look.light ? '#EAF1F8' : background;
@@ -43,9 +43,9 @@ export const Background: React.FC<{ light: boolean; background: string; accent: 
     const grain = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>")`;
     return (
       <AbsoluteFill style={{ background: `linear-gradient(165deg, #0E3FE0 0%, ${base} 48%, #030A2E 100%)` }}>
-        {blob(20 + Math.sin(frame / 95) * 16, 22 + Math.cos(frame / 120) * 10, 820, '#38A8FF', '66')}
+        {blob(20 + Math.sin(frame / 95) * 16, 22 + Math.cos(frame / 120) * 10, 820, '#D4A24A', '66')}
         {blob(84 + Math.cos(frame / 85) * 10, 48 + Math.sin(frame / 105) * 14, 760, a2, '77')}
-        {blob(46 + Math.sin(frame / 140) * 20, 96, 880, '#1A3BFF', '88')}
+        {blob(46 + Math.sin(frame / 140) * 20, 96, 880, '#8C5A1E', '88')}
         <AbsoluteFill style={{ background: 'linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.07) 50%, transparent 62%)', transform: `translateX(${Math.sin(frame / 160) * 90}px)` }} />
         <AbsoluteFill style={{ backgroundImage: grain, opacity: 0.09, mixBlendMode: 'overlay' }} />
         {vignette}
@@ -377,7 +377,7 @@ export const Burst: React.FC<{ delay: number; color: string; count?: number; cy:
         const y = cy + Math.sin(angle) * speed * t + t * t * 60;
         const op = interpolate(frame, [0, 6, 55], [0, 1, 0], clamp);
         const size = 4 + random(`z${i}`) * 9;
-        const c = i % 3 === 0 ? BRAND_BLUE : color;
+        const c = i % 3 === 0 ? BRAND_BRONZE : color;
         return <div key={i} style={{ position: 'absolute', left: x, top: y, width: size, height: size, borderRadius: '50%', background: c, opacity: op, boxShadow: `0 0 ${size * 2}px ${c}` }} />;
       })}
     </AbsoluteFill>

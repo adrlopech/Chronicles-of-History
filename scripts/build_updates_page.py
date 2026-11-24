@@ -56,7 +56,7 @@ def main():
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Every update — Silicon Verdict</title>
   <meta name="description" content="Every push to the Silicon Verdict project, in detail, newest first.">
-  <meta name="theme-color" content="#05070C">
+  <meta name="theme-color" content="#120C07">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">

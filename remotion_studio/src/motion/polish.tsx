@@ -148,7 +148,7 @@ export const VoteCards: React.FC<{ a: string; b: string; delay: number }> = ({ a
     const pulse = 0.5 + 0.5 * Math.sin((frame - delay) / 9 + k * Math.PI);
     return (
       <div key={letter} style={{ ...glass(theme.accent, light, 30), flex: 1, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: '26px 18px 24px', opacity: Math.min(1, s * 1.4), transform: `translateY(${(1 - Math.min(1, s)) * 50}px) scale(${0.92 + 0.08 * Math.min(1, s)})`, boxShadow: `${glass(theme.accent, light).boxShadow}, 0 0 ${24 + pulse * 26}px ${theme.accent}${light ? '22' : '40'}` }}>
-        <div style={{ width: 74, height: 74, borderRadius: 999, background: theme.accent, color: '#05070C', fontFamily: look.sans, fontWeight: 900, fontSize: 46, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{letter}</div>
+        <div style={{ width: 74, height: 74, borderRadius: 999, background: theme.accent, color: '#120C07', fontFamily: look.sans, fontWeight: 900, fontSize: 46, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{letter}</div>
         <div style={{ fontFamily: look.sans, fontWeight: 800, fontSize: fit(46, label.length, 360, 0.58, 28), color: ink, textAlign: 'center', lineHeight: 1.05, maxWidth: 380 }}>{label}</div>
       </div>
     );

@@ -77,9 +77,9 @@ export const SAFE_HEIGHT = HEIGHT - SAFE_TOP - SAFE_BOTTOM;
 export const OVERLAP = 12; // frames a scene stays under the next one while they cross-fade
 
 /** Silicon Verdict palette: electric cyan on obsidian, with the channel blue for depth. */
-export const BRAND_CYAN = '#00F0FF';
-export const BRAND_BLUE = '#007AFF';
-export const defaultTheme: MotionTheme = { accent: BRAND_CYAN, background: '#05070C', text: '#FFFFFF' };
+export const BRAND_GOLD = '#E9B949';
+export const BRAND_BRONZE = '#B7791F';
+export const defaultTheme: MotionTheme = { accent: BRAND_GOLD, background: '#120C07', text: '#FFFFFF' };
 
 /** Timing of the one thing a `ui` scene does (the pointer grabs / presses at `grab`, the change is complete at `done`). Shared by the preset, which animates the change,
  *  and by the pointer, which reaches its target by `grab` (when the narrator says it, if the voice timing is known). */

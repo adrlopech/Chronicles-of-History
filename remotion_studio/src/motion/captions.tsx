@@ -54,19 +54,19 @@ export const Captions: React.FC<{ chunks: Chunk[]; scene: MotionScene | undefine
   const key = (w: CaptionWord) => accentWords.has(w.w.toLowerCase().replace(/[^a-z0-9]/g, ''));
   const font = style === 'mono' ? MONO : SANS;
   // a heavy outline keeps big captions legible over any background (the outline is the dark colour of the look; light looks use white)
-  const edge = light ? '#FFFFFF' : '#05070C';
+  const edge = light ? '#FFFFFF' : '#120C07';
   const outline: React.CSSProperties = { WebkitTextStroke: `7px ${edge}`, paintOrder: 'stroke fill', textShadow: `0 6px 22px rgba(0,0,0,${light ? 0.25 : 0.7})` };
   const wordStyle = (w: CaptionWord): React.CSSProperties => {
     const on = hot(w);
-    if (style === 'pill') return { color: on ? '#05070C' : base, background: on ? theme.accent : 'transparent', padding: '0 12px', borderRadius: 12 };
-    if (style === 'wordpill') return { color: on ? '#05070C' : base, background: on ? theme.accent : 'transparent', padding: '0 14px', borderRadius: 18, boxShadow: on ? `0 0 28px ${theme.accent}77` : 'none', textShadow: on ? 'none' : `0 3px 14px rgba(0,0,0,${light ? 0.2 : 0.85})`, transform: on ? 'scale(1.06)' : 'none' };
+    if (style === 'pill') return { color: on ? '#120C07' : base, background: on ? theme.accent : 'transparent', padding: '0 12px', borderRadius: 12 };
+    if (style === 'wordpill') return { color: on ? '#120C07' : base, background: on ? theme.accent : 'transparent', padding: '0 14px', borderRadius: 18, boxShadow: on ? `0 0 28px ${theme.accent}77` : 'none', textShadow: on ? 'none' : `0 3px 14px rgba(0,0,0,${light ? 0.2 : 0.85})`, transform: on ? 'scale(1.06)' : 'none' };
     if (style === 'karaoke') {
       // a colour fill that sweeps through the word as it is spoken: spoken words stay in the accent colour
       const pr = Math.max(0, Math.min(1, (frame - w.s) / Math.max(1, w.e - w.s + 2)));
       if (frame > w.e + 2) return { color: theme.accent, padding: '0 6px' };
       return { padding: '0 6px', color: 'transparent', backgroundImage: `linear-gradient(90deg, ${theme.accent} ${pr * 100}%, ${base} ${pr * 100}%)`, WebkitBackgroundClip: 'text', backgroundClip: 'text', transform: on ? 'scale(1.05)' : 'none' };
     }
-    if (style === 'box') return { color: on ? '#05070C' : base, background: on ? theme.accent : 'transparent', padding: '0 12px', borderRadius: 6, transform: on ? 'rotate(-2deg) scale(1.05)' : 'none', boxShadow: on ? `6px 6px 0 ${theme.accent2 ?? theme.accent}` : 'none' };
+    if (style === 'box') return { color: on ? '#120C07' : base, background: on ? theme.accent : 'transparent', padding: '0 12px', borderRadius: 6, transform: on ? 'rotate(-2deg) scale(1.05)' : 'none', boxShadow: on ? `6px 6px 0 ${theme.accent2 ?? theme.accent}` : 'none' };
     if (style === 'bounce') return { padding: '0 10px', color: on ? theme.accent : base, transform: on ? `translateY(${-14 * Math.max(0, Math.sin(Math.min(1, (frame - w.s) / 6) * Math.PI))}px) scale(1.08)` : 'none', textShadow: on ? `0 0 22px ${theme.accent}99` : undefined };
     if (style === 'underline') return { color: on || key(w) ? theme.accent : base, borderBottom: `5px solid ${on ? theme.accent : 'transparent'}` };
     if (style === 'mono') return { color: on ? theme.accent : base, textShadow: on ? `0 0 18px ${theme.accent}` : 'none' };

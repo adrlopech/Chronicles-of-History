@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import { MONO, SANS } from './fonts';
 import { Accent, EASE_OUT, SafeBox, Words, clamp, fit, useTheme } from './primitives';
-import { BRAND_BLUE, MotionScene } from './types';
+import { BRAND_BRONZE, MotionScene } from './types';
 
 type P = { scene: MotionScene };
 
@@ -23,7 +23,7 @@ export const Split: React.FC<P> = ({ scene }) => {
   const max = Math.max(a, b, 1e-9);
   const p = spring({ frame: frame - 10, fps, config: { damping: 200, mass: 1.3 }, durationInFrames: Math.max(30, scene.durationInFrames - 34) });
   const text = light ? '#0A1220' : theme.text;
-  const accents = [theme.accent, theme.accent2 ?? BRAND_BLUE];
+  const accents = [theme.accent, theme.accent2 ?? BRAND_BRONZE];
   const H = 290;
   const enter = (i: number) => interpolate(frame, [i * 8, 16 + i * 8], [0, 1], { ...clamp, easing: EASE_OUT });
 
@@ -109,7 +109,7 @@ export const Split: React.FC<P> = ({ scene }) => {
     }
     return (
       <div key={side} style={{ position: 'relative', width: 920, height: H, borderRadius: 28, background: light ? 'rgba(255,255,255,0.8)' : 'rgba(10,22,44,0.7)', border: `2px solid ${color}${win ? 'EE' : '55'}`, boxShadow: win ? `0 0 46px ${color}55` : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: e, transform: `translateX(${(1 - e) * (side ? 120 : -120)}px)` }}>
-        <div style={{ position: 'absolute', left: 26, top: 20, padding: '6px 22px', borderRadius: 999, background: color, color: '#05070C', fontFamily: SANS, fontWeight: 900, fontSize: fit(40, (label ?? '').length, 520, 0.6, 24), textTransform: 'uppercase', letterSpacing: 1 }}>{label}</div>
+        <div style={{ position: 'absolute', left: 26, top: 20, padding: '6px 22px', borderRadius: 999, background: color, color: '#120C07', fontFamily: SANS, fontWeight: 900, fontSize: fit(40, (label ?? '').length, 520, 0.6, 24), textTransform: 'uppercase', letterSpacing: 1 }}>{label}</div>
         {body}
       </div>
     );
@@ -120,7 +120,7 @@ export const Split: React.FC<P> = ({ scene }) => {
       <Words text={scene.text} size={64} />
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center' }}>
         {panel(scene.left, a, 0)}
-        <div style={{ position: 'absolute', left: '50%', top: H + 12, transform: 'translate(-50%, -50%)', width: 76, height: 76, borderRadius: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#05070C', border: `2px solid ${theme.accent}`, fontFamily: MONO, fontWeight: 700, fontSize: 28, color: theme.accent, zIndex: 2 }}>VS</div>
+        <div style={{ position: 'absolute', left: '50%', top: H + 12, transform: 'translate(-50%, -50%)', width: 76, height: 76, borderRadius: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#120C07', border: `2px solid ${theme.accent}`, fontFamily: MONO, fontWeight: 700, fontSize: 28, color: theme.accent, zIndex: 2 }}>VS</div>
         {panel(scene.right, b, 1)}
       </div>
       <Accent text={scene.accentText} size={72} delay={10} />
@@ -247,7 +247,7 @@ export const Units: React.FC<P> = ({ scene }) => {
           const last = i === shown - 1 && v % 1 !== 0 && v < shown + 1e-9;
           return (
             <div key={i} style={{ width: cell, height: cell, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: e, transform: `scale(${0.5 + 0.5 * e})` }}>
-              <GlyphSvg kind={kind} color={i % 2 ? theme.accent2 ?? BRAND_BLUE : color} size={cell * 0.74} fill={last ? v % 1 : 1} />
+              <GlyphSvg kind={kind} color={i % 2 ? theme.accent2 ?? BRAND_BRONZE : color} size={cell * 0.74} fill={last ? v % 1 : 1} />
             </div>
           );
         })}

@@ -27,3 +27,22 @@ import { loadFont as loadSyne } from '@remotion/google-fonts/Rubik';
 export const LEXEND = loadLexend('normal', { weights: ['600', '800'], subsets: ['latin'] }).fontFamily;
 export const URBANIST = loadUrbanist('normal', { weights: ['700', '800'], subsets: ['latin'] }).fontFamily;
 export const SYNE = loadSyne('normal', { weights: ['500', '800'], subsets: ['latin'] }).fontFamily;
+
+// History channel display faces (serif), Google Fonts only.
+import { loadFont as loadPlayfair } from '@remotion/google-fonts/PlayfairDisplay';
+import { loadFont as loadCinzel } from '@remotion/google-fonts/Cinzel';
+import { loadFont as loadCormorant } from '@remotion/google-fonts/CormorantGaramond';
+import { loadFont as loadGaramond } from '@remotion/google-fonts/EBGaramond';
+import { loadFont as loadFraunces } from '@remotion/google-fonts/Fraunces';
+import { loadFont as loadMarcellus } from '@remotion/google-fonts/Marcellus';
+import { loadFont as loadSpectral } from '@remotion/google-fonts/Spectral';
+import { loadFont as loadBaskerville } from '@remotion/google-fonts/LibreBaskerville';
+
+export const PLAYFAIR = loadPlayfair('normal', { weights: ['700', '900'], subsets: ['latin'] }).fontFamily;
+export const CINZEL = loadCinzel('normal', { weights: ['600', '800'], subsets: ['latin'] }).fontFamily;
+export const CORMORANT = loadCormorant('normal', { weights: ['600', '700'], subsets: ['latin'] }).fontFamily;
+export const GARAMOND = loadGaramond('normal', { weights: ['500', '800'], subsets: ['latin'] }).fontFamily;
+export const FRAUNCES = loadFraunces('normal', { weights: ['600', '900'], subsets: ['latin'] }).fontFamily;
+export const MARCELLUS = loadMarcellus('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily;
+export const SPECTRAL = loadSpectral('normal', { weights: ['600', '800'], subsets: ['latin'] }).fontFamily;
+export const BASKERVILLE = loadBaskerville('normal', { weights: ['400', '700'], subsets: ['latin'] }).fontFamily;

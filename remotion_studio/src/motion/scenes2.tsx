@@ -28,7 +28,7 @@ export const Rank: React.FC<P> = ({ scene }) => {
         {[5, 4, 3, 2, 1].map((k) => {
           const now = k === n;
           const done = k > n;
-          return <div key={k} style={{ width: now ? 74 : 52, height: now ? 74 : 52, borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: MONO, fontWeight: 700, fontSize: now ? 40 : 28, color: now ? '#05070C' : ink, background: now ? theme.accent : 'transparent', border: `2px solid ${theme.accent}${done ? '99' : '44'}`, opacity: done ? 0.55 : 1, boxShadow: now ? `0 0 34px ${theme.accent}99` : 'none' }}>{done ? '✓' : k}</div>;
+          return <div key={k} style={{ width: now ? 74 : 52, height: now ? 74 : 52, borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: MONO, fontWeight: 700, fontSize: now ? 40 : 28, color: now ? '#120C07' : ink, background: now ? theme.accent : 'transparent', border: `2px solid ${theme.accent}${done ? '99' : '44'}`, opacity: done ? 0.55 : 1, boxShadow: now ? `0 0 34px ${theme.accent}99` : 'none' }}>{done ? '✓' : k}</div>;
         })}
       </div>
       <div style={{ position: 'relative', fontFamily: SANS, fontWeight: 900, fontSize: 560, lineHeight: 0.84, letterSpacing: -26, color: 'transparent', WebkitTextStroke: `10px ${theme.accent}`, textShadow: light ? 'none' : `0 0 ${60 + glow * 40}px ${theme.accent}77`, opacity: Math.min(1, pop * 1.6), transform: `scale(${0.55 + 0.45 * Math.min(1.06, pop)}) rotate(${(1 - Math.min(1, pop)) * -8}deg)`, margin: '6px 0 -16px' }}>{n}</div>
@@ -76,8 +76,8 @@ export const Quiz: React.FC<P> = ({ scene }) => {
           const hit = isRight && revealed ? Math.min(1, slam) : 0;
           return (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 28, padding: '26px 34px', borderRadius: 28, background: hit ? theme.accent : light ? 'rgba(10,18,32,0.07)' : 'rgba(10,22,44,0.7)', border: `3px solid ${hit ? theme.accent : theme.accent + '44'}`, boxShadow: hit ? `0 0 60px ${theme.accent}99` : 'none', opacity: (revealed && !isRight ? 0.32 : 1) * s, transform: `translateX(${(1 - s) * -80}px) scale(${1 + 0.05 * hit})` }}>
-              <div style={{ width: 70, height: 70, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: MONO, fontWeight: 700, fontSize: 40, color: hit ? theme.accent : '#05070C', background: hit ? '#05070C' : theme.accent }}>{hit ? '✓' : 'ABC'[i]}</div>
-              <div style={{ fontFamily: SANS, fontWeight: 800, fontSize: fit(64, o.length, 700, 0.5, 40), letterSpacing: -1.5, color: hit ? '#05070C' : ink }}>{o}</div>
+              <div style={{ width: 70, height: 70, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: MONO, fontWeight: 700, fontSize: 40, color: hit ? theme.accent : '#120C07', background: hit ? '#120C07' : theme.accent }}>{hit ? '✓' : 'ABC'[i]}</div>
+              <div style={{ fontFamily: SANS, fontWeight: 800, fontSize: fit(64, o.length, 700, 0.5, 40), letterSpacing: -1.5, color: hit ? '#120C07' : ink }}>{o}</div>
             </div>
           );
         })}
@@ -104,8 +104,8 @@ export const Headline: React.FC<P> = ({ scene }) => {
   return (
     <>
       <div style={{ position: 'absolute', left: 64, top: SAFE_TOP + 20, display: 'flex', alignItems: 'center', gap: 16, opacity: bar, transform: `translateX(${(1 - bar) * -80}px)` }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 26px', borderRadius: 14, background: theme.accent, color: '#05070C', fontFamily: MONO, fontWeight: 700, fontSize: 34, letterSpacing: 6 }}>
-          <span style={{ width: 16, height: 16, borderRadius: 8, background: '#05070C', opacity: blink ? 1 : 0.25 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 26px', borderRadius: 14, background: theme.accent, color: '#120C07', fontFamily: MONO, fontWeight: 700, fontSize: 34, letterSpacing: 6 }}>
+          <span style={{ width: 16, height: 16, borderRadius: 8, background: '#120C07', opacity: blink ? 1 : 0.25 }} />
           BRIEFING
         </div>
         {scene.unit && <div style={{ fontFamily: MONO, fontSize: 30, letterSpacing: 6, color: ink, opacity: 0.8 }}>{scene.unit.toUpperCase()}</div>}

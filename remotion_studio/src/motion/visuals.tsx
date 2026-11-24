@@ -154,7 +154,7 @@ const Network: React.FC<Ctx & { bottom: number; top: number }> = ({ accent, acce
         return (
           <g key={i}>
             <circle cx={x} cy={y} r={26 + pulse * 8} fill="none" stroke={accent2} strokeOpacity={0.4 * pulse} strokeWidth={2} />
-            <circle cx={x} cy={y} r={15} fill="#05070C" stroke={accent} strokeWidth={4} />
+            <circle cx={x} cy={y} r={15} fill="#120C07" stroke={accent} strokeWidth={4} />
           </g>
         );
       })}
@@ -221,7 +221,7 @@ const Gauge: React.FC<Ctx & { bottom: number; top: number }> = ({ accent, accent
         return <line key={i} x1={cx + Math.cos(a) * (r + 30)} y1={cy + Math.sin(a) * (r + 30)} x2={cx + Math.cos(a) * (r + (i % 5 === 0 ? 62 : 46))} y2={cy + Math.sin(a) * (r + (i % 5 === 0 ? 62 : 46))} stroke={accent} strokeOpacity={0.6} strokeWidth={i % 5 === 0 ? 5 : 2.5} />;
       })}
       <line x1={cx} y1={cy} x2={cx + Math.cos(needle) * (r - 40)} y2={cy + Math.sin(needle) * (r - 40)} stroke={accent2} strokeWidth={9} strokeLinecap="round" />
-      <circle cx={cx} cy={cy} r={22} fill="#05070C" stroke={accent2} strokeWidth={7} />
+      <circle cx={cx} cy={cy} r={22} fill="#120C07" stroke={accent2} strokeWidth={7} />
     </svg>
   );
 };
@@ -356,7 +356,7 @@ const Orbit: React.FC<Ctx & { bottom: number; top: number }> = ({ accent, accent
         return (
           <g key={i}>
             <line x1={cx} y1={cy} x2={x} y2={y} stroke={accent} strokeOpacity={0.18} strokeWidth={2} />
-            <circle cx={x} cy={y} r={20} fill="#05070C" stroke={i % 2 ? accent2 : accent} strokeWidth={5} style={{ filter: `drop-shadow(0 0 12px ${accent})` }} />
+            <circle cx={x} cy={y} r={20} fill="#120C07" stroke={i % 2 ? accent2 : accent} strokeWidth={5} style={{ filter: `drop-shadow(0 0 12px ${accent})` }} />
           </g>
         );
       })}
@@ -379,7 +379,7 @@ export const Stage: React.FC<{ scene: MotionScene; name: VisualName | null; inde
   const p = interpolate(frame, [0, 22], [0, 1], { ...clamp, easing: EASE_OUT });
   const bottom = bottomOf(captionSpace);
   const top = bottom - DH;
-  const ctx: Ctx = { accent: light ? '#0A5CFF' : theme.accent, accent2: light ? '#00A3E0' : theme.accent2 ?? theme.accent, ink: light ? '#0A1220' : '#FFFFFF', light, frame, seed: index * 17 + 3 };
+  const ctx: Ctx = { accent: light ? '#8B3A1E' : theme.accent, accent2: light ? '#C28A2C' : theme.accent2 ?? theme.accent, ink: light ? '#0A1220' : '#FFFFFF', light, frame, seed: index * 17 + 3 };
   return (
     <AbsoluteFill style={{ pointerEvents: 'none', opacity: (light ? 0.7 : 0.9) * p * (k < 0.7 ? 0.85 : 1), transform: `translateY(${(1 - p) * 70}px)` }}>
       <AbsoluteFill style={{ transform: `scale(${k})`, transformOrigin: `50% ${bottom}px`, WebkitMaskImage: `linear-gradient(to bottom, transparent ${top}px, #000 ${top + 70}px)` }}>

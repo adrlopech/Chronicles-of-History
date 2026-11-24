@@ -53,7 +53,7 @@ export const Win: React.FC<{ title: string; children: React.ReactNode; width?: n
   return (
     <div style={{ width, borderRadius: 34, padding, textAlign: 'left', background: 'rgba(10,20,40,0.82)', border: `1px solid ${theme.accent}33`, boxShadow: `0 30px 90px rgba(0,0,0,0.5), 0 0 0 1px ${theme.accent}18`, opacity: Math.min(1, s * 1.5), transform: `translateY(${(1 - s) * 50}px) scale(${0.96 + 0.04 * s})`, fontFamily: mono ? MONO : SANS, color: INK, ...style }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-        {[theme.accent2 ?? '#007AFF', theme.accent, 'rgba(255,255,255,0.45)'].map((c, i) => <div key={i} style={{ width: 16, height: 16, borderRadius: 8, background: c }} />)}
+        {[theme.accent2 ?? '#B7791F', theme.accent, 'rgba(255,255,255,0.45)'].map((c, i) => <div key={i} style={{ width: 16, height: 16, borderRadius: 8, background: c }} />)}
         <span style={{ marginLeft: 16, fontFamily: MONO, fontSize: 24, color: MUTED, letterSpacing: 1 }}>{title}</span>
       </div>
       {children}
@@ -88,7 +88,7 @@ export const Slider: React.FC<{ v: number; width?: number; target?: boolean }> =
   return (
     <div style={{ position: 'relative', width, height: 44 }}>
       <div style={{ position: 'absolute', left: 0, right: 0, top: 17, height: 10, borderRadius: 5, background: 'rgba(255,255,255,0.16)' }} />
-      <div style={{ position: 'absolute', left: 0, top: 17, width: v * width, height: 10, borderRadius: 5, background: `linear-gradient(90deg, ${theme.accent2 ?? '#007AFF'}, ${theme.accent})` }} />
+      <div style={{ position: 'absolute', left: 0, top: 17, width: v * width, height: 10, borderRadius: 5, background: `linear-gradient(90deg, ${theme.accent2 ?? '#B7791F'}, ${theme.accent})` }} />
       <div data-cursor={target ? 'target' : undefined} style={{ position: 'absolute', left: v * width - 22, top: 0, width: 44, height: 44, borderRadius: 22, background: '#fff', border: `5px solid ${theme.accent}`, boxShadow: `0 0 20px ${theme.accent}99, 0 4px 10px rgba(0,0,0,0.45)` }} />
     </div>
   );
@@ -106,7 +106,7 @@ export const Bars: React.FC<{ level: number; color?: string }> = ({ level, color
 };
 
 /** A small pill/chip. */
-export const Chip: React.FC<{ children: React.ReactNode; color?: string; bg?: string; size?: number; target?: boolean; style?: React.CSSProperties }> = ({ children, color = '#05070C', bg, size = 30, target, style }) => {
+export const Chip: React.FC<{ children: React.ReactNode; color?: string; bg?: string; size?: number; target?: boolean; style?: React.CSSProperties }> = ({ children, color = '#120C07', bg, size = 30, target, style }) => {
   const { theme } = useTheme();
   return (
     <div data-cursor={target ? 'target' : undefined} style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 22px', borderRadius: 16, fontSize: size, fontWeight: 800, color, background: bg ?? theme.accent, whiteSpace: 'nowrap', ...style }}>

@@ -3,7 +3,7 @@ import { AbsoluteFill, Img, Loop, OffthreadVideo, interpolate, spring, staticFil
 import { Accent, Burst, EASE_IO, EASE_OUT, Kicker, SafeBox, Words, clamp, fit, useTheme } from './primitives';
 import { useLook } from './looks';
 import { MONO, SANS } from './fonts';
-import { BRAND_BLUE, MotionScene, SAFE_BOTTOM, SAFE_TOP } from './types';
+import { BRAND_BRONZE, MotionScene, SAFE_BOTTOM, SAFE_TOP } from './types';
 import { VoteCards, voteOptions } from './polish';
 
 type P = { scene: MotionScene };
@@ -114,7 +114,7 @@ const highlight = (line: string, accent: string): React.ReactNode[] => {
     if (!part) return null;
     if (/^["']/.test(part)) return <span key={i} style={{ color: '#7CFFB2' }}>{part}</span>;
     if (/^(\/\/|#)/.test(part)) return <span key={i} style={{ color: 'rgba(255,255,255,0.35)' }}>{part}</span>;
-    if (/^\d/.test(part)) return <span key={i} style={{ color: '#8FC6FF' }}>{part}</span>;
+    if (/^\d/.test(part)) return <span key={i} style={{ color: '#F4D58D' }}>{part}</span>;
     const sub = part.split(KEYWORDS);
     return sub.map((s, j) => (KEYWORDS.test(s) && (KEYWORDS.lastIndex = 0, true) ? <span key={`${i}-${j}`} style={{ color: accent }}>{s}</span> : <span key={`${i}-${j}`}>{s}</span>));
   });
@@ -141,7 +141,7 @@ export const CodeBlock: React.FC<P> = ({ scene }) => {
             const val = m![2].trim();
             return (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 22, opacity: p, transform: `translateX(${(1 - p) * -60}px)` }}>
-                <span style={{ flex: '0 0 auto', padding: '8px 22px', borderRadius: 16, background: theme.accent, color: '#05070C', fontFamily: MONO, fontWeight: 700, fontSize: fit(44, key.length, 330, 0.62, 28), letterSpacing: 0.5, boxShadow: `0 0 26px ${theme.accent}55` }}>{key}</span>
+                <span style={{ flex: '0 0 auto', padding: '8px 22px', borderRadius: 16, background: theme.accent, color: '#120C07', fontFamily: MONO, fontWeight: 700, fontSize: fit(44, key.length, 330, 0.62, 28), letterSpacing: 0.5, boxShadow: `0 0 26px ${theme.accent}55` }}>{key}</span>
                 <span style={{ color: theme.accent, fontFamily: MONO, fontSize: 38, opacity: 0.8 }}>=</span>
                 <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: fit(46, val.length, 470, 0.5, 28), lineHeight: 1.1, color: '#FFFFFF' }}>{val}</span>
               </div>
@@ -157,7 +157,7 @@ export const CodeBlock: React.FC<P> = ({ scene }) => {
     <SafeBox gap={52}>
       <div data-cursor="code" style={{ width: 920, borderRadius: 30, padding: '30px 38px 38px', background: 'rgba(10,22,44,0.72)', border: `1px solid ${theme.accent}33`, boxShadow: `0 30px 90px rgba(0,0,0,0.5), 0 0 0 1px ${theme.accent}22`, opacity: panel, transform: `translateY(${(1 - panel) * 40}px) scale(${0.97 + 0.03 * panel})`, textAlign: 'left' }}>
         <div style={{ display: 'flex', gap: 12, marginBottom: 26 }}>
-          {['#007AFF', '#00F0FF', 'rgba(255,255,255,0.45)'].map((c) => <div key={c} style={{ width: 16, height: 16, borderRadius: 8, background: c }} />)}
+          {['#B7791F', '#E9B949', 'rgba(255,255,255,0.45)'].map((c) => <div key={c} style={{ width: 16, height: 16, borderRadius: 8, background: c }} />)}
           <span style={{ marginLeft: 18, fontFamily: MONO, fontSize: 22, color: 'rgba(255,255,255,0.4)' }}>{scene.kicker ?? 'script.ts'}</span>
         </div>
         {lines.map((line, i) => {
@@ -192,7 +192,7 @@ export const ProgressBar: React.FC<P> = ({ scene }) => {
       <Accent text={scene.accentText} size={150} delay={10} />
       <div style={{ position: 'relative', width: 860, marginTop: 24 }}>
         <div data-cursor="bar" style={{ width: '100%', height: 22, borderRadius: 11, background: light ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
-          <div style={{ width: `${target * p}%`, height: '100%', borderRadius: 11, background: `linear-gradient(90deg, ${theme.accent2 ?? BRAND_BLUE}, ${theme.accent})`, boxShadow: `0 0 28px ${theme.accent}` }} />
+          <div style={{ width: `${target * p}%`, height: '100%', borderRadius: 11, background: `linear-gradient(90deg, ${theme.accent2 ?? BRAND_BRONZE}, ${theme.accent})`, boxShadow: `0 0 28px ${theme.accent}` }} />
         </div>
         {scene.cursor === 'drag' && (
           // the knob the pointer grabs: it sits at the end of the fill, so pulling it is what makes the bar grow
@@ -241,7 +241,7 @@ export const Flash: React.FC<P> = ({ scene }) => {
   const flashSize = fit(words.length > 1 ? 300 : 340, Math.max(...words.map((w) => w.length), Math.ceil(scene.text.length / 2)), 920, 0.7, 90); // long phrases wrap on two lines instead of shrinking to one tiny row
   return (
     <AbsoluteFill style={{ background: theme.accent, opacity: wipe, alignItems: 'center', justifyContent: 'center', paddingTop: SAFE_TOP - SAFE_BOTTOM }}>
-      <div style={{ fontFamily: SANS, fontWeight: 900, fontSize: flashSize, letterSpacing: -flashSize * 0.03, wordSpacing: flashSize * 0.12, lineHeight: 0.98, textAlign: 'center', maxWidth: 940, color: '#05070C', transform: `scale(${0.8 + 0.2 * wipe})` }}>{scene.text}</div>
+      <div style={{ fontFamily: SANS, fontWeight: 900, fontSize: flashSize, letterSpacing: -flashSize * 0.03, wordSpacing: flashSize * 0.12, lineHeight: 0.98, textAlign: 'center', maxWidth: 940, color: '#120C07', transform: `scale(${0.8 + 0.2 * wipe})` }}>{scene.text}</div>
     </AbsoluteFill>
   );
 };
@@ -293,7 +293,7 @@ export const Footage: React.FC<P> = ({ scene }) => {
         <AbsoluteFill style={{ background: `linear-gradient(180deg, rgba(5,7,12,0.4) 0%, rgba(5,7,12,0.05) 40%, rgba(5,7,12,0.45) 100%)` }} />
       </AbsoluteFill>
     <SafeBox gap={36}>
-      <div style={{ position: 'relative', width: W, height: H, borderRadius: 26, overflow: 'hidden', background: '#05070C', boxShadow: '0 30px 90px rgba(0,0,0,0.55)', opacity: enter, transform: `translateY(${(1 - enter) * 50}px) scale(${0.96 + 0.04 * enter})` }}>
+      <div style={{ position: 'relative', width: W, height: H, borderRadius: 26, overflow: 'hidden', background: '#120C07', boxShadow: '0 30px 90px rgba(0,0,0,0.55)', opacity: enter, transform: `translateY(${(1 - enter) * 50}px) scale(${0.96 + 0.04 * enter})` }}>
         {scene.mediaSrc && scene.mediaKind === 'video' ? (
           <Loop durationInFrames={Math.max(1, Math.round((scene.mediaSeconds ?? 3) * fps))}>
             <OffthreadVideo src={staticFile(scene.mediaSrc)} muted style={media} />

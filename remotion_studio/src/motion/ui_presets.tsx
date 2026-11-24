@@ -310,7 +310,7 @@ export const Router: React.FC<P> = ({ scene }) => {
           })}
         </div>
         <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end' }}>
-          <Chip bg={frame > done ? GOOD : 'rgba(255,255,255,0.14)'} color={frame > done ? '#05070C' : MUTED}>{frame > done ? 'Saved' : 'Apply'}</Chip>
+          <Chip bg={frame > done ? GOOD : 'rgba(255,255,255,0.14)'} color={frame > done ? '#120C07' : MUTED}>{frame > done ? 'Saved' : 'Apply'}</Chip>
         </div>
       </Win>
     </UiShell>

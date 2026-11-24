@@ -2,10 +2,10 @@ import React from 'react';
 import { AbsoluteFill, interpolate, random, useCurrentFrame } from 'remotion';
 import { EASE_OUT, clamp, useTheme } from './primitives';
 import { ParticleStyle } from './looks';
-import { BRAND_BLUE } from './types';
+import { BRAND_BRONZE } from './types';
 
 /** Rising dust + a few bigger glowing orbs, parallaxed by depth. Global, deterministic, runs under every scene. The style comes from the look. */
-export const Particles: React.FC<{ accent: string; accent2?: string; light: boolean; style?: ParticleStyle }> = ({ accent, accent2 = BRAND_BLUE, light, style = 'dots' }) => {
+export const Particles: React.FC<{ accent: string; accent2?: string; light: boolean; style?: ParticleStyle }> = ({ accent, accent2 = BRAND_BRONZE, light, style = 'dots' }) => {
   const frame = useCurrentFrame();
   if (style === 'none') return null;
   return (

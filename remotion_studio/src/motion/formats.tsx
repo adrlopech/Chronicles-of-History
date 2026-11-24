@@ -2,7 +2,7 @@ import React from 'react';
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Accent, EASE_IO, EASE_OUT, Kicker, SafeBox, Words, clamp, fit, useTheme } from './primitives';
 import { MONO, SANS } from './fonts';
-import { BRAND_BLUE, MotionScene, TIER_DROP, TIER_GRAB } from './types';
+import { BRAND_BRONZE, MotionScene, TIER_DROP, TIER_GRAB } from './types';
 import { ProductCard } from './polish';
 
 /** Scenes of the content formats: tier list, versus, myth-vs-fact verdict and timeline. Same data-only contract as the rest of the engine. */
@@ -55,7 +55,7 @@ export const Tier: React.FC<P> = ({ scene }) => {
           const lit = ti === newRow ? glow : 0;
           return (
             <div key={t} style={{ display: 'flex', alignItems: 'stretch', minHeight: rowH, borderRadius: 20, overflow: drag ? 'visible' : 'hidden', background: lit > 0 ? `${color}${Math.round(12 + lit * 40).toString(16).padStart(2, '0')}` : light ? 'rgba(10,18,32,0.07)' : 'rgba(255,255,255,0.06)', border: `${lit > 0.05 ? 2 : 1}px solid ${lit > 0.05 ? color : `${color}33`}`, boxShadow: lit > 0 ? `0 0 ${40 * lit}px ${color}88` : 'none' }}>
-              <div style={{ width: rowH, flex: '0 0 auto', borderRadius: '20px 0 0 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: color, fontFamily: SANS, fontWeight: 900, fontSize: 62, color: '#05070C' }}>{t}</div>
+              <div style={{ width: rowH, flex: '0 0 auto', borderRadius: '20px 0 0 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: color, fontFamily: SANS, fontWeight: 900, fontSize: 62, color: '#120C07' }}>{t}</div>
               <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', alignContent: 'center', gap: 10, padding: '10px 16px' }}>
                 {entries.map((e, i) => {
                   if (e.tier !== t) return null;
@@ -73,7 +73,7 @@ export const Tier: React.FC<P> = ({ scene }) => {
                         fontWeight: 800,
                         fontSize: fit(44, e.label.length, 380, 0.56, 26),
                         whiteSpace: 'nowrap',
-                        color: isNew ? '#05070C' : light ? '#0A1220' : theme.text,
+                        color: isNew ? '#120C07' : light ? '#0A1220' : theme.text,
                         background: isNew ? color : light ? 'rgba(10,18,32,0.1)' : 'rgba(255,255,255,0.12)',
                         boxShadow: flying ? `0 18px 40px rgba(0,0,0,0.5), 0 0 34px ${color}aa` : isNew ? `0 0 34px ${color}aa` : 'none',
                         opacity: flying ? Math.min(1, frame / 6) : Math.min(1, s * 1.4),
@@ -90,7 +90,7 @@ export const Tier: React.FC<P> = ({ scene }) => {
                 })}
                 {t === 'S' && scene.tease && (
                   // the open loop on screen: the pick is still covered, it is revealed in its own scene at the end
-                  <div style={{ padding: '6px 34px', borderRadius: 16, fontFamily: SANS, fontWeight: 900, fontSize: 48, color: light ? '#FFFFFF' : '#05070C', border: `3px dashed ${light ? '#FFFFFF' : '#05070C'}`, background: light ? theme.accent : color, opacity: 0.75 + 0.25 * Math.abs(Math.sin(frame / 14)), boxShadow: `0 0 ${18 + 16 * Math.abs(Math.sin(frame / 14))}px ${light ? theme.accent : color}88` }}>?</div>
+                  <div style={{ padding: '6px 34px', borderRadius: 16, fontFamily: SANS, fontWeight: 900, fontSize: 48, color: light ? '#FFFFFF' : '#120C07', border: `3px dashed ${light ? '#FFFFFF' : '#120C07'}`, background: light ? theme.accent : color, opacity: 0.75 + 0.25 * Math.abs(Math.sin(frame / 14)), boxShadow: `0 0 ${18 + 16 * Math.abs(Math.sin(frame / 14))}px ${light ? theme.accent : color}88` }}>?</div>
                 )}
               </div>
             </div>
@@ -124,7 +124,7 @@ export const Versus: React.FC<P> = ({ scene }) => {
   const text = light ? '#0A1220' : theme.text;
   const col = (label: string | undefined, v: number, side: 'left' | 'right') => {
     const isWin = winner === side;
-    const color = side === 'left' ? theme.accent : theme.accent2 ?? BRAND_BLUE;
+    const color = side === 'left' ? theme.accent : theme.accent2 ?? BRAND_BRONZE;
     const h = Math.max(10, (v / max) * barMax * p);
     const glow = isWin ? crown : 0;
     return (
@@ -145,7 +145,7 @@ export const Versus: React.FC<P> = ({ scene }) => {
       <Accent text={scene.accentText} size={104} delay={8} />
       <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 40, marginTop: 6 }}>
         {col(scene.left, a, 'left')}
-        <div style={{ position: 'absolute', left: '50%', top: 300, transform: 'translateX(-50%)', width: 96, height: 96, borderRadius: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#05070C', border: `2px solid ${theme.accent}`, boxShadow: `0 0 30px ${theme.accent}77`, fontFamily: SANS, fontWeight: 900, fontSize: 40, color: theme.accent, zIndex: 2 }}>VS</div>
+        <div style={{ position: 'absolute', left: '50%', top: 300, transform: 'translateX(-50%)', width: 96, height: 96, borderRadius: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#120C07', border: `2px solid ${theme.accent}`, boxShadow: `0 0 30px ${theme.accent}77`, fontFamily: SANS, fontWeight: 900, fontSize: 40, color: theme.accent, zIndex: 2 }}>VS</div>
         {col(scene.right, b, 'right')}
       </div>
     </SafeBox>
@@ -156,9 +156,9 @@ export const Versus: React.FC<P> = ({ scene }) => {
 
 const VERDICTS = {
   myth: { label: 'MYTH', color: '#7C8CFF' },
-  fact: { label: 'FACT', color: '#00F0FF' },
+  fact: { label: 'FACT', color: '#E9B949' },
   partly: { label: 'PARTLY TRUE', color: '#9CCBFF' },
-  buy: { label: 'BUY', color: '#00F0FF' },
+  buy: { label: 'BUY', color: '#E9B949' },
   wait: { label: 'WAIT', color: '#9CCBFF' },
   skip: { label: 'SKIP', color: '#7C8CFF' },
 } as const;
@@ -212,7 +212,7 @@ export const Timeline: React.FC<P> = ({ scene }) => {
       <Accent text={scene.accentText} size={104} delay={8} />
       <div style={{ position: 'relative', width: 900, height: lineH + 90, marginTop: 14 }}>
         <div style={{ position: 'absolute', left: 250, top: 22, width: 6, height: lineH, borderRadius: 3, background: light ? 'rgba(10,18,32,0.12)' : 'rgba(255,255,255,0.12)' }} />
-        <div style={{ position: 'absolute', left: 250, top: 22, width: 6, height: lineH * progress, borderRadius: 3, background: `linear-gradient(180deg, ${BRAND_BLUE}, ${theme.accent})`, boxShadow: `0 0 18px ${theme.accent}` }} />
+        <div style={{ position: 'absolute', left: 250, top: 22, width: 6, height: lineH * progress, borderRadius: 3, background: `linear-gradient(180deg, ${BRAND_BRONZE}, ${theme.accent})`, boxShadow: `0 0 18px ${theme.accent}` }} />
         {entries.map(([year, label], i) => {
           const s = spring({ frame: frame - 14 - i * step, fps, config: { damping: 16, stiffness: 120 } });
           const latest = frame >= 14 + i * step && (i === n - 1 || frame < 14 + (i + 1) * step);
@@ -220,7 +220,7 @@ export const Timeline: React.FC<P> = ({ scene }) => {
             <div key={i} style={{ position: 'absolute', left: 0, top: i * rowH, width: 900, height: 56, display: 'flex', alignItems: 'center', opacity: Math.min(1, s * 1.5), transform: `translateX(${(1 - s) * 60}px)` }}>
               <div style={{ width: 230, textAlign: 'right', fontFamily: MONO, fontWeight: 600, fontSize: fit(52, year.length, 220, 0.62, 30), color: latest ? theme.accent : light ? 'rgba(10,18,32,0.55)' : 'rgba(255,255,255,0.55)' }}>{year}</div>
               <div style={{ width: 46, display: 'flex', justifyContent: 'center' }}>
-                <div style={{ width: latest ? 30 : 20, height: latest ? 30 : 20, borderRadius: '50%', background: latest ? theme.accent : theme.accent2 ?? BRAND_BLUE, boxShadow: latest ? `0 0 30px ${theme.accent}` : 'none', border: '4px solid #05070C', marginLeft: 0 }} />
+                <div style={{ width: latest ? 30 : 20, height: latest ? 30 : 20, borderRadius: '50%', background: latest ? theme.accent : theme.accent2 ?? BRAND_BRONZE, boxShadow: latest ? `0 0 30px ${theme.accent}` : 'none', border: '4px solid #120C07', marginLeft: 0 }} />
               </div>
               <div style={{ marginLeft: 26, flex: 1, fontFamily: SANS, fontWeight: 800, fontSize: fit(46, label.length, 560, 0.55, 26), lineHeight: 1.05, color: latest ? text : light ? 'rgba(10,18,32,0.7)' : 'rgba(255,255,255,0.72)', textAlign: 'left' }}>{label}</div>
             </div>

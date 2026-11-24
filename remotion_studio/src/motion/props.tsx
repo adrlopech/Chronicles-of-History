@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import { EASE_OUT, clamp, useTheme } from './primitives';
-import { BRAND_BLUE, MotionScene } from './types';
+import { BRAND_BRONZE, MotionScene } from './types';
 
 /** Thematic objects: neon line icons (48x48 grid) that pop in around the text and float, picked from what the scene talks about. */
 const g = (...d: string[]) => d.map((p, i) => <path key={i} d={p} />);
@@ -136,7 +136,7 @@ const Prop: React.FC<{ name: string; slot: number; count: number; seed: number; 
   const out = size * 0.62;
   return (
     <div style={{ position: 'absolute', left: x - size / 2 + bobX, top: sy - size / 2 + bobY, width: size, height: size, opacity: Math.min(1, pop * 1.4), transform: `scale(${0.2 + 0.8 * pop}) rotate(${tilt}deg)` }}>
-      <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: light ? 'rgba(255,255,255,0.7)' : `radial-gradient(circle at 35% 30%, ${theme.accent}33, rgba(8,18,40,0.82) 70%)`, border: `2px solid ${col}66`, boxShadow: light ? '0 18px 50px rgba(20,50,90,0.25)' : `0 0 ${size * 0.28}px ${theme.accent}55, inset 0 0 ${size * 0.2}px ${BRAND_BLUE}44` }} />
+      <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: light ? 'rgba(255,255,255,0.7)' : `radial-gradient(circle at 35% 30%, ${theme.accent}33, rgba(8,18,40,0.82) 70%)`, border: `2px solid ${col}66`, boxShadow: light ? '0 18px 50px rgba(20,50,90,0.25)' : `0 0 ${size * 0.28}px ${theme.accent}55, inset 0 0 ${size * 0.2}px ${BRAND_BRONZE}44` }} />
       <svg width={size} height={size} viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, transform: `rotate(${spin}deg)` }}>
         <circle cx="50" cy="50" r="47" fill="none" stroke={col} strokeOpacity={0.55} strokeWidth="1.4" strokeDasharray="3 6" pathLength={100} strokeDashoffset={100 - 100 * ring} />
         <circle cx="50" cy="3" r="2.6" fill={col} style={{ filter: `drop-shadow(0 0 4px ${col})` }} />

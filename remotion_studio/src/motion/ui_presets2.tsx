@@ -22,7 +22,7 @@ export const Keycaps: React.FC<P> = ({ scene }) => {
             return (
               <React.Fragment key={i}>
                 {i > 0 && <span style={{ fontFamily: MONO, fontSize: 48, color: MUTED }}>+</span>}
-                <div data-cursor={i === 0 ? 'target' : undefined} style={{ minWidth: 150, height: 150, padding: '0 34px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 26, fontFamily: MONO, fontWeight: 800, fontSize: 52, color: down > 0.5 ? '#05070C' : INK, background: down > 0.5 ? theme.accent : 'rgba(255,255,255,0.1)', border: '2px solid rgba(255,255,255,0.2)', borderBottom: `${12 - down * 9}px solid rgba(255,255,255,0.28)`, transform: `translateY(${down * 9}px)`, boxShadow: down > 0.5 ? `0 0 40px ${theme.accent}` : '0 14px 24px rgba(0,0,0,0.35)' }}>{k}</div>
+                <div data-cursor={i === 0 ? 'target' : undefined} style={{ minWidth: 150, height: 150, padding: '0 34px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 26, fontFamily: MONO, fontWeight: 800, fontSize: 52, color: down > 0.5 ? '#120C07' : INK, background: down > 0.5 ? theme.accent : 'rgba(255,255,255,0.1)', border: '2px solid rgba(255,255,255,0.2)', borderBottom: `${12 - down * 9}px solid rgba(255,255,255,0.28)`, transform: `translateY(${down * 9}px)`, boxShadow: down > 0.5 ? `0 0 40px ${theme.accent}` : '0 14px 24px rgba(0,0,0,0.35)' }}>{k}</div>
               </React.Fragment>
             );
           })}
@@ -75,7 +75,7 @@ export const DiskBar: React.FC<P> = ({ scene }) => {
   const free = mix(free0, free1, g);
   const used = pcts.slice(0, -1);
   used[used.length - 1] = Math.max(2, used[used.length - 1] - (free - free0)); // the freed space comes out of the last used segment
-  const palette = [theme.accent, '#007AFF', '#8A8CFF', '#FFD166'];
+  const palette = [theme.accent, '#B7791F', '#8A8CFF', '#FFD166'];
   const W = 860;
   let x = 0;
   const speed = Math.round(mix(scene.leftValue ?? 300, scene.rightValue ?? 1800, g));
@@ -120,7 +120,7 @@ export const Battery: React.FC<P> = ({ scene }) => {
         <div style={{ display: 'flex', justifyContent: 'center', margin: '8px 0 26px' }}>
           <div style={{ position: 'relative', width: 420, height: 190, borderRadius: 40, border: '8px solid rgba(255,255,255,0.5)' }}>
             <div style={{ position: 'absolute', right: -30, top: 56, width: 18, height: 66, borderRadius: 9, background: 'rgba(255,255,255,0.5)' }} />
-            <div style={{ position: 'absolute', left: 10, top: 10, bottom: 10, width: `${(limit / 100) * 380}px`, borderRadius: 26, background: `linear-gradient(90deg, #007AFF, ${limit > 85 ? WARN : theme.accent})`, boxShadow: `0 0 30px ${theme.accent}66` }} />
+            <div style={{ position: 'absolute', left: 10, top: 10, bottom: 10, width: `${(limit / 100) * 380}px`, borderRadius: 26, background: `linear-gradient(90deg, #B7791F, ${limit > 85 ? WARN : theme.accent})`, boxShadow: `0 0 30px ${theme.accent}66` }} />
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: MONO, fontWeight: 700, fontSize: 70, color: '#fff', textShadow: '0 2px 10px rgba(0,0,0,0.6)' }}>{Math.round(limit)}%</div>
           </div>
         </div>
@@ -152,7 +152,7 @@ export const TabMem: React.FC<P> = ({ scene }) => {
           <span style={{ fontFamily: MONO, fontSize: 62, fontWeight: 700, color: total > total0 * 0.8 ? WARN : GOOD }}>{fmt(total)}</span>
         </div>
         <div style={{ height: 18, borderRadius: 9, background: 'rgba(255,255,255,0.12)', overflow: 'hidden', margin: '14px 0 24px' }}>
-          <div style={{ width: `${Math.min(100, (total / (total0 * 1.15)) * 100)}%`, height: '100%', background: `linear-gradient(90deg, #007AFF, ${theme.accent})` }} />
+          <div style={{ width: `${Math.min(100, (total / (total0 * 1.15)) * 100)}%`, height: '100%', background: `linear-gradient(90deg, #B7791F, ${theme.accent})` }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {rs.map((r, i) => {
@@ -184,7 +184,7 @@ export const SpecLabel: React.FC<P> = ({ scene }) => {
           const lit = i === pick ? on : 0;
           const pop = ease(frame, 6 + i * 6, 16 + i * 6);
           return (
-            <div key={i} data-cursor={i === pick ? 'target' : undefined} style={{ padding: '14px 26px', borderRadius: 20, fontFamily: MONO, fontWeight: 800, fontSize: 70, color: lit > 0.5 ? '#05070C' : INK, background: lit > 0.5 ? theme.accent : 'rgba(255,255,255,0.1)', border: `2px solid ${lit > 0.5 ? theme.accent : 'rgba(255,255,255,0.22)'}`, opacity: pop, transform: `translateY(${(1 - pop) * 30}px) scale(${1 + lit * 0.06})`, boxShadow: lit > 0.5 ? `0 0 40px ${theme.accent}99` : 'none' }}>{r[0]}</div>
+            <div key={i} data-cursor={i === pick ? 'target' : undefined} style={{ padding: '14px 26px', borderRadius: 20, fontFamily: MONO, fontWeight: 800, fontSize: 70, color: lit > 0.5 ? '#120C07' : INK, background: lit > 0.5 ? theme.accent : 'rgba(255,255,255,0.1)', border: `2px solid ${lit > 0.5 ? theme.accent : 'rgba(255,255,255,0.22)'}`, opacity: pop, transform: `translateY(${(1 - pop) * 30}px) scale(${1 + lit * 0.06})`, boxShadow: lit > 0.5 ? `0 0 40px ${theme.accent}99` : 'none' }}>{r[0]}</div>
           );
         })}
       </div>
@@ -224,7 +224,7 @@ export const Leaderboard: React.FC<P> = ({ scene }) => {
             return (
               <div key={j} data-cursor={mine ? 'target' : undefined} style={{ position: 'absolute', left: 0, right: 0, top: slot * rowH, height: rowH - 12, zIndex: mine ? 5 : 1, transform: `scale(${1 + 0.03 * lift})` }}>
                 <Row label={<span style={{ display: 'flex', alignItems: 'center', gap: 22 }}><span style={{ fontFamily: MONO, width: 46, color: MUTED }}>{Math.round(slot) + 1}</span>{r[0]}</span>} height={rowH - 12} active={mine ? ease(frame, grab - 8, grab) : 0}
-                  right={<><span style={{ width: 200, height: 14, borderRadius: 7, background: 'rgba(255,255,255,0.14)', overflow: 'hidden', display: 'inline-block' }}><span style={{ display: 'block', width: `${(num(r[1]) / best) * 100}%`, height: '100%', background: mine ? theme.accent : '#007AFF' }} /></span><span style={{ fontFamily: MONO, width: 110, textAlign: 'right', color: INK }}>{num(r[1])}</span></>} style={{ boxShadow: mine && lift > 0.05 ? `0 24px 50px rgba(0,0,0,0.5), 0 0 30px ${theme.accent}55` : undefined }} />
+                  right={<><span style={{ width: 200, height: 14, borderRadius: 7, background: 'rgba(255,255,255,0.14)', overflow: 'hidden', display: 'inline-block' }}><span style={{ display: 'block', width: `${(num(r[1]) / best) * 100}%`, height: '100%', background: mine ? theme.accent : '#B7791F' }} /></span><span style={{ fontFamily: MONO, width: 110, textAlign: 'right', color: INK }}>{num(r[1])}</span></>} style={{ boxShadow: mine && lift > 0.05 ? `0 24px 50px rgba(0,0,0,0.5), 0 0 30px ${theme.accent}55` : undefined }} />
               </div>
             );
           })}
@@ -258,7 +258,7 @@ export const PartPicker: React.FC<P> = ({ scene }) => {
           })}
         </div>
         <div style={{ height: 96, marginTop: 30, display: 'flex', alignItems: 'center' }}>
-          <div data-cursor="target" style={{ display: 'inline-flex', alignItems: 'center', padding: '14px 28px', borderRadius: 18, fontSize: 30, fontWeight: 800, color: verdict > 0 && !fits ? '#fff' : '#05070C', background: verdict > 0 ? (fits ? GOOD : BAD) : theme.accent, whiteSpace: 'nowrap', boxShadow: g > 0 && g < 1 ? `0 22px 44px rgba(0,0,0,0.5), 0 0 28px ${theme.accent}77` : `0 0 22px ${theme.accent}55`, transform: `translate(${mix(0, 360, g) + shake}px, ${mix(0, dy, g)}px) rotate(${Math.sin(g * Math.PI) * -3}deg)`, position: 'relative', zIndex: 5 }}>
+          <div data-cursor="target" style={{ display: 'inline-flex', alignItems: 'center', padding: '14px 28px', borderRadius: 18, fontSize: 30, fontWeight: 800, color: verdict > 0 && !fits ? '#fff' : '#120C07', background: verdict > 0 ? (fits ? GOOD : BAD) : theme.accent, whiteSpace: 'nowrap', boxShadow: g > 0 && g < 1 ? `0 22px 44px rgba(0,0,0,0.5), 0 0 28px ${theme.accent}77` : `0 0 22px ${theme.accent}55`, transform: `translate(${mix(0, 360, g) + shake}px, ${mix(0, dy, g)}px) rotate(${Math.sin(g * Math.PI) * -3}deg)`, position: 'relative', zIndex: 5 }}>
             {scene.accentText}
           </div>
         </div>
@@ -291,7 +291,7 @@ export const Dimm: React.FC<P> = ({ scene }) => {
                   <div style={{ position: 'absolute', left: 14, right: 14, top: 14, bottom: 14, borderRadius: 8, background: 'repeating-linear-gradient(0deg, rgba(255,255,255,0.12) 0 6px, transparent 6px 14px)' }} />
                   {used && (
                     <div style={{ position: 'absolute', left: 8, right: 8, top: 10, height: 338, borderRadius: 12, background: '#0f2a52', border: `3px solid ${theme.accent}`, transform: `translateY(${(1 - k) * -380}px)`, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                      {[0, 1, 2, 3].map((c) => <div key={c} style={{ width: 70, height: 34, borderRadius: 6, background: '#05070C', border: `2px solid ${theme.accent}88` }} />)}
+                      {[0, 1, 2, 3].map((c) => <div key={c} style={{ width: 70, height: 34, borderRadius: 6, background: '#120C07', border: `2px solid ${theme.accent}88` }} />)}
                     </div>
                   )}
                 </div>

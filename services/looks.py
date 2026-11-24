@@ -1,36 +1,36 @@
 """Visual looks of the Motion videos: which one a video gets.
 
 A look (remotion_studio/src/motion/looks.ts) is a whole visual identity: palette, background, headline typeface, alignment, HUD, camera, transitions and caption style.
-The audit of Nov 2026 found every video drawn with the same obsidian-and-cyan look, centred, with the same icons: they read as one video. Now each video gets one of fourteen looks,
-chosen by the format's affinities, never one of the last few used, and varied by a hash of the topic. All are blue (cyan, ocean, indigo, cobalt, glass, paper, ice, blueprint, neon, midnight, steel, electric, frost, deepsea).
+The audit of Nov 2026 found every video drawn with the same codex-and-gold look, centred, with the same icons: they read as one video. Now each video gets one of fourteen looks,
+chosen by the format's affinities, never one of the last few used, and varied by a hash of the topic. All are warm and historical (gold, bronze, parchment, crimson, deep teal, royal purple).
 """
 import hashlib
 from typing import List, Optional
 
-LOOKS = ("obsidian", "ocean", "indigo", "cobalt", "glass", "paper", "ice", "blueprint", "neon", "midnight", "steel", "electric", "frost", "deepsea")  # all blue: the channel colour in fourteen tonalities
+LOOKS = ("codex", "mariner", "royal", "lapis", "marble", "parchment", "ivory", "cartograph", "crimson", "nocturne", "bronze", "ember", "dusk", "oasis")  # all warm: the channel palette in fourteen tonalities
 
 # what each format looks best in (most fitting first); every look is allowed for the classic explainer
 AFFINITY = {
-    "fix": ("glass", "paper", "steel", "obsidian", "ocean"),
-    "decode": ("blueprint", "steel", "ice", "frost", "indigo", "paper"),
-    "whatif": ("indigo", "midnight", "ocean", "deepsea", "ice", "glass"),
-    "versus": ("cobalt", "neon", "indigo", "electric", "obsidian", "ocean"),
-    "evolution": ("ocean", "deepsea", "ice", "midnight", "blueprint", "cobalt"),
-    "myth": ("cobalt", "neon", "obsidian", "frost", "glass", "ice"),
-    "tier": ("ocean", "electric", "indigo", "neon", "cobalt", "paper"),
-    "hardware": ("blueprint", "steel", "obsidian", "glass", "ocean"),
-    "simple": ("paper", "ocean", "glass", "ice"),
-    "easter": ("indigo", "midnight", "cobalt", "ocean", "obsidian"),
-    "top5": ("cobalt", "neon", "electric", "indigo", "ocean", "obsidian"),
-    "eli5": ("paper", "glass", "ocean", "ice"),
-    "fails": ("obsidian", "neon", "indigo", "cobalt", "blueprint"),
-    "numbers": ("blueprint", "steel", "ice", "cobalt", "ocean"),
-    "quiz": ("indigo", "neon", "electric", "cobalt", "glass", "ocean"),
-    "stop": ("cobalt", "obsidian", "glass", "paper"),
-    "rumor": ("glass", "midnight", "ice", "frost", "indigo", "obsidian"),
-    "review": ("paper", "obsidian", "ocean", "glass"),
-    "news": ("ocean", "frost", "ice", "blueprint", "glass"),
-    "priced": ("cobalt", "neon", "obsidian", "electric", "indigo", "ocean"),
+    "fix": ("marble", "parchment", "bronze", "codex", "mariner"),
+    "decode": ("cartograph", "bronze", "ivory", "dusk", "royal", "parchment"),
+    "whatif": ("royal", "nocturne", "mariner", "oasis", "ivory", "marble"),
+    "versus": ("lapis", "crimson", "royal", "ember", "codex", "mariner"),
+    "evolution": ("mariner", "oasis", "ivory", "nocturne", "cartograph", "lapis"),
+    "myth": ("lapis", "crimson", "codex", "dusk", "marble", "ivory"),
+    "tier": ("mariner", "ember", "royal", "crimson", "lapis", "parchment"),
+    "hardware": ("cartograph", "bronze", "codex", "marble", "mariner"),
+    "simple": ("parchment", "mariner", "marble", "ivory"),
+    "easter": ("royal", "nocturne", "lapis", "mariner", "codex"),
+    "top5": ("lapis", "crimson", "ember", "royal", "mariner", "codex"),
+    "eli5": ("parchment", "marble", "mariner", "ivory"),
+    "fails": ("codex", "crimson", "royal", "lapis", "cartograph"),
+    "numbers": ("cartograph", "bronze", "ivory", "lapis", "mariner"),
+    "quiz": ("royal", "crimson", "ember", "lapis", "marble", "mariner"),
+    "stop": ("lapis", "codex", "marble", "parchment"),
+    "rumor": ("marble", "nocturne", "ivory", "dusk", "royal", "codex"),
+    "review": ("parchment", "codex", "mariner", "marble"),
+    "news": ("mariner", "dusk", "ivory", "cartograph", "marble"),
+    "priced": ("lapis", "crimson", "codex", "ember", "royal", "mariner"),
     None: LOOKS,
 }
 AVOID_LAST = 3  # a look is not used again until three other videos have been made

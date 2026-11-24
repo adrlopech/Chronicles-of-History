@@ -279,7 +279,7 @@ const BatteryFill: React.FC<{ accent: string; light: boolean }> = ({ accent, lig
         <div style={{ width: `${p * 100}%`, height: '100%', background: `linear-gradient(90deg, ${col}77, ${col})` }} />
       </div>
       <div style={{ position: 'absolute', right: -22, top: 40, width: 18, height: 50, borderRadius: 8, background: col }} />
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'JetBrains Mono, Menlo, monospace', fontWeight: 700, fontSize: 52, color: '#05070C', mixBlendMode: 'normal' }}>{Math.round(p * 100)}%</div>
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'JetBrains Mono, Menlo, monospace', fontWeight: 700, fontSize: 52, color: '#120C07', mixBlendMode: 'normal' }}>{Math.round(p * 100)}%</div>
     </div>
   );
 };

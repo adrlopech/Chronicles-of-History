@@ -1,12 +1,12 @@
 import { createContext, useContext } from 'react';
-import { JAKARTA, LEXEND, MANROPE, OUTFIT, SANS, SORA, SPACE, SYNE, URBANIST } from './fonts';
+import { BASKERVILLE, CINZEL, CORMORANT, FRAUNCES, GARAMOND, MARCELLUS, PLAYFAIR, SANS, SPECTRAL } from './fonts';
 import { MotionScene } from './types';
 import { TransitionName } from './transitions';
 import type { Reveal } from './anim';
 
 /**
  * A LOOK is the visual identity of one video: palette, background, headline typeface, alignment, HUD, camera, transitions and caption style.
- * Every look is BLUE: the channel's colour in eight tonalities (cyan, ocean, indigo, cobalt, glass, paper, ice, blueprint), so the channel is recognisable
+ * Every look is WARM and historical (gold, bronze, parchment, crimson, deep teal, royal purple), so the channel is recognisable
  * but two videos in a row never look alike. The pipeline picks one per video (services/looks.py) and passes its name in the props.
  */
 export type BgStyle = 'glow' | 'aurora' | 'mesh' | 'orbs' | 'dots' | 'blueprint' | 'mono' | 'stripes' | 'bokeh' | 'circuit' | 'waves' | 'spotlight' | 'rain';
@@ -39,54 +39,54 @@ export interface Look {
 
 export const LOOKS: Record<string, Look> = {
   // deep black-blue with an electric cyan glow: the original channel look
-  obsidian: { name: 'obsidian', accent: '#00F0FF', accent2: '#007AFF', background: '#05070C', text: '#FFFFFF', light: false, bg: 'glow', floorGrid: true, particles: 'dots', hud: 'mono', align: 'center', upper: false, sans: SANS, camera: 'drift',
+  codex: { name: 'codex', accent: '#E9B949', accent2: '#B7791F', background: '#120C07', text: '#FFF6E5', light: false, bg: 'glow', floorGrid: true, particles: 'dots', hud: 'mono', align: 'center', upper: false, sans: PLAYFAIR, camera: 'drift',
     transitions: ['pushLeft', 'zoomThrough', 'iris', 'glitch', 'pushUp', 'blinds', 'whip', 'flip', 'wipe', 'zoomOut', 'diagonal', 'spin', 'fade'], captions: 'pill', scale: 1.0, decor: 'none' },
   // sky blue over a moving aurora of navy and royal blue
-  ocean: { name: 'ocean', accent: '#4DC3FF', accent2: '#0A4DFF', background: '#030B1F', text: '#FFFFFF', light: false, bg: 'aurora', floorGrid: false, particles: 'dots', hud: 'story', align: 'center', upper: false, sans: SPACE, camera: 'push',
+  mariner: { name: 'mariner', accent: '#5FD1C4', accent2: '#1F7A8C', background: '#06141A', text: '#F2FBFA', light: false, bg: 'aurora', floorGrid: false, particles: 'dots', hud: 'story', align: 'center', upper: false, sans: CORMORANT, camera: 'push',
     transitions: ['zoomThrough', 'pushUp', 'fade', 'iris', 'zoomOut'], captions: 'wordpill', scale: 1.04, decor: 'none' },
   // periwinkle and indigo: the bluest end of violet, nothing purple
-  indigo: { name: 'indigo', accent: '#8FA8FF', accent2: '#3B3FF0', background: '#060921', text: '#FFFFFF', light: false, bg: 'aurora', floorGrid: false, particles: 'squares', hud: 'ticks', align: 'left', upper: false, sans: SORA, camera: 'orbit',
+  royal: { name: 'royal', accent: '#F2C94C', accent2: '#6B3FA0', background: '#120A24', text: '#FBF7FF', light: false, bg: 'aurora', floorGrid: false, particles: 'squares', hud: 'ticks', align: 'left', upper: false, sans: CINZEL, camera: 'orbit',
     transitions: ['whip', 'flip', 'spin', 'diagonal', 'pushLeft'], captions: 'underline', scale: 1.1, decor: 'ring' },
   // modern and bold: a saturated cobalt gradient mesh with soft light blobs and film grain, big rounded type
-  cobalt: { name: 'cobalt', accent: '#9BE8FF', accent2: '#4C8DFF', background: '#061552', text: '#FFFFFF', light: false, bg: 'mesh', floorGrid: false, particles: 'squares', hud: 'brackets', align: 'left', upper: false, sans: OUTFIT, camera: 'handheld',
+  lapis: { name: 'lapis', accent: '#F4D58D', accent2: '#2E5AAC', background: '#0B1B3F', text: '#FFFFFF', light: false, bg: 'mesh', floorGrid: false, particles: 'squares', hud: 'brackets', align: 'left', upper: false, sans: FRAUNCES, camera: 'handheld',
     transitions: ['whip', 'diagonal', 'zoomThrough', 'pushLeft', 'blinds'], captions: 'oneword', scale: 1.2, decor: 'number' },
   // modern and calm: frosted glass spheres drifting over midnight blue
-  glass: { name: 'glass', accent: '#7CC8FF', accent2: '#4A6BFF', background: '#040A1C', text: '#FFFFFF', light: false, bg: 'orbs', floorGrid: false, particles: 'dots', hud: 'story', align: 'center', upper: false, sans: JAKARTA, camera: 'drift',
+  marble: { name: 'marble', accent: '#E8DCC4', accent2: '#9C8F7A', background: '#14130F', text: '#F7F3EA', light: false, bg: 'orbs', floorGrid: false, particles: 'dots', hud: 'story', align: 'center', upper: false, sans: SPECTRAL, camera: 'drift',
     transitions: ['fade', 'zoomOut', 'iris', 'pushUp', 'zoomThrough'], captions: 'twotone', scale: 1.06, decor: 'none' },
   // a light look: blue ink on a pale blue sheet
-  paper: { name: 'paper', accent: '#0A5CFF', accent2: '#00B3FF', background: '#EAF2FF', text: '#0A1220', light: true, bg: 'dots', floorGrid: false, particles: 'none', hud: 'story', align: 'left', upper: false, sans: MANROPE, camera: 'still',
+  parchment: { name: 'parchment', accent: '#8B3A1E', accent2: '#C28A2C', background: '#F1E4C8', text: '#2A1B0E', light: true, bg: 'dots', floorGrid: false, particles: 'none', hud: 'story', align: 'left', upper: false, sans: GARAMOND, camera: 'still',
     transitions: ['fade', 'pushLeft', 'wipe', 'zoomOut', 'pushUp'], captions: 'pill', scale: 1.12, decor: 'number' },
   // blue-tinted monochrome: icy white on deep blue-black
-  ice: { name: 'ice', accent: '#E4F1FF', accent2: '#7FA6D6', background: '#050B16', text: '#F2F8FF', light: false, bg: 'mono', floorGrid: false, particles: 'none', hud: 'mono', align: 'center', upper: false, sans: SANS, camera: 'still',
+  ivory: { name: 'ivory', accent: '#F5EAD0', accent2: '#A89A7C', background: '#0E0D0B', text: '#FAF5E8', light: false, bg: 'mono', floorGrid: false, particles: 'none', hud: 'mono', align: 'center', upper: false, sans: SANS, camera: 'still',
     transitions: ['fade', 'wipe', 'pushLeft', 'iris'], captions: 'plain', scale: 1.0, decor: 'none' },
   // a technical drawing: white lines on blueprint blue
-  blueprint: { name: 'blueprint', accent: '#A6DCFF', accent2: '#2F6BFF', background: '#0A2A66', text: '#FFFFFF', light: false, bg: 'blueprint', floorGrid: false, particles: 'none', hud: 'ticks', align: 'left', upper: true, sans: SPACE, camera: 'drift',
+  cartograph: { name: 'cartograph', accent: '#E9D9A6', accent2: '#C9A24B', background: '#123B3A', text: '#F4EFD8', light: false, bg: 'blueprint', floorGrid: false, particles: 'none', hud: 'ticks', align: 'left', upper: true, sans: MARCELLUS, camera: 'drift',
     transitions: ['wipe', 'blinds', 'pushLeft', 'diagonal', 'fade'], captions: 'mono', scale: 1.06, decor: 'dimension' },
   // NEW (Nov 2026): six more blues, each with its own background, typeface, caption style and decor
   // neon sign: diagonal light stripes sweeping over near-black blue, capitals
-  neon: { name: 'neon', accent: '#5CF2FF', accent2: '#1E6BFF', background: '#04060F', text: '#FFFFFF', light: false, bg: 'stripes', floorGrid: false, particles: 'squares', hud: 'brackets', align: 'center', upper: true, sans: LEXEND, camera: 'handheld',
+  crimson: { name: 'crimson', accent: '#FFB347', accent2: '#B3202A', background: '#1A0608', text: '#FFF3E8', light: false, bg: 'stripes', floorGrid: false, particles: 'squares', hud: 'brackets', align: 'center', upper: true, sans: PLAYFAIR, camera: 'handheld',
     transitions: ['whip', 'pushDown', 'shutter', 'glitch', 'diagonal', 'cornerIris'], captions: 'bounce', scale: 1.08, decor: 'bars' },
   // midnight bokeh: out-of-focus lights drifting, soft and cinematic
-  midnight: { name: 'midnight', accent: '#9CC4FF', accent2: '#2B5BFF', background: '#030617', text: '#FFFFFF', light: false, bg: 'bokeh', floorGrid: false, particles: 'dots', hud: 'story', align: 'left', upper: false, sans: URBANIST, camera: 'push',
+  nocturne: { name: 'nocturne', accent: '#D9C7A0', accent2: '#4A3B7A', background: '#090812', text: '#F6F1FF', light: false, bg: 'bokeh', floorGrid: false, particles: 'dots', hud: 'story', align: 'left', upper: false, sans: CORMORANT, camera: 'push',
     transitions: ['fade', 'curtain', 'zoomOut', 'cornerIris', 'pushDown'], captions: 'karaoke', scale: 1.1, decor: 'arcs' },
   // steel circuit board: traces and travelling pulses on gunmetal blue
-  steel: { name: 'steel', accent: '#6FB7FF', accent2: '#3A5F8F', background: '#07101C', text: '#F2F8FF', light: false, bg: 'circuit', floorGrid: false, particles: 'none', hud: 'ticks', align: 'left', upper: true, sans: SYNE, camera: 'drift',
+  bronze: { name: 'bronze', accent: '#D69A4A', accent2: '#7A5230', background: '#110C08', text: '#F7EBDD', light: false, bg: 'circuit', floorGrid: false, particles: 'none', hud: 'ticks', align: 'left', upper: true, sans: BASKERVILLE, camera: 'drift',
     transitions: ['shutter', 'wipe', 'pushLeft', 'curtain', 'blinds'], captions: 'box', scale: 1.04, decor: 'bars' },
   // electric: rolling waves of saturated blue light
-  electric: { name: 'electric', accent: '#2DA8FF', accent2: '#0B3BFF', background: '#02061E', text: '#FFFFFF', light: false, bg: 'waves', floorGrid: false, particles: 'dots', hud: 'mono', align: 'center', upper: false, sans: OUTFIT, camera: 'orbit',
+  ember: { name: 'ember', accent: '#FF8A3D', accent2: '#D1432A', background: '#170805', text: '#FFF1E6', light: false, bg: 'waves', floorGrid: false, particles: 'dots', hud: 'mono', align: 'center', upper: false, sans: CINZEL, camera: 'orbit',
     transitions: ['zoomThrough', 'curtain', 'spin', 'pushDown', 'iris', 'whip'], captions: 'wordpill', scale: 1.12, decor: 'arcs' },
   // frost: a cold spotlight cone from above on dark slate blue
-  frost: { name: 'frost', accent: '#BFE3FF', accent2: '#5C8DE8', background: '#0A1426', text: '#F4F9FF', light: false, bg: 'spotlight', floorGrid: false, particles: 'none', hud: 'brackets', align: 'center', upper: false, sans: JAKARTA, camera: 'still',
+  dusk: { name: 'dusk', accent: '#F2B8A0', accent2: '#8C5A6E', background: '#1A1018', text: '#FFF5F0', light: false, bg: 'spotlight', floorGrid: false, particles: 'none', hud: 'brackets', align: 'center', upper: false, sans: FRAUNCES, camera: 'still',
     transitions: ['fade', 'curtain', 'iris', 'cornerIris', 'zoomOut'], captions: 'box', scale: 1.06, decor: 'none' },
   // deep sea: vertical streaks of cyan light falling through dark water
-  deepsea: { name: 'deepsea', accent: '#35D0FF', accent2: '#0A5AA8', background: '#021426', text: '#FFFFFF', light: false, bg: 'rain', floorGrid: false, particles: 'dots', hud: 'mono', align: 'left', upper: false, sans: SPACE, camera: 'push',
+  oasis: { name: 'oasis', accent: '#E4C76B', accent2: '#2F6F5E', background: '#08150F', text: '#F6F8EE', light: false, bg: 'rain', floorGrid: false, particles: 'dots', hud: 'mono', align: 'left', upper: false, sans: MARCELLUS, camera: 'push',
     transitions: ['pushUp', 'shutter', 'zoomThrough', 'pushDown', 'glitch'], captions: 'karaoke', scale: 1.08, decor: 'bars' },
 };
 
 export const LOOK_NAMES = Object.keys(LOOKS);
-export const lookFor = (name?: string): Look => LOOKS[name ?? ''] ?? LOOKS.obsidian;
+export const lookFor = (name?: string): Look => LOOKS[name ?? ''] ?? LOOKS.codex;
 
-export const LookCtx = createContext<Look>(LOOKS.obsidian);
+export const LookCtx = createContext<Look>(LOOKS.codex);
 export const useLook = () => useContext(LookCtx);
 
 /** The scene being drawn (for the cues the pipeline sets on it) and how much room the caption strip takes from its bottom. */
