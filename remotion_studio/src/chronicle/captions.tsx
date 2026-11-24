@@ -38,7 +38,7 @@ export const Captions: React.FC<{ chunks: Chunk[] }> = ({ chunks }) => {
   const fade = interpolate(frame, [chunk.e + 4, chunk.e + 10], [1, 0], clamp);
   const edge = '#050814';
   return (
-    <div style={{ position: 'absolute', left: 60, right: 60, bottom: SAFE_BOTTOM + 36, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 22px', opacity: fade, transform: `translateY(${(1 - pop) * 18}px) scale(${0.94 + 0.06 * pop})` }}>
+    <div style={{ position: 'absolute', left: 60, right: 60, bottom: SAFE_BOTTOM + 8, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 22px', opacity: fade, transform: `translateY(${(1 - pop) * 18}px) scale(${0.94 + 0.06 * pop})` }}>
       {chunk.words.map((w, i) => {
         const on = frame >= w.s - 1 && frame <= w.e + 2;
         return (

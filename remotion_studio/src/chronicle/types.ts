@@ -64,7 +64,7 @@ export const HEIGHT = 1920;
 /** Shorts / TikTok cover the top ~12% and the bottom ~20% with their own interface: nothing important lives there. */
 export const SAFE_TOP = Math.round(HEIGHT * 0.12);
 export const SAFE_BOTTOM = Math.round(HEIGHT * 0.2);
-export const CAPTION_SPACE = 170;
+export const CAPTION_SPACE = 250;
 export const OVERLAP = 12; // frames a scene stays under the next one while they cross
 export const CHANNEL = '@chroniclesofhistorytv';
 export const totalFrames = (scenes: MotionScene[]) => scenes.reduce((a, s) => a + s.durationInFrames, 0);
