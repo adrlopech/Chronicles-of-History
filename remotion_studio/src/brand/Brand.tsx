@@ -183,7 +183,7 @@ const TORN = torn(262, 30, 1416, 404, 11, 17);
 const TORN_BACK = torn(276, 42, 1432, 416, 5, 22);
 
 /** The YouTube channel art (2560 x 1440): an illuminated panorama of history. Monuments of every age stand in a row under a gold sun, in sepia and bronze; the title is inked on a parchment scroll held at the centre
- *  with the Chronicler's badge. Badge, scroll and tagline sit in the 1546 x 423 box every device shows. */
+ *  with the Chronicler's badge. Badge, scroll and tagline sit in the 1546 x 423 box phones show. */
 export const Banner: React.FC = () => {
   const c = sepia();
   const haze = (layer: 'far' | 'near') => (layer === 'far' ? 0.62 : 1);
@@ -204,7 +204,7 @@ export const Banner: React.FC = () => {
         {(['far', 'near'] as const).map((layer) => (
           <g key={layer} opacity={haze(layer)}>
             {SKYLINE.filter((m) => m.layer === layer).map((m, i) => (
-              <g key={i} transform={`translate(${m.x} ${layer === 'far' ? 1250 : 1320}) scale(${m.s * (layer === 'far' ? 1.1 : 1.25)})`}>
+              <g key={i} transform={`translate(${m.x} ${layer === 'far' ? 1250 : 1320}) scale(${m.s * (layer === 'far' ? 1.2 : 1.4)})`}>
                 <m.C c={layer === 'far' ? { ...c, near: c.far, mid: mix(c.far, '#f0c25e', 0.2), light: '#f1d79a', fore: c.mid } : c} t={0} seed={i + 1} />
               </g>
             ))}
@@ -228,8 +228,8 @@ export const Banner: React.FC = () => {
       <div style={{ position: 'absolute', left: 34, top: 34, right: 34, bottom: 34, border: `5px solid ${GOLD.mid}`, boxShadow: `inset 0 0 0 10px #1c1008, inset 0 0 0 13px ${GOLD.lo}`, borderRadius: 6 }} />
       <div style={{ position: 'absolute', inset: 0 }}><Corners color={GOLD.hi} size={110} inset={46} weight={7} /></div>
       {[[1280, 34], [1280, 1406]].map(([x, y], i) => <div key={i} style={{ position: 'absolute', left: x - 170, top: y - 14, width: 340, height: 28, display: 'flex', alignItems: 'center', gap: 14, background: '#1c1008' }}><div style={{ flex: 1, height: 3, background: `linear-gradient(90deg, transparent, ${GOLD.mid})` }} /><div style={{ width: 16, height: 16, background: GOLD.hi, transform: 'rotate(45deg)' }} /><div style={{ flex: 1, height: 3, background: `linear-gradient(270deg, transparent, ${GOLD.mid})` }} /></div>)}
-      {/* the safe box: the badge and the scroll */}
-      <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423 }}>
+      {/* the phone box: YouTube shows phones only the centre 1546 x 423 of the art, so the badge and the scroll are centred in it and scaled to stay clear of its edges */}
+      <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423, transform: 'translateX(103px) translateY(-6px) scale(0.85)', transformOrigin: '670px 211px' }}>
         <svg width={1546} height={423} viewBox="0 0 1546 423" style={{ position: 'absolute', inset: 0, overflow: 'visible', filter: 'drop-shadow(0 18px 26px rgba(0,0,0,0.55))' }}>
           <defs>
             <linearGradient id="parch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f8edcf" /><stop offset="0.55" stopColor="#ecd6a0" /><stop offset="1" stopColor="#dcbf82" /></linearGradient>

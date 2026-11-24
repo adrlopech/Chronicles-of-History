@@ -32,6 +32,9 @@ Each era of a video keeps its own accent pair (`looks.ts`); the brand colours ar
 
 Covers (thumbnails) are posters made by `scripts/render_cover.mjs` with the same gold foil, the era typeface and the series plate (`Cover.tsx`).
 
+## What YouTube shows of the banner
+Phones: the centre 1546 x 423; tablets: 1855 x 423; desktop: 2560 x 423; TV: everything. The badge, the title scroll and the tagline are inside the phone band, so every device shows them; the monuments, birds and clouds are the atmosphere for the wider screens. (To preview the phone band: crop `youtube_banner.png` at x 507, y 508, 1546 x 423.)
+
 ## Rules
 - The Chronicler is never recoloured, stretched or placed on a light background; keep his badge whole (ring included).
 - Gold is for the ring, titles and years; the glass tiles carry gold engravings. Everything else is cream or soft cream-brown on the dark brown gradient.
