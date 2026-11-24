@@ -161,7 +161,7 @@ S_NARRATE = _fig(
     + '<g transform="translate(236 56)">' + "".join(f'<rect x="{k * 14}" y="{70 - h / 2}" width="8" height="{h}" rx="4" fill="url(#gold)" opacity="{0.35 + (h / 140)}"/>' for k, h in enumerate([20, 44, 70, 98, 60, 120, 82, 46, 108, 70, 34, 56, 24, 12]))
     + '</g><g transform="translate(60 214)"><rect width="360" height="56" rx="12" fill="#0E0805" stroke="#5A4126" stroke-width="2"/><text x="180" y="35" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="22" fill="#F2E3BF" letter-spacing="1">THE LEGIONS <tspan fill="#FF8A55">MARCHED</tspan> NORTH</text></g>'
 )
-S_DRAW = ('<svg viewBox="0 0 480 300" role="img" aria-hidden="true"><defs><clipPath id="dc"><rect width="480" height="300" rx="0"/></clipPath></defs><g clip-path="url(#dc)"><image href="assets/eras/draw.svg" x="0" y="0" width="480" height="338" preserveAspectRatio="xMidYMid slice"/>'
+S_DRAW = ('<svg viewBox="0 0 480 300" role="img" aria-hidden="true"><defs><filter id="gb" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="9"/></filter><clipPath id="dc"><rect width="480" height="300" rx="0"/></clipPath></defs><g clip-path="url(#dc)"><ellipse cx="240" cy="262" rx="200" ry="26" fill="#D9A441" opacity=".22" filter="url(#gb)"/><image href="assets/eras/draw.svg" x="0" y="0" width="480" height="338" preserveAspectRatio="xMidYMid slice"/>'
           '<path d="M20 20 h34 M20 20 v34 M460 20 h-34 M460 20 v34 M20 280 h34 M20 280 v-34 M460 280 h-34 M460 280 v-34" stroke="#F0CB7A" stroke-width="3" fill="none" opacity=".9"/>'
           '<g transform="translate(300 262)">' + "".join(f'<circle cx="{k * 24}" cy="0" r="9" fill="{c}" stroke="#100B07" stroke-width="2"/>' for k, c in enumerate(["#D9A441", "#C8642A", "#FF6A3D", "#B8433A", "#A8793A", "#F4EAD2", "#E39A3B"])) + '</g></g></svg>')
 S_PUBLISH = _fig(
@@ -412,7 +412,9 @@ h2 em{font-style:normal;background:linear-gradient(180deg,#FFF3C8,var(--gold) 70
 .era .card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 18px 50px color-mix(in srgb,var(--b) 30%,transparent)}
 .era .pic{flex:none;width:50%;filter:brightness(1.22) saturate(1.12) drop-shadow(0 12px 16px rgba(0,0,0,.6));aspect-ratio:1280/1000;margin:-6px 0 -6px -4px;}
 .era.r .card{flex-direction:row-reverse}.era.r .pic{margin:-6px -4px -6px 0}
-.era .pic img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}.era .card:hover .pic img{transform:scale(1.08)}
+.era .pic{position:relative}.era .pic:before{content:"";position:absolute;left:-6%;right:-6%;bottom:-1%;height:26%;z-index:0;border-radius:50%;background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--b) 42%,#3a2410) 0,rgba(58,36,16,.55) 38%,rgba(58,36,16,.18) 62%,transparent 74%);filter:blur(7px)}
+.era .pic:after{content:"";position:absolute;left:4%;right:4%;bottom:7%;height:1px;z-index:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--b) 70%,transparent),transparent);opacity:.55}
+.era .pic img{position:relative;z-index:1;display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}.era .card:hover .pic img{transform:scale(1.08)}
 .era .txt{flex:1;padding:14px 20px 18px 10px}.era.r .txt{padding:14px 10px 18px 20px;text-align:right}
 .era small{font:700 12px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--b)}.era h3{font:800 21px/1.1 var(--disp);letter-spacing:.03em;margin:2px 0 6px;color:var(--paper);text-transform:uppercase}.era p{color:var(--paper2);font-size:15px;line-height:1.45}
 .era .bar{position:absolute;left:0;bottom:0;height:4px;width:100%;background:linear-gradient(90deg,var(--a),var(--b));transform:scaleX(0);transform-origin:left;transition:transform 1.2s .3s}.era.in .bar{transform:scaleX(1)}
