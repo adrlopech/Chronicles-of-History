@@ -61,7 +61,7 @@ def skyline() -> str:
 
     far += pyr(120, 300, 170) + pyr(330, 220, 120) + obelisk(760, 250) + pagoda(1180, 1.0) + pyr(1520, 260, 140) + obelisk(1940, 210) + pagoda(2250, 0.8)
     mid += temple(260, 250) + colosseum(640, 340) + castle(1090) + clock(1380) + windmill(1560) + rocket(1830) + pyr(1960, 200, 110) + temple(2080, 180)
-    near += (f'<rect x="0" y="378" width="2400" height="22"/>' + "".join(f'<polygon points="{x},378 {x + 7},{352 - (x % 3) * 8} {x + 14},378"/>' for x in range(30, 2400, 78)))
+    near += ('<rect x="0" y="378" width="2400" height="22"/>' + "".join(f'<polygon points="{x},378 {x + 7},{352 - (x % 3) * 8} {x + 14},378"/>' for x in range(30, 2400, 78)))
     return (
         '<svg class="sky-svg" viewBox="0 0 2400 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
         '<defs><linearGradient id="gd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9A441" stop-opacity=".55"/><stop offset="1" stop-color="#D9A441" stop-opacity="0"/></linearGradient></defs>'
@@ -505,7 +505,7 @@ def build() -> None:
     (D / "terms.html").write_text(legal("terms.html", "Terms of Service", "The rules for the Chronicles of History website and channels, in plain words.",
                                         "The rules for this website and the channels, in plain words: what the project is and how to read the videos.", TERMS, "Last updated: 24 November 2026"), encoding="utf-8")
     e404 = (head("Page not found | The Chronicles of History", "Page not found.", "404.html")
-            + f'<main class="e404"><div><div class="rays small"></div><p class="kicker"><i></i>Error 404<i></i></p><h1 class="title" style="font-size:clamp(40px,9vw,100px)">Lost to history</h1><p class="sub">This page is not in the archive.</p><div class="cta"><a class="btn" href="index.html"><span>Back to the chronicles</span></a></div></div></main>' + foot())
+            + '<main class="e404"><div><div class="rays small"></div><p class="kicker"><i></i>Error 404<i></i></p><h1 class="title" style="font-size:clamp(40px,9vw,100px)">Lost to history</h1><p class="sub">This page is not in the archive.</p><div class="cta"><a class="btn" href="index.html"><span>Back to the chronicles</span></a></div></div></main>' + foot())
     (D / "404.html").write_text(e404, encoding="utf-8")
     (D / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n", encoding="utf-8")
     (D / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}/{p}</loc></url>\n" for p in ["", "terms.html", "privacy.html"]) + "</urlset>\n", encoding="utf-8")
