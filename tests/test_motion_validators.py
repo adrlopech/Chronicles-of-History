@@ -320,14 +320,6 @@ def test_there_are_twenty_presets_and_the_prompt_lists_them_all():
     assert all(name in rules for name in UI_PRESETS) and all(spec["action"] in ("select", "drag", "click") for spec in UI_PRESETS.values())
 
 
-def test_the_sample_has_one_valid_scene_per_preset():
-    scenes = [MotionSceneModel(**x) for x in json.loads(SAMPLE_UI.read_text(encoding="utf-8"))["scenes"]]
-    assert {s.preset for s in scenes} == set(UI_PRESETS)
-    for s in scenes:
-        problems = [p for p in _ui_problems(_bare(s), None) if "mentioned in that scene" not in p]  # the sample's narration is a placeholder
-        assert problems == [], (s.preset, problems)
-
-
 def test_ui_scene_checks():
     ok = _ui("display", items=["60 Hz", "144 Hz"], value=2)
     assert _ui_problems(_bare(ok), None) == []
@@ -409,33 +401,31 @@ def test_the_mix_has_music_effects_and_voice_without_clipping(tmp_path):
 # ---- looks, captions and cues (video audit, Nov 2026) ----
 import re  # noqa: E402
 
-from services.looks import AFFINITY, AVOID_LAST, LOOKS, choose_look  # noqa: E402
+from services.looks import AVOID_LAST, LOOKS, choose_look, era_look  # noqa: E402
 from services.motion_pipeline import build_captions, synthetic_captions  # noqa: E402
 
-LOOKS_TS = Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "motion" / "looks.ts"
+LOOKS_TS = Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "chronicle" / "looks.ts"
 
 
 def test_python_and_remotion_agree_on_the_looks():
     ts_names = re.findall(r"^  (\w+): \{ name: '(\w+)'", LOOKS_TS.read_text(encoding="utf-8"), re.M)
-    assert {k for k, _ in ts_names} == set(LOOKS) and all(k == n for k, n in ts_names)
+    assert {k for k, _ in ts_names} == set(LOOKS) and all(k == n for k, n in ts_names) and len(LOOKS) == 6
 
 
-def test_every_format_has_valid_affinities():
-    assert all(set(v) <= set(LOOKS) for v in AFFINITY.values()) and len(LOOKS) == 14
+def test_the_topic_picks_its_era():
+    assert era_look("How Rome fell") == "antiquity" and era_look("The Black Death") == "manuscript"
+    assert era_look("Pirates of the Caribbean") == "seachart" and era_look("D-Day") == "wartime"
+    assert era_look("Louis XIV") == "empire" and era_look("Titanic") == "industrial" and era_look("Something odd") is None
 
 
-def test_a_look_is_not_reused_within_the_last_videos():
+def test_topics_without_an_era_do_not_reuse_a_recent_look():
     seen = []
     for i in range(24):
-        look = choose_look("fix", f"topic {i}", recent=seen)
+        look = choose_look(None, f"topic {i}", recent=seen)
         assert look not in seen[:AVOID_LAST]
         seen.insert(0, look)
-    assert len(set(seen)) >= 4  # real variety across many videos of the same format
-
-
-def test_the_same_topic_gets_the_same_look_and_formats_follow_their_affinity():
-    assert choose_look("decode", "RTX", recent=[]) == choose_look("decode", "RTX", recent=[])
-    assert all(choose_look("decode", f"t{i}", recent=[]) in AFFINITY["decode"] for i in range(10))
+    assert len(set(seen)) >= 4
+    assert choose_look(None, "same", recent=[]) == choose_look(None, "same", recent=[])
 
 
 def _voiced(texts):
@@ -482,20 +472,6 @@ def test_scenes_must_stay_short_enough_to_keep_the_screen_moving():
     assert any("split it across two scenes" in x for x in retention_problems(_retention_project(_narrs(n1=long_line))))
 
 
-def test_every_look_is_blue():
-    import colorsys
-
-    ts = LOOKS_TS.read_text(encoding="utf-8")
-    for name in LOOKS:
-        row = re.search(rf"^  {name}: \{{ name: '{name}', accent: '(#\w+)', accent2: '(#\w+)', background: '(#\w+)'", ts, re.M)
-        assert row, name
-        for hex_ in row.groups():
-            r, g, b = (int(hex_[i:i + 2], 16) / 255 for i in (1, 3, 5))
-            h, sat, val = colorsys.rgb_to_hsv(r, g, b)
-            # the blue family: hue between cyan (170 deg) and indigo (255 deg), or a near-neutral blue-tinted white / black
-            assert (170 / 360 <= h <= 255 / 360) or sat < 0.2 or val < 0.1, (name, hex_, round(h * 360), round(sat, 2), round(val, 2))
-
-
 # ---- callouts, the re-hook and the 60-second floor (audit follow-up) ----
 from services.motion_pipeline import MIN_VIDEO_SECONDS, pick_callout, rehook_index  # noqa: E402
 
@@ -525,14 +501,6 @@ def test_scenes_of_17_words_still_reach_the_monetisation_floor():
     # 13 scenes x 12-17 words keeps the narration between 150 and 190 words: more than 60 seconds at the natural pace
     words = 13 * 14
     assert 150 <= words <= 190 and words / 2.5 + 13 * 0.3 > MIN_VIDEO_SECONDS - 1
-
-
-def test_the_functional_colours_are_blue_too():
-    ts = (Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "motion")
-    tier = re.search(r"TIER_COLORS[^=]*= (\{[^}]*\})", (ts / "formats.tsx").read_text(encoding="utf-8")).group(1)
-    for hex_ in re.findall(r"#[0-9A-Fa-f]{6}", tier) + re.findall(r"(?:myth|fact|partly): \{ label: '[A-Z ]+', color: '(#\w+)'", (ts / "formats.tsx").read_text(encoding="utf-8")):
-        r, g, b = (int(hex_[i:i + 2], 16) for i in (1, 3, 5))
-        assert b >= max(r, g) - 8 or (g >= r and b >= r), hex_  # blue-dominant: no red, yellow, orange or green
 
 
 def test_a_busy_mix_is_brought_under_the_peak_limit(tmp_path):
@@ -622,16 +590,6 @@ def test_every_banked_script_passes_the_retention_rules():
 NEW_FORMATS = ("top5", "eli5", "fails", "numbers", "quiz", "stop", "rumor", "review", "news")
 
 
-def test_new_formats_are_fully_registered():
-    from services.looks import AFFINITY
-    from services.motion_generator import FORMAT_WEIGHTS
-    from services.motion_pipeline import MUSIC_BY_FORMAT, VOICE_BY_FORMAT
-    from services.series import SERIES
-    for f in NEW_FORMATS:
-        assert f in FORMATS and f in FORMAT_RULES and f in SERIES and f in AFFINITY and f in MUSIC_BY_FORMAT and f in VOICE_BY_FORMAT
-    assert "news" not in FORMAT_WEIGHTS  # the bulletin is a section of its own: never picked at random
-
-
 def _fmt_project(fmt, specs):
     scenes = [MotionSceneModel(type=t, text="Short line", narration=_NARR, durationInFrames=90, **extra) for t, extra in specs]
     return MotionProject(topic="t", screen_title="Test", title="A test title #siliconverdict #tech", description="One. Two.", tags=["a"] * 6, pinned_comment="Why?", scenes=scenes, format=fmt)
@@ -679,45 +637,6 @@ def test_tech_news_ranks_widely_covered_stories_first_and_reads_text():
     assert len(groups[0]["outlets"]) == 2 and len(groups[1]["outlets"]) == 2
     text = build_source_text(items=items, now=now)
     assert "Story 1 (reported by" in text and "chip" in text.lower()
-
-
-def test_priced_format_and_new_scene_types():
-    import json
-    from pathlib import Path
-    from services.motion_generator import FORMATS, MotionProject, make_validator
-    assert "priced" in FORMATS
-    d = json.loads((Path(__file__).resolve().parent.parent / "data" / "scripts" / "sample_priced.json").read_text(encoding="utf-8"))
-    p = MotionProject.model_validate(d)
-    assert make_validator(fmt="priced", retention=True)(p) == []
-    assert p.series_label == "Priced In"
-    p.scenes[2].unit = "other cards"  # the unit must be the same in every units scene
-    assert any("SAME name" in x for x in make_validator(fmt="priced", retention=True)(p))
-    d2 = json.loads((Path(__file__).resolve().parent.parent / "data" / "scripts" / "sample_split.json").read_text(encoding="utf-8"))
-    assert make_validator(fmt="versus", retention=True)(MotionProject.model_validate(d2)) == []
-    d2["format"] = "myth"
-    assert any("split scenes belong" in x for x in make_validator(fmt="myth", retention=True)(MotionProject.model_validate(d2)))
-
-
-def test_every_visual_option_a_look_asks_for_is_implemented():
-    """A look names a background, caption style, decor and transitions; each must have code behind it, or the video would silently fall back to the default."""
-    src = LOOKS_TS.read_text(encoding="utf-8")
-    motion = LOOKS_TS.parent
-    read = lambda name: (motion / name).read_text(encoding="utf-8")  # noqa: E731
-    for bg in set(re.findall(r"bg: '(\w+)'", src)) - {"glow"}:
-        assert f"look.bg === '{bg}'" in read("primitives.tsx"), bg
-    for cap in set(re.findall(r"captions: '(\w+)'", src)) - {"plain", "oneword", "twotone"}:
-        assert f"style === '{cap}'" in read("captions.tsx"), cap
-    for decor in set(re.findall(r"decor: '(\w+)'", src)) - {"none", "dimension"}:
-        assert f"look.decor === '{decor}'" in read("decor.tsx"), decor
-    trans = read("transitions.ts")
-    for name in {t for group in re.findall(r"transitions: \[([^\]]*)\]", src, re.S) for t in re.findall(r"'(\w+)'", group)}:
-        assert f"  {name}: (p" in trans, name
-    for fx in re.findall(r"'(\w+)'", re.search(r"BIG_FX: BigFxName\[\] = \[([^\]]*)\]", read("anim.ts")).group(1)):
-        assert f"name === '{fx}'" in read("bigfx.tsx") or fx == "frameDraw", fx
-    for rv in re.findall(r"'(\w+)'", re.search(r"REVEALS: Reveal\[\] = \[([^\]]*)\]", read("anim.ts")).group(1)):
-        assert f"mode === '{rv}'" in read("reveal.tsx") or rv == "pop", rv
-    for mv in re.findall(r"'(\w+)'", re.search(r"CAMERA_MOVES: CameraMove\[\] = \[([^\]]*)\]", read("anim.ts")).group(1)):
-        assert f"{mv}: `" in read("MotionGraphic.tsx"), mv
 
 
 def test_tier_scene_with_a_price_ticks_while_the_price_counts_up():

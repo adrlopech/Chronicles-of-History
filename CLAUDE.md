@@ -5,9 +5,9 @@ Sibling of `Silicon Verdict` (`../Silicon Verdict`): same Remotion engine and pi
 
 ## Status
 
-Scaffold only. The code is a copy of the tracked files of Silicon Verdict and still carries tech-channel pieces. Next steps, in order:
+The visual style is new (an illustrated archive with six era looks: `guide/motion-engine.md`). The Python generator, validators and docs are still the tech channel's. Next steps, in order:
 
-1. Create the channels; replace the brand (colours in `remotion_studio/src/motion/types.ts` and `looks.ts`, text in `scripts/make_brand_assets.py`).
+1. Brand assets for the channels (logo, cover, avatar): `scripts/make_brand_assets.py` still draws Silicon Verdict's.
 2. Rewrite the generator prompts and validators in `services/motion_generator.py` for history (hook, 3-5 verified facts, closer; no prices, no games, no tech news).
 3. Remove what history does not use: `services/prices.py`, `game_*`, `tech_news.py`, price/game scripts and their tests.
 4. New YouTube OAuth for the new channel (`scripts/authenticate_yt.py`), new `tokens/`. Ask the operator each time.
