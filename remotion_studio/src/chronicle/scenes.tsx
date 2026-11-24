@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { AbsoluteFill, Easing, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Engraving, pickIcon } from './icons';
-import { EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Seal, Stamp, Underline, clamp, fit, hash, lines, rng, smoothClosed } from './ink';
+import { Corners, EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Seal, Stamp, TornLabel, Underline, clamp, fit, foilText, hash, lines, rng, smoothClosed } from './ink';
 import { useLook } from './looks';
 import { CAPTION_SPACE, CHANNEL, FPS, HEIGHT, MotionScene, SAFE_BOTTOM, SAFE_TOP, WIDTH } from './types';
 
@@ -13,13 +13,13 @@ const W = 880;
 /** True when an illustration is drawn behind the scene: the content then sits on a parchment plate at the bottom and leaves the picture in view. */
 export const ArtCtx = createContext(false);
 
-const Page: React.FC<{ children: React.ReactNode; gap?: number; justify?: 'center' | 'flex-start' }> = ({ children, gap = 26, justify = 'center' }) => {
+const Page: React.FC<{ children: React.ReactNode; gap?: number; justify?: 'center' | 'flex-start'; card?: boolean }> = ({ children, gap = 26, justify = 'center', card = false }) => {
   const art = useContext(ArtCtx);
   const look = useLook();
   if (!art) return <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 100px ${SAFE_BOTTOM + CAPTION_SPACE}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: justify, gap }}>{children}</AbsoluteFill>;
   return (
-    <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 60px ${SAFE_BOTTOM + CAPTION_SPACE}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end' }}>
-      <div style={{ width: 960, padding: '22px 36px 26px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 14), background: `${look.paper}EB`, border: `5px double ${look.accent2}`, boxShadow: '0 20px 50px rgba(0,0,0,0.5)', borderRadius: 4 }}>{children}</div>
+    <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 56px ${SAFE_BOTTOM + CAPTION_SPACE - 10}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end' }}>
+      <div style={card ? { width: 968, padding: '28px 36px 30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 16), position: 'relative', background: `linear-gradient(165deg, ${look.paper}F4, ${look.paper2}F7)`, border: `3px solid ${look.accent2}`, outline: `1.5px solid ${look.accent2}88`, outlineOffset: -14, borderRadius: 6, boxShadow: '0 28px 70px rgba(0,0,0,0.7), inset 0 0 90px rgba(0,0,0,0.5)' } : { width: 968, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 14), textShadow: '0 4px 0 rgba(0,0,0,0.55), 0 8px 30px rgba(0,0,0,0.8)' }}>{card && <Corners color={look.accent2} size={46} inset={7} />}{children}</div>
     </AbsoluteFill>
   );
 };
@@ -30,6 +30,7 @@ const wordCount = (t: string) => t.split(/\s+/).filter(Boolean).length;
 /** The standard headline scene: a headline, an accent phrase with a hand-drawn underline (drawn when the narrator says it) and an engraving. */
 export const Statement: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
+  const frame = useCurrentFrame();
   const text = scene.text;
   const acc = scene.accentText ?? '';
   const art = useContext(ArtCtx);
@@ -45,7 +46,12 @@ export const Statement: React.FC<{ scene: MotionScene }> = ({ scene }) => {
     <Page gap={22}>
       {scene.kicker && <Kicker text={scene.kicker} />}
       <InkWords text={text} size={headSize} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} ls={look.caps ? headSize * 0.02 : -headSize * 0.012} delay={4} />
-      {acc && (
+      {acc && art && (
+        <TornLabel color={look.accent} seed={hash(acc)} at={at} tilt={-1.6 + (hash(acc) % 3)}>
+          <span style={{ fontFamily: look.head, fontWeight: look.weight, fontSize: Math.round(accSize * 0.86), lineHeight: 1.05, textTransform: 'uppercase', letterSpacing: look.caps ? 2 : 0 }}>{acc}</span>
+        </TornLabel>
+      )}
+      {acc && !art && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
           <InkWords text={acc} size={accSize} color={look.accent} font={look.italic} weight={400} delay={headWords * 3 + 10} lh={1.1} />
           <Underline width={accW} at={at} color={look.accent} double />
@@ -78,6 +84,7 @@ export const Chapter: React.FC<{ scene: MotionScene }> = ({ scene }) => {
 /** A date stamped into the page: the year scrubs forward like a clock being wound, then lands with a ghost of misregistered ink. */
 export const DateScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
+  const art = useContext(ArtCtx);
   const frame = useCurrentFrame();
   const year = scene.value ?? parseInt(scene.text, 10);
   const valid = Number.isFinite(year);
@@ -91,8 +98,8 @@ export const DateScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
     <Page gap={20}>
       {scene.kicker && <Kicker text={scene.kicker} />}
       <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', gap: 14, transform: `scale(${settle})` }}>
-        <div style={{ position: 'relative', fontFamily: look.date, fontWeight: 600, fontSize: size, lineHeight: 1, color: look.ink, fontVariantNumeric: 'tabular-nums' }}>
-          <div style={{ position: 'absolute', left: 9, top: 9, color: look.accent, opacity: 0.4 * ghost }}>{shown}</div>
+        <div style={{ position: 'relative', fontFamily: look.date, fontWeight: look.weight, fontSize: size, lineHeight: 1, fontVariantNumeric: 'tabular-nums', ...(art ? foilText : { color: look.ink }) }}>
+          {!art && <div style={{ position: 'absolute', left: 9, top: 9, color: look.accent, opacity: 0.4 * ghost }}>{shown}</div>}
           {shown}
         </div>
         {scene.unit && <div style={{ fontFamily: look.date, fontWeight: 600, fontSize: size * 0.26, color: look.accent, marginTop: size * 0.06, letterSpacing: size * 0.02 }}>{scene.unit.toUpperCase()}</div>}
@@ -118,7 +125,7 @@ export const Timeline: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const spine = interpolate(frame, [10, 10 + step * n], [0, 1], { ...clamp, easing: Easing.linear });
   const tSize = fit(scene.text, 70, W, 2, look.k, 40);
   return (
-    <Page gap={24} justify="center">
+    <Page gap={24} justify="center" card>
       <InkWords text={scene.text} size={tSize} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={2} />
       <div style={{ position: 'relative', width: W, height: rowH * n }}>
         <div style={{ position: 'absolute', left: 290, top: 18, width: 5, height: (rowH * n - 36) * spine, background: `linear-gradient(180deg, ${look.accent2}, ${look.accent})`, borderRadius: 3 }} />
@@ -147,8 +154,9 @@ export const Timeline: React.FC<{ scene: MotionScene }> = ({ scene }) => {
 export const MapScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
   const frame = useCurrentFrame();
-  const MW = 880;
-  const MH = 700;
+  const art = useContext(ArtCtx);
+  const MW = art ? 840 : 880;
+  const MH = art ? 520 : 700;
   const places = (scene.items ?? []).slice(0, 5).map((it) => {
     const [name, x, y] = it.split('|');
     return { name: name.trim(), x: 70 + (Math.min(100, Math.max(0, parseFloat(x) || 50)) / 100) * (MW - 140), y: 70 + (Math.min(100, Math.max(0, parseFloat(y) || 50)) / 100) * (MH - 140) };
@@ -173,7 +181,7 @@ export const MapScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const tSize = fit(scene.text, 62, W, 2, look.k, 38);
   const frameIn = interpolate(frame, [0, 16], [0, 1], { ...clamp, easing: EASE_OUT });
   return (
-    <Page gap={30}>
+    <Page gap={20} card>
       <InkWords text={scene.text} size={tSize} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={2} />
       <div style={{ opacity: frameIn, transform: `scale(${0.96 + 0.04 * frameIn})`, boxShadow: '0 18px 40px rgba(0,0,0,0.35)' }}>
         <svg width={MW} height={MH} viewBox={`0 0 ${MW} ${MH}`} style={{ display: 'block', background: look.dark ? `${look.paper}` : look.paper, border: `5px double ${look.ink}` }}>
@@ -217,7 +225,7 @@ export const Quote: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const mark = interpolate(frame, [0, 18], [0, 1], { ...clamp, easing: EASE_OUT });
   const size = fit(scene.text, 84, W - 30, 7, 0.46, 38);
   return (
-    <Page gap={14}>
+    <Page gap={14} card>
       <div style={{ fontFamily: look.head, fontWeight: 900, fontSize: 340, lineHeight: 0.62, height: 150, color: look.accent, opacity: 0.9 * mark, transform: `translateY(${(1 - mark) * 24}px)`, alignSelf: 'flex-start', marginLeft: 6 }}>“</div>
       <InkWords text={scene.text} size={size} color={look.ink} font={look.italic} weight={400} align="left" delay={8} stagger={2} lh={1.18} />
       {scene.accentText && (
@@ -245,7 +253,7 @@ export const Ledger: React.FC<{ scene: MotionScene }> = ({ scene }) => {
       <div style={{ position: 'absolute', left: 120, top: CONTENT_TOP, height: CONTENT_H, width: 3, background: look.accent, opacity: 0.45 * rules }} />
       <Page gap={14}>
         <InkWords text={scene.text} size={fit(scene.text, 70, W, 2, 0.74, 34)} color={look.accent2 === look.accent ? look.ink : look.ink} font={look.date} weight={600} caps ls={4} delay={2} lh={1.15} />
-        <div style={{ fontFamily: look.date, fontWeight: 600, fontSize: size, lineHeight: 1.05, color: look.ink, fontVariantNumeric: 'tabular-nums', opacity: interpolate(frame, [4, 12], [0, 1], clamp) }}>{shown}</div>
+        <div style={{ fontFamily: look.date, fontWeight: look.weight, fontSize: size, lineHeight: 1.05, fontVariantNumeric: 'tabular-nums', opacity: interpolate(frame, [4, 12], [0, 1], clamp), ...(useContext(ArtCtx) ? foilText : { color: look.ink }) }}>{shown}</div>
         <Underline width={Math.min(W, shown.length * size * 0.6 + 40)} at={44} len={14} color={look.accent} thick={6} double />
         {scene.unit && <InkWords text={scene.unit} size={fit(scene.unit, 84, W, 2, 0.46, 40)} color={look.accent} font={look.italic} weight={400} delay={30} />}
         {scene.accentText && <InkWords text={scene.accentText} size={fit(scene.accentText, 62, W, 2, 0.46, 36)} color={look.muted === look.ink ? look.ink : look.ink} font={look.italic} weight={400} delay={38} />}
@@ -281,7 +289,7 @@ export const Versus: React.FC<{ scene: MotionScene }> = ({ scene }) => {
     );
   };
   return (
-    <Page gap={24}>
+    <Page gap={24} card>
       <InkWords text={scene.text} size={fit(scene.text, 70, W, 2, look.k, 40)} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={2} />
       <div style={{ display: 'flex', width: W, justifyContent: 'space-between' }}>
         {side(scene.left ?? 'Left', lv, winner === 'left', 'l')}
@@ -297,7 +305,7 @@ export const ListScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const items = (scene.items ?? []).slice(0, 4);
   const step = Math.max(14, Math.min(28, ((scene.durationInFrames - 50) / Math.max(1, items.length)) * 0.7));
   return (
-    <Page gap={34}>
+    <Page gap={26} card>
       <InkWords text={scene.text} size={fit(scene.text, 84, W, 2, look.k, 44)} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={2} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 30, width: W }}>
         {items.map((it, i) => {

@@ -3,8 +3,8 @@ import { hash, rng } from '../ink';
 
 /** Shared drawing helpers for the vector illustrations. Everything is a function of time `t` (seconds), so it can be animated by frame. */
 export const W = 1600; // the virtual canvas is wider than the 1080 px window so the camera can pan and the layers can slide at different speeds
-export const H = 1500;
-export const GY = 450; // the ground line (the horizon of land scenes)
+export const H = 1920;
+export const GY = 700; // the ground line (the horizon of land scenes)
 
 export interface Drawn { t: number; seed: number; dir?: 1 | -1 }
 

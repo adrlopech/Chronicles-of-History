@@ -19,7 +19,7 @@ const DRAW: Record<Subject, React.FC<Dr>> = {
 const SPEED: Partial<Record<Subject, number>> = { soldiers: 46, cavalry: 150, caravan: 38, elephants: 30, ship: 26, fleet: 22, galley: 34, train: 190, tank: 80, plane: 230, farmer: 20 };
 const WATER = new Set(['ship', 'fleet', 'galley']);
 
-const DEPTH = { far: { y: GY + 36, s: 0.62, f: 0.6 }, mid: { y: GY + 120, s: 1, f: 0.85 }, near: { y: GY + 230, s: 1.4, f: 1.1 }, fore: { y: GY + 270, s: 1.3, f: 1.3 } } as const;
+const DEPTH = { far: { y: GY + 70, s: 1.4, f: 0.6 }, mid: { y: GY + 205, s: 2.3, f: 0.85 }, near: { y: GY + 370, s: 2.9, f: 1.1 }, fore: { y: GY + 480, s: 2.3, f: 1.3 } } as const;
 
 const Weather: React.FC<{ kind: string; t: number; c: Colors }> = ({ kind, t, c }) => {
   if (kind === 'clear') return null;
@@ -41,6 +41,37 @@ const Weather: React.FC<{ kind: string; t: number; c: Colors }> = ({ kind, t, c 
   );
 };
 
+/** Light and air over the picture: haze at the horizon, a bloom around the sun, rays of light, embers, a vignette and film grain. */
+const Atmosphere: React.FC<{ c: Colors; time: string; place: string; t: number; sx: number; sy: number; embers: boolean; weather: string }> = ({ c, time, place, t, sx, sy, embers, weather }) => {
+  const indoor = place === 'interior';
+  const rays = !indoor && !c.night && weather !== 'storm' && weather !== 'rain';
+  const r = rng(11);
+  return (
+    <g style={{ pointerEvents: 'none' }}>
+      <defs>
+        <radialGradient id="bloom"><stop offset="0" stopColor={c.sun} stopOpacity={0.75} /><stop offset="0.35" stopColor={c.sun} stopOpacity={0.22} /><stop offset="1" stopColor={c.sun} stopOpacity={0} /></radialGradient>
+        <radialGradient id="vig" cx="50%" cy="46%" r="75%"><stop offset="0.55" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" stopOpacity={0.62} /></radialGradient>
+        <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={c.skyBottom} stopOpacity={0} /><stop offset="0.5" stopColor={c.skyBottom} stopOpacity={0.4} /><stop offset="1" stopColor={c.skyBottom} stopOpacity={0} /></linearGradient>
+        <filter id="grainF" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed={5} /><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.45" /></filter>
+      </defs>
+      {!indoor && <rect y={GY - 170} width={1080} height={300} fill="url(#haze)" />}
+      {!indoor && <circle cx={sx} cy={sy} r={520} fill="url(#bloom)" style={{ mixBlendMode: 'screen' }} />}
+      {rays && Array.from({ length: 7 }, (_, i) => {
+        const a = 1.15 + i * 0.16 + Math.sin(t * 0.4 + i) * 0.03;
+        return <path key={i} d={`M${sx} ${sy} L${sx + Math.cos(a) * 1900 - 90} ${sy + Math.sin(a) * 1900} L${sx + Math.cos(a) * 1900 + 90} ${sy + Math.sin(a) * 1900}Z`} fill={c.sun} opacity={0.045 + 0.03 * Math.sin(t * 0.8 + i * 2)} style={{ mixBlendMode: 'screen' }} />;
+      })}
+      {embers && Array.from({ length: 34 }, (_, i) => {
+        const sp = 60 + r() * 120;
+        const x0 = r() * 1080;
+        const y = H - (((r() * H + t * sp) % H));
+        return <circle key={i} cx={x0 + Math.sin(t * 1.4 + i) * 26} cy={y} r={1.6 + r() * 3.4} fill={i % 3 ? '#ffb347' : '#ff7a3d'} opacity={0.35 + 0.65 * Math.abs(Math.sin(t * 3 + i))} style={{ mixBlendMode: 'screen' }} />;
+      })}
+      <rect width={1080} height={H} fill="url(#vig)" />
+      <g transform="scale(2)" opacity={0.2 + 0.03 * Math.sin(t * 40)} style={{ mixBlendMode: 'overlay' }}><rect width={540} height={H / 2} filter="url(#grainF)" /></g>
+    </g>
+  );
+};
+
 interface Slot { x: number; d: keyof typeof DEPTH; s: number }
 
 /** One shot: the place, the subjects laid out in depth, the camera sliding across the layers, the weather over everything. Pure function of `frame`. */
@@ -51,15 +82,15 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
   const prog = frame / Math.max(1, dur);
   const dirCam = seed % 2 ? 1 : -1;
   const cam = dirCam * (prog * 2 - 1) * 0.9;
-  const zoom = 1 + 0.07 * prog;
+  const zoom = 1.28 + 0.07 * prog;
   const subj = shot.subjects;
   const structures = subj.filter((s) => kindOf(s) === 'structure');
   const actors = subj.filter((s) => kindOf(s) === 'actor');
   const props = subj.filter((s) => kindOf(s) === 'prop');
   const effects = subj.filter((s) => kindOf(s) === 'effect');
   const place = shot.place;
-  const sS: Slot[] = [{ x: 1020, d: 'far', s: 1.5 }, { x: 470, d: 'far', s: 1.1 }];
-  const aS: Slot[] = structures.length ? [{ x: 700, d: 'mid', s: 1.2 }, { x: 420, d: 'near', s: 1.1 }, { x: 1120, d: 'near', s: 1.0 }] : [{ x: 800, d: 'mid', s: 1.4 }, { x: 480, d: 'near', s: 1.15 }, { x: 1130, d: 'far', s: 0.9 }];
+  const sS: Slot[] = [{ x: 1000, d: 'far', s: 1.45 }, { x: 440, d: 'far', s: 1.0 }];
+  const aS: Slot[] = structures.length ? [{ x: 720, d: 'mid', s: 1.1 }, { x: 400, d: 'near', s: 0.9 }, { x: 1140, d: 'near', s: 0.85 }] : [{ x: 800, d: 'mid', s: 1.25 }, { x: 460, d: 'near', s: 1.0 }, { x: 1150, d: 'far', s: 1.0 }];
   const pS: Slot[] = [{ x: 340, d: 'fore', s: 1.1 }, { x: 1250, d: 'fore', s: 1.0 }];
   const items: { z: number; key: string; node: React.ReactNode }[] = [];
   const put = (sj: Subject, slot: Slot, k: number, travel: boolean) => {
@@ -69,8 +100,8 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     const sp = travel ? SPEED[sj] ?? 0 : 0;
     const x = slot.x + dir * sp * (t - dur / 60) * (sp > 100 ? 1 : 0.6);
     let y = D.y;
-    if (WATER.has(sj)) y = GY + (place === 'sea' || place === 'coast' ? 150 : 110);
-    if (sj === 'plane') y = GY - 170 + Math.sin(t) * 12;
+    if (WATER.has(sj)) y = GY + (place === 'sea' || place === 'coast' ? 300 : 260);
+    if (sj === 'plane') y = GY - 230 + Math.sin(t) * 14;
     const lx = -260 + cam * 200 * D.f;
     items.push({ z: y + (slot.d === 'far' ? -500 : 0), key: `${sj}${k}`, node: <g transform={`translate(${x + lx} ${y}) scale(${slot.s * D.s})`}><C c={c} t={t} seed={seed + k * 3} dir={dir} /></g> });
   };
@@ -80,18 +111,19 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
   effects.forEach((sj, i) => {
     const lx = -260 + cam * 200 * 0.5;
     const C = DRAW[sj];
-    const pos: Record<string, [number, number, number]> = { fire: [760, GY + 190, 1.5], smoke: [560, GY + 40, 1], birds: [650, GY - 190, 1.1], comet: [820, GY - 170, 1], eclipse: [800, GY - 190, 1.2], volcano: [1040, GY + 40, 1.5] };
+    const pos: Record<string, [number, number, number]> = { fire: [760, GY + 330, 2], smoke: [560, GY + 60, 1.2], birds: [650, GY - 240, 1.3], comet: [820, GY - 220, 1.2], eclipse: [800, GY - 250, 1.4], volcano: [1040, GY + 60, 1.9] };
     const [x, y, s] = pos[sj];
     items.push({ z: sj === 'fire' ? y + 100 : y - 600, key: `fx${i}`, node: <g transform={`translate(${x + lx} ${y}) scale(${s})`}><C c={c} t={t} seed={seed + i} dir={1} /></g> });
   });
   items.sort((a, b) => a.z - b.z);
   return (
     <svg width={1080} height={H} viewBox={`0 0 1080 ${H}`} style={{ display: 'block' }}>
-      <g transform={`translate(540 ${GY}) scale(${zoom}) translate(-540 ${-GY})`}>
+      <g transform={`translate(540 ${GY + 150}) scale(${zoom}) translate(-540 ${-(GY + 150)})`}>
         <Backdrop place={place} time={shot.time} c={c} t={t} seed={seed} cam={cam} />
         {items.map((it) => <g key={it.key}>{it.node}</g>)}
         <Weather kind={shot.weather ?? (place === 'snow' ? 'snow' : 'clear')} t={t} c={c} />
       </g>
+      <Atmosphere c={c} time={shot.time} place={place} t={t} sx={640 + ((seed % 5) - 2) * 90 + 260 - 260 + cam * 30} sy={shot.time === 'day' ? GY - 190 : shot.time === 'night' ? GY - 200 : GY - 50} embers={subj.includes('fire') || subj.includes('volcano') || subj.includes('cannon') || place === 'battlefield' || shot.weather === 'smoke'} weather={shot.weather ?? 'clear'} />
       <rect width={1080} height={H} fill={c.night ? '#05070f' : c.shadow} opacity={c.night ? 0.12 : 0.06} />
     </svg>
   );

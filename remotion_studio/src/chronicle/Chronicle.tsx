@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { AbsoluteFill, Sequence, interpolate, useCurrentFrame } from 'remotion';
 import { Captions, chunkCaptions } from './captions';
-import { clamp, EASE_OUT, InkWords, fit } from './ink';
-import { LookCtx, lookFor, useLook } from './looks';
-import { Backdrop } from './paper';
+import { Corners, clamp, EASE_OUT, InkWords, fit } from './ink';
+import { Look, LookCtx, lookFor, modernLook, useLook } from './looks';
+import { ModernBackdrop } from './paper';
 import { ArtStage } from './art/Stage';
 import { ArtCtx, Callout, Chapter, DateScene, Flash, ImageScene, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
 import { HEIGHT, MotionGraphicProps, MotionScene, OVERLAP, SAFE_BOTTOM, SAFE_TOP, WIDTH, totalFrames } from './types';
@@ -38,7 +38,7 @@ const SceneShell: React.FC<{ scene: MotionScene; index: number; last: boolean; c
   const style: React.CSSProperties = !last && pout > 0 ? { opacity: 1 - pout, transform: `translateY(${-pout * 24}px)` } : index === 0 ? {} : enter(kind, pin);
   return (
     <ArtCtx.Provider value={!!scene.art?.length}>
-      {scene.art?.length ? <AbsoluteFill style={{ opacity: last || pout <= 0 ? 1 : 1 - pout }}><ArtStage shots={scene.art} dur={scene.durationInFrames} look={useLook()} seed={`${scene.text}${index}`} /></AbsoluteFill> : null}
+      {scene.art?.length ? <AbsoluteFill style={{ opacity: last || pout <= 0 ? 1 : 1 - pout }}><ArtStage shots={scene.art} dur={scene.durationInFrames} look={React.useContext(EraCtx)} seed={`${scene.text}${index}`} /></AbsoluteFill> : null}
       <AbsoluteFill style={style}>
         {children}
         <Callout scene={scene} />
@@ -50,33 +50,32 @@ const SceneShell: React.FC<{ scene: MotionScene; index: number; last: boolean; c
 /** The chronology rail: a thin ruled line down the left edge with a diamond per scene; the part already told is inked in. */
 const Rail: React.FC<{ starts: number[]; scenes: MotionScene[]; total: number }> = ({ starts, scenes, total }) => {
   const frame = useCurrentFrame();
-  const look = lookFor(useLookName());
+  const look = useLook();
   const top = SAFE_TOP + 50;
   const bottom = HEIGHT - SAFE_BOTTOM - 200;
   const h = bottom - top;
   const prog = Math.min(1, frame / Math.max(1, total));
   return (
-    <div style={{ position: 'absolute', left: 66, top, width: 4, height: h, background: `${look.muted}55`, borderRadius: 2 }}>
+    <div style={{ position: 'absolute', left: 30, top, width: 4, height: h, background: 'rgba(255,255,255,0.22)', borderRadius: 2 }}>
       <div style={{ position: 'absolute', left: 0, top: 0, width: 4, height: h * prog, background: look.accent, borderRadius: 2 }} />
       {starts.map((s, i) => {
         const y = (s / Math.max(1, total)) * h;
         const done = frame >= s;
-        return <div key={i} style={{ position: 'absolute', left: -7, top: y - 9, width: 18, height: 18, transform: 'rotate(45deg)', background: done ? look.accent : look.paper, border: `3px solid ${done ? look.accent : look.muted}` }} />;
+        return <div key={i} style={{ position: 'absolute', left: -7, top: y - 9, width: 18, height: 18, transform: 'rotate(45deg)', background: done ? look.accent : '#0b1226', border: `3px solid ${done ? look.accent : 'rgba(255,255,255,0.5)'}` }} />;
       })}
     </div>
   );
 };
-const NameCtx = React.createContext<string | undefined>(undefined);
-const useLookName = () => React.useContext(NameCtx);
+const EraCtx = React.createContext<Look>(lookFor(undefined));
 
 /** The last moments fade to the hook line, so the loop that restarts the video feels continuous. */
 const LoopTease: React.FC<{ scene: MotionScene; total: number }> = ({ scene, total }) => {
   const frame = useCurrentFrame();
-  const look = lookFor(useLookName());
+  const look = useLook();
   const p = interpolate(frame, [total - 26, total - 4], [0, 1], clamp);
   if (p <= 0.001) return null;
   return (
-    <AbsoluteFill style={{ opacity: p, background: `radial-gradient(ellipse 85% 60% at 50% 50%, ${look.paper}F5 0%, ${look.paper2}EE 100%)`, alignItems: 'center', justifyContent: 'center', padding: 90 }}>
+    <AbsoluteFill style={{ opacity: p, background: 'radial-gradient(ellipse 85% 60% at 50% 50%, #0b1226F5 0%, #050814EE 100%)', alignItems: 'center', justifyContent: 'center', padding: 90 }}>
       <InkWords text={scene.text} size={fit(scene.text, 120, 900, 4, look.k, 56)} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={0} stagger={0} />
     </AbsoluteFill>
   );
@@ -85,7 +84,8 @@ const LoopTease: React.FC<{ scene: MotionScene; total: number }> = ({ scene, tot
 export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, look: lookName, captions }) => {
   if (!scenes?.length) throw new Error('MotionGraphic needs at least one scene');
   const frame = useCurrentFrame();
-  const look = lookFor(lookName);
+  const era = lookFor(lookName);
+  const look = modernLook(era);
   const chunks = useMemo(() => chunkCaptions(captions ?? []), [captions]);
   const { starts, total } = useMemo(() => {
     let at = 0;
@@ -98,10 +98,10 @@ export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, loo
     return false;
   })();
   return (
-    <NameCtx.Provider value={lookName}>
+    <EraCtx.Provider value={era}>
       <LookCtx.Provider value={look}>
         <AbsoluteFill style={{ width: WIDTH, height: HEIGHT }} data-title={title}>
-          <Backdrop look={look} frame={frame} total={total} />
+          <ModernBackdrop look={look} frame={frame} />
           {scenes.map((scene, i) => {
             const C = sceneFor(scene.type);
             const last = i === scenes.length - 1;
@@ -112,10 +112,11 @@ export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, loo
             );
           })}
           {!flash && <Rail starts={starts} scenes={scenes} total={total} />}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}><Corners color={look.accent2} size={64} inset={26} weight={5} /></div>
           {!flash && <Captions chunks={chunks} />}
           <LoopTease scene={scenes[0]} total={total} />
         </AbsoluteFill>
       </LookCtx.Provider>
-    </NameCtx.Provider>
+    </EraCtx.Provider>
   );
 };

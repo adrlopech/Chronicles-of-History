@@ -182,3 +182,38 @@ export const Stamp: React.FC<{ text: string; color: string; size: number; at?: n
     </div>
   );
 };
+
+/** Gold-foil lettering: a metallic gradient clipped to the glyphs with a stamped shadow. */
+export const FOIL = 'linear-gradient(180deg, #FFFCEB 0%, #FFE9A0 30%, #FFC93C 55%, #E8A317 80%, #FFE3A0 100%)';
+export const foilText: React.CSSProperties = {
+  color: '#FFE08A',
+  textShadow: '0 2px 0 #FFF4C8, 0 5px 0 #D9A021, 0 8px 0 #A06A0E, 0 11px 0 #6B430A, 0 22px 34px rgba(0,0,0,0.8)',
+};
+
+/** A strip of torn paper stuck onto the picture: rough edges, a slight tilt, a drop shadow. It carries the key phrase of a scene. */
+export const TornLabel: React.FC<{ children: React.ReactNode; color: string; ink?: string; seed?: number; at?: number; tilt?: number; style?: React.CSSProperties }> = ({ children, color, ink = '#1b1208', seed = 3, at = 0, tilt = -2, style }) => {
+  const frame = useCurrentFrame();
+  const r = rng(seed * 977 + 5);
+  const pts: string[] = [];
+  for (let x = 0; x <= 100; x += 3.4) pts.push(`${x}% ${(r() * 9).toFixed(1)}%`);
+  for (let y = 12; y <= 88; y += 11) pts.push(`${(100 - r() * 2.4).toFixed(1)}% ${y}%`);
+  for (let x = 100; x >= 0; x -= 3.4) pts.push(`${x}% ${(100 - r() * 11).toFixed(1)}%`);
+  for (let y = 88; y >= 12; y -= 11) pts.push(`${(r() * 2.4).toFixed(1)}% ${y}%`);
+  const p = interpolate(frame, [at, at + 12], [0, 1], { ...clamp, easing: Easing.out(Easing.back(1.6)) });
+  return (
+    <div style={{ filter: 'drop-shadow(0 10px 18px rgba(0,0,0,0.6))', transform: `rotate(${tilt}deg) translateX(${(1 - p) * -90}px) scale(${0.85 + 0.15 * p})`, opacity: Math.min(1, p * 2.5), ...style }}>
+      <div style={{ clipPath: `polygon(${pts.join(', ')})`, background: `linear-gradient(172deg, ${color} 0%, ${color} 55%, ${color}E0 100%)`, color: ink, padding: '14px 44px 18px', textShadow: 'none', display: 'inline-block' }}>{children}</div>
+    </div>
+  );
+};
+
+/** Four ornamental corner brackets for panels and the whole frame. */
+export const Corners: React.FC<{ color: string; size?: number; inset?: number; weight?: number }> = ({ color, size = 40, inset = 10, weight = 4 }) => (
+  <>
+    {([[0, 0, 0], [1, 0, 90], [1, 1, 180], [0, 1, 270]] as const).map(([rx, ry, rot], i) => (
+      <svg key={i} width={size} height={size} viewBox="0 0 40 40" style={{ position: 'absolute', [rx ? 'right' : 'left']: inset, [ry ? 'bottom' : 'top']: inset, transform: `rotate(${rot}deg)` }}>
+        <path d="M2 38 V2 H38" fill="none" stroke={color} strokeWidth={weight} /><path d="M10 38 V10 H38" fill="none" stroke={color} strokeWidth={weight / 2.5} opacity={0.7} /><rect x={0} y={0} width={9} height={9} transform="rotate(45 4.5 4.5)" fill={color} />
+      </svg>
+    ))}
+  </>
+);

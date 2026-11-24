@@ -13,7 +13,7 @@ export const ArtStage: React.FC<{ shots: ArtShot[]; dur: number; look: Look; see
   const s0 = hash(seed) % 997;
   const fadeIn = interpolate(frame, [0, 10], [0, 1], clamp);
   return (
-    <AbsoluteFill style={{ opacity: fadeIn, WebkitMaskImage: 'linear-gradient(180deg, #000 0, #000 58%, transparent 90%)', maskImage: 'linear-gradient(180deg, #000 0, #000 58%, transparent 90%)' }}>
+    <AbsoluteFill style={{ opacity: fadeIn }}>
       {shots.map((shot, k) => {
         const start = k * len;
         if (frame < start - 1 || frame > start + len + 14) return null;
@@ -26,6 +26,7 @@ export const ArtStage: React.FC<{ shots: ArtShot[]; dur: number; look: Look; see
           </AbsoluteFill>
         );
       })}
+      <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(5,8,20,0.3) 0%, rgba(5,8,20,0) 16%, rgba(5,8,20,0) 58%, rgba(5,8,20,0.55) 80%, rgba(5,8,20,0.72) 100%)' }} />
     </AbsoluteFill>
   );
 };

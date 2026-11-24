@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { BASKERVILLE, BASKERVILLE_ITALIC, CARDO, CARDO_ITALIC, CINZEL, CORMORANT, ELITE, FELL, FELL_ITALIC, GARAMOND, GARAMOND_ITALIC, MARCELLUS, PLAYFAIR, PLAYFAIR_ITALIC } from './fonts';
+import { BASKERVILLE, BASKERVILLE_ITALIC, CARDO, CARDO_ITALIC, CINZEL, CORMORANT, ELITE, FELL, FELL_ITALIC, GARAMOND, GARAMOND_ITALIC, MANROPE, MARCELLUS, PLAYFAIR, PLAYFAIR_ITALIC, SORA, SPACE, ANTON, BEBAS, ABRIL, OSWALD } from './fonts';
 
 /**
  * A LOOK is an ERA: the paper, the ink, the typefaces and the frame of one period of history. The pipeline picks one per video (services/looks.py) from the topic.
@@ -47,3 +47,48 @@ export const LOOK_NAMES = Object.keys(LOOKS);
 export const lookFor = (name?: string): Look => LOOKS[name ?? ''] ?? LOOKS.manuscript;
 export const LookCtx = createContext<Look>(LOOKS.manuscript);
 export const useLook = () => useContext(LookCtx);
+
+/** The on-screen style of every video: modern and graphic. The drawing is the hero, so type is white and bold on a dark scrim, one bright accent per era, no paper. The era look still sets the picture's colours and these accents. */
+const BRIGHT: Record<string, { accent: string; accent2: string }> = {
+  antiquity: { accent: '#FF8A5B', accent2: '#FFC857' },
+  manuscript: { accent: '#FF5A6E', accent2: '#6EC1FF' },
+  seachart: { accent: '#FFD166', accent2: '#5CE1C6' },
+  empire: { accent: '#FFC857', accent2: '#FF5C8A' },
+  industrial: { accent: '#FF6B5B', accent2: '#9AB0C4' },
+  wartime: { accent: '#FFD23F', accent2: '#FF7A3D' },
+};
+const HEAD: Record<string, { font: string; weight: number; k: number }> = {
+  antiquity: { font: CINZEL, weight: 800, k: 0.8 },
+  manuscript: { font: PLAYFAIR, weight: 900, k: 0.74 },
+  seachart: { font: ABRIL, weight: 400, k: 0.7 },
+  empire: { font: PLAYFAIR, weight: 900, k: 0.74 },
+  industrial: { font: ANTON, weight: 400, k: 0.52 },
+  wartime: { font: BEBAS, weight: 400, k: 0.46 },
+};
+/** Deep, era-tinted dark used for panels and backgrounds (never pure black). */
+const deep = (look: Look, t: number) => {
+  const h = look.paper2.replace('#', '');
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const f = (x: number) => Math.round(x * (1 - t)).toString(16).padStart(2, '0');
+  return `#${f(r)}${f(g)}${f(b)}`;
+};
+export const modernLook = (look: Look): Look => {
+  const hd = HEAD[look.name] ?? HEAD.manuscript;
+  return {
+    ...look,
+    dark: true,
+    paper: deep(look, 0.78),
+    paper2: deep(look, 0.9),
+    ink: '#FFF8EA',
+    muted: 'rgba(255,248,234,0.74)',
+    ...(BRIGHT[look.name] ?? BRIGHT.manuscript),
+    head: hd.font,
+    italic: PLAYFAIR_ITALIC,
+    body: OSWALD,
+    date: hd.font,
+    caps: true,
+    k: hd.k,
+    weight: hd.weight,
+    frame: 'single',
+  };
+};

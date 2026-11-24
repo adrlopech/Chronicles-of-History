@@ -91,3 +91,12 @@ export const Backdrop: React.FC<{ look: Look; frame: number; total: number }> = 
     </AbsoluteFill>
   );
 };
+
+/** The background behind scenes that have no picture of their own: a deep gradient in the era's colours with slow drifting light. */
+export const ModernBackdrop: React.FC<{ look: Look; frame: number }> = ({ look, frame }) => (
+  <AbsoluteFill style={{ background: `radial-gradient(ellipse 120% 80% at 50% 20%, ${look.accent2}55 0%, transparent 60%), linear-gradient(180deg, #0f1b3d 0%, #0b1226 55%, #050814 100%)` }}>
+    {[0, 1, 2].map((i) => (
+      <div key={i} style={{ position: 'absolute', left: `${20 + i * 30 + Math.sin(frame / 90 + i) * 6}%`, top: `${25 + i * 18 + Math.cos(frame / 110 + i) * 5}%`, width: 520, height: 520, borderRadius: '50%', background: `radial-gradient(closest-side, ${i % 2 ? look.accent : look.accent2}33, transparent)`, transform: 'translate(-50%, -50%)' }} />
+    ))}
+  </AbsoluteFill>
+);
