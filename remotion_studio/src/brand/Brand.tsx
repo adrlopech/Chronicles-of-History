@@ -1,7 +1,8 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { Aqueduct, Cathedral, Colosseum, GreatWall, Obelisk, Pagoda } from '../chronicle/art/structures2';
-import { Pyramids, Temple, Windmill } from '../chronicle/art/things';
+import { Aqueduct, Cathedral, Colosseum, Fortress, GreatWall, JapaneseCastle, Library, Monastery, Mosque, Obelisk, Observatory, Pagoda, Palace, Sphinx, Stonehenge, TriumphalArch, Village, Ziggurat, ClockTower } from '../chronicle/art/structures2';
+import { Duomo } from '../chronicle/art/structures3';
+import { Gate, Lighthouse, Pyramids, Temple, Tents, Tower, Windmill } from '../chronicle/art/things';
 import { Caravan } from '../chronicle/art/people';
 import { Colors, mix } from '../chronicle/art/palette';
 import { CINZEL_DECO, CORMORANT } from '../chronicle/fonts';
@@ -156,11 +157,22 @@ const sepia = (): Colors => ({
   accent: '#a8442a', accent2: '#8a5a2a', gold: '#f0c25e', skin: '#d9a877', water: '#6a4424', water2: '#8a5a2a', glow: '#ffd27a',
 });
 
-const SKYLINE: { C: React.FC<any>; x: number; s: number; layer: 'far' | 'near' }[] = [
-  { C: Obelisk, x: 64, s: 1.7, layer: 'near' }, { C: Pyramids, x: 470, s: 1.15, layer: 'far' }, { C: Temple, x: 700, s: 1.0, layer: 'near' }, { C: Aqueduct, x: 1010, s: 0.85, layer: 'far' },
-  { C: Colosseum, x: 1230, s: 0.78, layer: 'near' }, { C: GreatWall, x: 1550, s: 1.0, layer: 'far' }, { C: Cathedral, x: 1700, s: 0.85, layer: 'near' }, { C: Windmill, x: 1900, s: 0.9, layer: 'far' },
-  { C: Pagoda, x: 2420, s: 1.45, layer: 'near' },
+type Layer = 'far' | 'mid' | 'near';
+/** The skyline: three rows of monuments, hazy far ones behind, so that the horizon is full from edge to edge. */
+const SKYLINE: { C: React.FC<any>; x: number; s: number; layer: Layer }[] = [
+  // far, in the haze
+  { C: Ziggurat, x: 300, s: 0.9, layer: 'far' }, { C: Mosque, x: 620, s: 0.85, layer: 'far' }, { C: Palace, x: 930, s: 0.8, layer: 'far' }, { C: Fortress, x: 1240, s: 0.8, layer: 'far' },
+  { C: Monastery, x: 1560, s: 0.75, layer: 'far' }, { C: JapaneseCastle, x: 1860, s: 0.9, layer: 'far' }, { C: Gate, x: 2150, s: 0.7, layer: 'far' }, { C: Tower, x: 2440, s: 1.0, layer: 'far' },
+  { C: Pyramids, x: 470, s: 1.0, layer: 'far' }, { C: GreatWall, x: 1550, s: 1.0, layer: 'far' }, { C: Aqueduct, x: 1010, s: 0.85, layer: 'far' },
+  // middle row
+  { C: Stonehenge, x: 140, s: 0.8, layer: 'mid' }, { C: Sphinx, x: 440, s: 0.85, layer: 'mid' }, { C: TriumphalArch, x: 800, s: 0.8, layer: 'mid' }, { C: Library, x: 1110, s: 0.75, layer: 'mid' },
+  { C: ClockTower, x: 1430, s: 0.7, layer: 'mid' }, { C: Duomo, x: 1760, s: 0.5, layer: 'mid' }, { C: Observatory, x: 2040, s: 0.85, layer: 'mid' }, { C: Village, x: 2330, s: 0.85, layer: 'mid' },
+  // near row
+  { C: Obelisk, x: 64, s: 1.7, layer: 'near' }, { C: Temple, x: 700, s: 1.0, layer: 'near' }, { C: Tents, x: 1010, s: 0.75, layer: 'near' }, { C: Colosseum, x: 1230, s: 0.78, layer: 'near' },
+  { C: Cathedral, x: 1700, s: 0.85, layer: 'near' }, { C: Windmill, x: 1960, s: 0.62, layer: 'near' }, { C: Lighthouse, x: 2200, s: 0.8, layer: 'near' }, { C: Pagoda, x: 2420, s: 1.45, layer: 'near' },
 ];
+const LAYER = { far: { y: 1236, k: 1.15, o: 0.58 }, mid: { y: 1284, k: 1.3, o: 0.8 }, near: { y: 1322, k: 1.4, o: 1 } } as const;
+
 
 const YT_PATH = 'M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z';
 const TT_PATH = 'M16.6 5.82A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z';
@@ -190,7 +202,7 @@ const TORN_BACK = torn(276, 42, 1432, 416, 5, 22);
  *  with the Chronicler's badge. Badge, scroll and tagline sit in the 1546 x 423 box phones show. */
 export const Banner: React.FC = () => {
   const c = sepia();
-  const haze = (layer: 'far' | 'near') => (layer === 'far' ? 0.62 : 1);
+  
   return (
     <AbsoluteFill style={{ background: 'linear-gradient(180deg, #1c1008 0%, #4a2c12 34%, #a8702e 62%, #f0c25e 82%, #ffe6a8 100%)' }}>
       {/* the sun and its rays */}
@@ -205,15 +217,16 @@ export const Banner: React.FC = () => {
       </svg>
       {/* the monuments, far then near */}
       <svg width={2560} height={1440} viewBox="0 0 2560 1440" style={{ position: 'absolute', inset: 0 }}>
-        {(['far', 'near'] as const).map((layer) => (
-          <g key={layer} opacity={haze(layer)}>
-            {SKYLINE.filter((m) => m.layer === layer).map((m, i) => (
-              <g key={i} transform={`translate(${m.x} ${layer === 'far' ? 1250 : 1320}) scale(${m.s * (layer === 'far' ? 1.2 : 1.4)})`}>
-                <m.C c={layer === 'far' ? { ...c, near: c.far, mid: mix(c.far, '#f0c25e', 0.2), light: '#f1d79a', fore: c.mid } : c} t={0} seed={i + 1} />
-              </g>
-            ))}
-          </g>
-        ))}
+        {(['far', 'mid', 'near'] as const).map((layer) => {
+          const col: Colors = layer === 'far' ? { ...c, near: c.far, mid: mix(c.far, '#f0c25e', 0.2), light: '#f1d79a', fore: c.mid } : layer === 'mid' ? { ...c, near: mix(c.mid, c.far, 0.4), mid: c.far, light: '#ecd08c', fore: c.near } : c;
+          return (
+            <g key={layer} opacity={LAYER[layer].o}>
+              {SKYLINE.filter((m) => m.layer === layer).map((m, i) => (
+                <g key={i} transform={`translate(${m.x} ${LAYER[layer].y}) scale(${m.s * LAYER[layer].k})`}><m.C c={col} t={0} seed={i + 1} /></g>
+              ))}
+            </g>
+          );
+        })}
         <path d="M0 1320 Q640 1296 1280 1316 T2560 1308 V1440 H0Z" fill="#1c1008" />
         <path d="M0 1338 Q640 1314 1280 1334 T2560 1326" stroke="#f0c25e" strokeWidth={3} fill="none" opacity={0.5} />
         <rect width={2560} height={1440} fill="url(#vig)" />
