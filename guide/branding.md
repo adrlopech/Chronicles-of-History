@@ -3,8 +3,8 @@
 Channel: YouTube / TikTok `@chroniclesofhistorytv`. Promise: *real stories, drawn alive; a new one every day.*
 
 ## The mark
-A **gold seal**: a double gold ring, twelve small diamonds around it (the hours, the eras) and a gold **C** in foil on obsidian, with faint rays behind the letter and one ember-coloured diamond under it.
-Source: `remotion_studio/src/brand/Brand.tsx` (`Seal`). The same seal closes every video (outro scene) and is the avatar and the watermark.
+A gold **arch**: the window into the past. Inside it, at dusk, a traveller with a staff stands on a hill and looks at a temple under a rising sun (the same sky, hills and figure language as the videos). A small keystone with an ember diamond crowns it.
+Source: `remotion_studio/src/brand/Brand.tsx` (`Seal`; `simple` is the one-colour watermark). The same mark is the avatar, closes every video (outro scene) and stands in the banner.
 
 ## Palette
 | Role | Colour |
@@ -22,14 +22,14 @@ Brand title: **Cinzel Decorative** 900 in gold foil (stacked relief shadow). Bod
 ## Assets (`assets/brand/`, made by `node scripts/make_brand_assets.mjs`)
 | File | Size | Where |
 |---|---|---|
-| `avatar.png` | 800 x 800 | YouTube and TikTok profile picture (both crop it to a circle: the seal is built for it) |
+| `avatar.png` | 800 x 800 | YouTube and TikTok profile picture (both crop it to a circle: the arch is scaled to fit inside it) |
 | `youtube_banner.png` | 2560 x 1440 | YouTube channel art. The title, seal and tagline sit inside the 1546 x 423 safe box every device shows; the line of characters below is the atmosphere (one figure per era) |
-| `watermark.png` | 300 x 300, transparent | YouTube Studio > Customization > Branding > Video watermark (simple seal, readable at 150 px) |
+| `watermark.png` | 300 x 300, transparent | YouTube Studio > Customization > Branding > Video watermark (the arch, the sun and the horizon in plain gold, readable at 150 px) |
 
 Covers (thumbnails) are posters made by `scripts/render_cover.mjs` with the same gold foil, the era typeface and the series plate (`Cover.tsx`).
 
 ## Rules
-- The seal is never recoloured, stretched or placed on a light background; leave a margin of half its radius around it.
-- Gold is for titles, years and the seal; ember is only for small accents. Everything else on screen is cream on dark.
+- The arch is never recoloured, stretched or placed on a light background; leave a margin of a quarter of its width around it.
+- Gold is for titles, years and the arch; ember is only for small accents. Everything else on screen is cream on dark.
 - The line of characters (banner) shows one costume per era and never repeats an era: it is the proof of the promise.
 - Official handles: `@chroniclesofhistorytv` on both platforms. Never the Silicon Verdict channels.

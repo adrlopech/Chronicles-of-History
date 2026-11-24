@@ -6,7 +6,7 @@ import { PersonKind } from '../chronicle/art/vocab';
 import { CINZEL_DECO, CORMORANT } from '../chronicle/fonts';
 import { LOOKS } from '../chronicle/looks';
 
-/** The brand of The Chronicles of History: a gold seal with a ring of twelve diamonds (the hours, the eras) around a gold C, on obsidian. Used for the avatar, the banner and the watermark. */
+/** The brand of The Chronicles of History: a gold arch, the window into the past, with a traveller looking at a temple under a rising sun. Used for the avatar, the banner, the watermark and the outro. */
 export const GOLD = { hi: '#FFF1BF', mid: '#F0C25E', lo: '#B9822A', deep: '#6B430A' };
 export const OBSIDIAN = '#0A0710';
 export const EMBER = '#FF7A55';
@@ -27,35 +27,66 @@ const Defs: React.FC<{ id: string }> = ({ id }) => (
   </defs>
 );
 
-/** The seal itself, drawn in a 800 x 800 box. */
+/** The mark: an ARCH, the window into the past. Inside it a traveller stands on a hill and looks at a temple under a rising sun. It is drawn in an 800 x 800 box. `simple` is the one-colour version for the watermark. */
 export const Seal: React.FC<{ id?: string; simple?: boolean }> = ({ id = 's', simple = false }) => {
-  const diamonds = Array.from({ length: 12 }, (_, i) => (i / 12) * Math.PI * 2);
+  const arch = 'M150 742 V382 A250 250 0 0 1 650 382 V742Z';
+  const inner = 'M176 742 V382 A224 224 0 0 1 624 382 V742Z';
+  if (simple) {
+    return (
+      <svg viewBox="0 0 800 800" width="100%" height="100%">
+        <Defs id={id} />
+        <path d={arch} fill="none" stroke={`url(#${id}-gold)`} strokeWidth={34} strokeLinejoin="round" />
+        <circle cx={400} cy={560} r={96} fill={`url(#${id}-gold)`} />
+        <path d="M176 650 Q400 612 624 650" stroke={`url(#${id}-gold)`} strokeWidth={30} fill="none" />
+      </svg>
+    );
+  }
+  const stars = [[300, 190, 5], [470, 150, 4], [520, 250, 3], [250, 300, 3], [400, 230, 4]];
   return (
     <svg viewBox="0 0 800 800" width="100%" height="100%">
       <Defs id={id} />
-      <circle cx={400} cy={400} r={392} fill={`url(#${id}-disc)`} />
-      {/* rays behind the letter */}
-      {!simple && Array.from({ length: 24 }, (_, i) => {
-        const a = (i / 24) * Math.PI * 2, b = a + 0.1;
-        return <path key={i} d={`M400 400 L${400 + Math.cos(a) * 330} ${400 + Math.sin(a) * 330} L${400 + Math.cos(b) * 330} ${400 + Math.sin(b) * 330}Z`} fill={GOLD.mid} opacity={0.07} />;
-      })}
-      <circle cx={400} cy={400} r={380} fill="none" stroke={`url(#${id}-ring)`} strokeWidth={18} />
-      <circle cx={400} cy={400} r={346} fill="none" stroke={`url(#${id}-ring)`} strokeWidth={5} />
-      {!simple && diamonds.map((a, i) => (
-        <path key={i} d={`M${400 + Math.cos(a) * 363} ${400 + Math.sin(a) * 363 - 14} l11 14 l-11 14 l-11 -14z`} transform={`rotate(${(a * 180) / Math.PI + 90} ${400 + Math.cos(a) * 363} ${400 + Math.sin(a) * 363})`} fill={`url(#${id}-gold)`} stroke={GOLD.deep} strokeWidth={2} />
-      ))}
-      <circle cx={400} cy={400} r={298} fill="none" stroke={GOLD.lo} strokeWidth={2.5} opacity={0.7} />
-      <text x={400} y={536} textAnchor="middle" fontFamily={CINZEL_DECO} fontWeight={900} fontSize={440} fill={GOLD.deep} stroke={GOLD.deep} strokeWidth={14} strokeLinejoin="round" transform="translate(0 10)" opacity={0.9}>C</text>
-      <text x={400} y={536} textAnchor="middle" fontFamily={CINZEL_DECO} fontWeight={900} fontSize={440} fill={`url(#${id}-gold)`} stroke="#2a1606" strokeWidth={6} strokeLinejoin="round" paintOrder="stroke fill" filter={simple ? undefined : `url(#${id}-glow)`}>C</text>
-      {!simple && <path d="M330 590 H470" stroke={`url(#${id}-ring)`} strokeWidth={5} />}
-      {!simple && <path d="M400 580 l12 12 l-12 12 l-12 -12z" fill={EMBER} />}
+      <defs>
+        <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#241347" /><stop offset="0.45" stopColor="#b8347f" /><stop offset="0.8" stopColor="#ff8a4a" /><stop offset="1" stopColor="#ffc26a" /></linearGradient>
+        <clipPath id={`${id}-clip`}><path d={inner} /></clipPath>
+      </defs>
+      <g transform="translate(400 400) scale(0.9) translate(-400 -400)" filter={`url(#${id}-glow)`}>
+        <path d={arch} fill={`url(#${id}-ring)`} />
+        <path d={inner} fill={`url(#${id}-sky)`} />
+        <g clipPath={`url(#${id}-clip)`}>
+          {stars.map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill="#fff6d8" opacity={0.85} />)}
+          <circle cx={400} cy={560} r={196} fill="#ffe2a0" opacity={0.16} />
+          <circle cx={400} cy={560} r={132} fill="#ffe9b4" opacity={0.28} />
+          <circle cx={400} cy={560} r={98} fill="#fff1c8" />
+          {/* the temple, far away */}
+          <g fill="#2a1233" opacity={0.92}>
+            <path d="M470 626 H624 V644 H470Z" />
+            {[486, 514, 542, 570, 598].map((x) => <rect key={x} x={x - 5} y={570} width={10} height={58} />)}
+            <path d="M462 574 L547 536 L632 574Z" />
+          </g>
+          {/* hills and the road */}
+          <path d="M176 742 V664 Q300 618 430 640 Q540 654 624 626 V742Z" fill="#150a1c" />
+          <path d="M310 742 Q380 700 440 664 Q470 650 500 646" stroke="#ffcf8a" strokeWidth={14} fill="none" opacity={0.5} strokeLinecap="round" />
+          {/* the traveller, seen from behind, a staff in hand */}
+          <g transform="translate(300 690)" fill="#0b0511" stroke="#0b0511">
+            <circle cx={0} cy={-128} r={17} stroke="none" />
+            <path d="M-18 -108 Q0 -120 18 -108 L30 -18 L-30 -18Z" stroke="none" />
+            <path d="M-14 -18 L-18 28 M14 -18 L20 28" strokeWidth={13} strokeLinecap="round" fill="none" />
+            <path d="M24 -100 L70 -140 M70 -150 V30" strokeWidth={6} strokeLinecap="round" fill="none" />
+          </g>
+        </g>
+        <path d={inner} fill="none" stroke={GOLD.deep} strokeWidth={4} opacity={0.7} />
+        <path d="M110 756 H690" stroke={`url(#${id}-ring)`} strokeWidth={26} strokeLinecap="round" />
+        {/* keystone */}
+        <path d="M370 142 L430 142 L418 98 L382 98Z" fill={`url(#${id}-gold)`} stroke={GOLD.deep} strokeWidth={3} />
+        <path d="M400 62 l12 14 l-12 14 l-12 -14z" fill={EMBER} />
+      </g>
     </svg>
   );
 };
 
 export const Avatar: React.FC = () => (
   <AbsoluteFill style={{ background: OBSIDIAN, alignItems: 'center', justifyContent: 'center' }}>
-    <div style={{ width: '96%', height: '96%' }}><Seal id="av" /></div>
+    <div style={{ width: '96%', height: '96%', transform: 'scale(1.08) translateY(-3%)' }}><Seal id="av" /></div>
   </AbsoluteFill>
 );
 
@@ -86,7 +117,7 @@ export const Banner: React.FC = () => (
     </svg>
     {/* the safe box */}
     <div style={{ position: 'absolute', left: 507, top: 508, width: 1546, height: 423, display: 'flex', alignItems: 'center', gap: 44 }}>
-      <div style={{ width: 340, height: 340, flex: '0 0 auto', filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.7))' }}><Seal id="bn" /></div>
+      <div style={{ width: 400, height: 400, flex: '0 0 auto', filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.7))' }}><Seal id="bn" /></div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ fontFamily: CINZEL_DECO, fontWeight: 900, fontSize: 112, lineHeight: 1.0, letterSpacing: 3, color: GOLD.mid, textShadow: `0 3px 0 ${GOLD.hi}, 0 7px 0 ${GOLD.lo}, 0 11px 0 ${GOLD.deep}, 0 22px 30px rgba(0,0,0,0.85)` }}>THE CHRONICLES<br />OF HISTORY</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
