@@ -20,6 +20,8 @@ STRONG_REVIEWERS = ["@cf/openai/gpt-oss-120b"]  # history claims are checked fir
 logger = logging.getLogger(__name__)
 
 FPS = 30
+# THE RULE: no video is ever shorter than one minute. FLOOR_SECONDS is the hard floor every stage enforces (script validator, final QA, uploads); MIN_SECONDS is the target the pipeline stretches to.
+FLOOR_SECONDS = 61.0
 MIN_SECONDS, MAX_SECONDS = 62.0, _settings.MAX_VIDEO_SECONDS  # final video: > 60 s for monetisation, never more than the 3-minute ceiling (the script itself aims for 65-80 s)
 MIN_FRAMES, MAX_FRAMES = int(MIN_SECONDS * FPS), int(MAX_SECONDS * FPS)
 WORDS_PER_SECOND = 2.5  # natural narration pace used to estimate the final length
@@ -934,7 +936,7 @@ def make_validator(facts: Optional[str] = None, fmt: Optional[str] = None, reten
             out.append("every scene needs a narration (3-16 words; short is fine for a one-word flash scene)")
         if any(len(s.narration.split()) > (26 if compact else 20) for s in p.scenes):
             out.append(f"a scene narration is longer than {26 if compact else 20} words")
-        if not 61.0 <= est <= MAX_SECONDS:  # just over 60 s is enough for monetisation
+        if not FLOOR_SECONDS <= est <= MAX_SECONDS:  # the one-minute rule: just over 60 s is enough for monetisation
             out.append(f"narration has {words} words across {n} scenes (about {est:.0f} s): it must come to 61-{MAX_SECONDS:.0f} s (aim for roughly 135-190 words, about 11 per scene)")
         if p.scenes and p.scenes[-1].type != "outro":
             out.append("the last scene must be type outro")

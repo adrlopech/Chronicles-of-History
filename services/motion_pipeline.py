@@ -14,7 +14,8 @@ from config.settings import settings
 
 logger = logging.getLogger(__name__)
 FPS = 30
-MIN_VIDEO_SECONDS = 62.0  # final length floor (YouTube monetisation: more than 60 s)
+from services.motion_generator import FLOOR_SECONDS  # noqa: E402  (the one-minute rule, see motion_generator)
+MIN_VIDEO_SECONDS = 62.0  # the length the pipeline stretches every video to (floor: FLOOR_SECONDS; YouTube monetisation: more than 60 s)
 VOICE_LEAD = 0.12  # seconds after a scene starts before the narrator speaks (the text lands first)
 # One narrator per format, so viewers do not hear the same voice in every video. The numbers match ELEVENLABS_VOICE_1/2/3.
 VOICE_BY_FORMAT = {None: 3, "mystery": 2, "dayinlife": 3, "turning": 2, "lies": 3, "whatif": 3, "duel": 2, "journey": 2, "portrait": 3}
@@ -464,8 +465,8 @@ def qa_motion(path: Path) -> list:
     if mean and float(mean[1]) < -28:
         fails.append(f"audio mean {mean[1]} dB is too quiet: the narration seems to be missing")
     d = _duration(path)
-    if not 61 <= d <= settings.MAX_VIDEO_SECONDS + 1:
-        fails.append(f"duration {d:.1f}s outside 61-{settings.MAX_VIDEO_SECONDS:.0f} s (monetisation needs more than 60 s; 3-minute ceiling)")
+    if not FLOOR_SECONDS <= d <= settings.MAX_VIDEO_SECONDS + 1:
+        fails.append(f"duration {d:.1f}s outside {FLOOR_SECONDS:.0f}-{settings.MAX_VIDEO_SECONDS:.0f} s (monetisation needs more than 60 s; 3-minute ceiling)")
     return fails
 
 

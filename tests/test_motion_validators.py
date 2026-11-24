@@ -572,3 +572,26 @@ def test_anachronistic_subjects_are_removed_for_the_era():
 def test_the_art_travels_to_the_renderer_in_the_props():
     props = script("turning").to_props()
     assert props["scenes"][0]["art"][0]["subjects"] and "place" in props["scenes"][0]["art"][0]
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------ the one-minute rule
+def test_the_one_minute_rule_is_one_constant_used_by_every_stage():
+    from services import motion_generator, motion_pipeline
+    assert motion_generator.FLOOR_SECONDS > 60 and motion_pipeline.FLOOR_SECONDS == motion_generator.FLOOR_SECONDS
+    assert motion_pipeline.MIN_VIDEO_SECONDS >= motion_generator.FLOOR_SECONDS and motion_generator.MIN_SECONDS >= motion_generator.FLOOR_SECONDS
+
+
+def test_a_script_shorter_than_a_minute_is_rejected_and_the_final_qa_rejects_a_short_video(tmp_path):
+    import shutil
+    import subprocess
+    from services.motion_pipeline import qa_motion
+    short = script("turning")
+    for s in short.scenes:
+        s.narration = "Short."
+        s.durationInFrames = 60
+    assert any("it must come to" in x for x in make_validator(None, "turning")(short))
+    ff = shutil.which("ffmpeg")
+    if ff:  # a 30 s clip must fail the duration check
+        out = tmp_path / "short.mp4"
+        subprocess.run([ff, "-y", "-f", "lavfi", "-i", "color=c=black:s=1080x1920:d=30", "-f", "lavfi", "-i", "sine=d=30", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(out)], check=True, capture_output=True)
+        assert any("duration" in f for f in qa_motion(out))
