@@ -1,0 +1,318 @@
+{
+  "topic": "Apollo 11: the journey to the Moon",
+  "screen_title": "The Road to the Moon",
+  "title": "Apollo 11: The Journey to the Moon #history #apollo11",
+  "description": "Eight days, about two hundred and forty thousand miles, and a landing with almost no fuel to spare. This is the route of Apollo 11.",
+  "tags": [
+    "history",
+    "apollo 11",
+    "moon landing",
+    "nasa",
+    "space race",
+    "neil armstrong",
+    "space age"
+  ],
+  "pinned_comment": "Courage or luck? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "Seconds of fuel left",
+      "accentText": "The world held its breath",
+      "kicker": "Apollo 11",
+      "icon": "compass",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "rocket"
+          ],
+          "action": "wave",
+          "view": "front"
+        },
+        {
+          "place": "desert",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "lander"
+          ],
+          "action": "stand",
+          "view": "back"
+        }
+      ],
+      "narration": "They landed on the Moon with seconds of fuel to spare.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1969",
+      "accentText": "Apollo 11 lifts off",
+      "kicker": "Cape Kennedy, Florida",
+      "value": 1969.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "coast",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "rocket",
+            "reporter"
+          ],
+          "action": "salute",
+          "view": "side"
+        }
+      ],
+      "narration": "It is the sixteenth of July, nineteen sixty-nine, and a Saturn Five stands at Cape Kennedy.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "map",
+      "text": "The route",
+      "accentText": "Eight days, three men",
+      "items": [
+        "Cape Kennedy|18|62",
+        "Earth orbit|30|40",
+        "Moon orbit|72|34",
+        "Sea of Tranquility|82|52",
+        "Pacific|26|78"
+      ],
+      "narration": "The journey runs from Florida to Earth orbit, then to the Moon, then home to the Pacific.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "statement",
+      "text": "Three men, two roles",
+      "accentText": "One stays above",
+      "art": [
+        {
+          "place": "desert",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "scientist",
+            "satellite"
+          ],
+          "action": "watch",
+          "view": "side"
+        },
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "engineer",
+            "radar_dish"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "Neil Armstrong and Buzz Aldrin would land, while Michael Collins circled alone. Wait for the twist.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Miles to the Moon",
+      "accentText": "roughly, one way",
+      "value": 240000.0,
+      "unit": "miles",
+      "art": [
+        {
+          "place": "desert",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "lander",
+            "satellite"
+          ],
+          "action": "walk",
+          "view": "side"
+        }
+      ],
+      "narration": "To get there, they crossed about two hundred and forty thousand miles of empty space.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Alarms during landing",
+      "accentText": "Go or abort?",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "test_pilot",
+            "engineer"
+          ],
+          "action": "shout",
+          "view": "front"
+        },
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "engineer",
+            "programmer",
+            "reporter"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "During the descent, alarms flashed in the cockpit, and mission control had seconds to decide.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "Armstrong's choice",
+      "items": [
+        "Skip the boulders",
+        "Fly by hand",
+        "Fuel dropping"
+      ],
+      "art": [
+        {
+          "place": "desert",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "lander"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "Armstrong took manual control to avoid a field of boulders, and fuel kept dropping.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1969",
+      "accentText": "The Eagle has landed",
+      "kicker": "Sea of Tranquility",
+      "value": 1969.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "desert",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "lander",
+            "eclipse"
+          ],
+          "action": "cheer",
+          "view": "front"
+        }
+      ],
+      "narration": "At four seventeen in the afternoon, Eastern time, Eagle touched down in the Sea of Tranquility.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "Twenty-one hours",
+      "items": [
+        "20 Jul|Eagle lands",
+        "20 Jul|First steps",
+        "21 Jul|Liftoff",
+        "24 Jul|Splashdown"
+      ],
+      "art": [
+        {
+          "place": "desert",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "lander"
+          ],
+          "action": "lift",
+          "view": "back"
+        }
+      ],
+      "narration": "Then came the steps: the landing, the first walk, and the long way home.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "statement",
+      "text": "A bag of Moon rock",
+      "accentText": "Forty-seven pounds",
+      "art": [
+        {
+          "place": "desert",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "lander",
+            "comet"
+          ],
+          "action": "dig",
+          "view": "side"
+        }
+      ],
+      "narration": "They collected about forty-seven pounds of lunar rock, and planted a flag.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1969",
+      "accentText": "Splashdown, safe at last",
+      "kicker": "Pacific Ocean",
+      "value": 1969.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "astronaut",
+            "navy_sailor",
+            "crowd"
+          ],
+          "action": "kneel",
+          "view": "front"
+        }
+      ],
+      "narration": "They splashed down in the Pacific on the twenty-fourth of July, safe and a little stunned.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Tranquility",
+      "narration": "Tranquility, and then silence.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Courage or luck?",
+      "items": [
+        "Courage",
+        "Luck"
+      ],
+      "narration": "So did they succeed through courage or through luck?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "journey",
+  "look": "spaceage",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

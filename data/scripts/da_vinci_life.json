@@ -1,0 +1,343 @@
+{
+  "topic": "Leonardo da Vinci: a life in dates",
+  "screen_title": "Leonardo, in Dates",
+  "title": "Leonardo da Vinci: A Life in Dates #history #renaissance",
+  "description": "He painted the most famous face on Earth and left most of his projects unfinished. Follow Leonardo da Vinci through the dates that shaped his life.",
+  "tags": [
+    "history",
+    "renaissance",
+    "leonardo da vinci",
+    "mona lisa",
+    "florence",
+    "art history",
+    "inventors"
+  ],
+  "pinned_comment": "Artist or inventor? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "The most famous face",
+      "accentText": "Mostly unfinished",
+      "kicker": "Leonardo",
+      "icon": "quill",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "duomo"
+          ],
+          "action": "write",
+          "view": "side"
+        },
+        {
+          "place": "plaza",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "crowd",
+            "palace"
+          ],
+          "action": "watch",
+          "view": "back"
+        }
+      ],
+      "narration": "He painted the most famous face on Earth, yet left most of his projects unfinished.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1452",
+      "accentText": "A notary's son is born",
+      "kicker": "Vinci, near Florence",
+      "value": 1452.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "farmer",
+            "sheep"
+          ],
+          "action": "stand",
+          "view": "front"
+        }
+      ],
+      "narration": "Leonardo is born in fourteen fifty-two, in the little town of Vinci, near Florence.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Apprentice in Florence",
+      "accentText": "Paint, metal, anatomy",
+      "art": [
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "banker",
+            "forge"
+          ],
+          "action": "carry",
+          "view": "side"
+        },
+        {
+          "place": "interior",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "printer",
+            "scroll"
+          ],
+          "action": "read",
+          "view": "front"
+        }
+      ],
+      "narration": "As a teenager he joins a Florentine workshop, but wait for the last part, nobody expects it.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "Three cities",
+      "items": [
+        "1466|Florence workshop",
+        "1482|Milan court",
+        "1503|Mona Lisa begun",
+        "1516|Moves to France"
+      ],
+      "art": [
+        {
+          "place": "city",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "courtier",
+            "duomo"
+          ],
+          "action": "walk",
+          "view": "side"
+        }
+      ],
+      "narration": "His life runs through three cities, and each one gave him a different job.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "statement",
+      "text": "A painter who sells war",
+      "accentText": "Engineer first",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "condottiero",
+            "fortress"
+          ],
+          "action": "point",
+          "view": "side"
+        },
+        {
+          "place": "plaza",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "inventor",
+            "renaissance_artist",
+            "crowd"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "In Milan he offers a duke his skills as a military engineer, not as a painter.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1498",
+      "accentText": "The Last Supper is finished",
+      "kicker": "Milan, Italy",
+      "value": 1498.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "interior",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "monk",
+            "scroll"
+          ],
+          "action": "lift",
+          "view": "back"
+        }
+      ],
+      "narration": "Around fourteen ninety-eight, he finishes The Last Supper on a convent wall in Milan.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Experiments that failed",
+      "accentText": "The paint flakes",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "banker"
+          ],
+          "action": "shrug",
+          "view": "front"
+        }
+      ],
+      "narration": "He never trusts one method: he mixes oil and tempera, and the wall begins to flake.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Notebook pages that survive",
+      "accentText": "mirror writing",
+      "value": 7000.0,
+      "unit": "pages",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "inventor",
+            "scroll"
+          ],
+          "action": "write",
+          "view": "side"
+        }
+      ],
+      "narration": "About seven thousand pages of his notebooks survive, written backwards in mirror script.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Ideas ahead of their time",
+      "accentText": "Mostly on paper",
+      "icon": "gear",
+      "art": [
+        {
+          "place": "mountains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "inventor",
+            "renaissance_artist",
+            "windmill"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "They hold flying machines, canals, anatomy and water, and most were never built.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1519",
+      "accentText": "Leonardo dies, aged sixty-seven",
+      "kicker": "Amboise, France",
+      "value": 1519.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "coast",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "courtier",
+            "castle"
+          ],
+          "action": "sit",
+          "view": "side"
+        }
+      ],
+      "narration": "In fifteen sixteen he follows the French king to Amboise, and dies there in fifteen nineteen.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "A handful of paintings",
+      "accentText": "A mountain of questions",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "monk"
+          ],
+          "action": "pray",
+          "view": "front"
+        }
+      ],
+      "narration": "He leaves behind a handful of paintings and a mountain of questions.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "His many hats",
+      "items": [
+        "Painter",
+        "Engineer",
+        "Anatomist",
+        "Dreamer"
+      ],
+      "art": [
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "renaissance_artist",
+            "astronomer",
+            "observatory"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "Historians still debate which side of him mattered most, the artist or the scientist.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Leonardo?",
+      "items": [
+        "Artist",
+        "Inventor"
+      ],
+      "narration": "So was he mainly an artist or an inventor?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "portrait",
+  "look": "renaissance",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

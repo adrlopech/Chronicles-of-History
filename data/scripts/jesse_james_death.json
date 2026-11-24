@@ -1,0 +1,312 @@
+{
+  "topic": "The mystery of Jesse James's death",
+  "screen_title": "Jesse James: Dead?",
+  "title": "Did Jesse James Fake His Death? #history #wildwest",
+  "description": "In 1882 Jesse James was shot by a member of his own gang. Or was he? Here is what we know, and the rumor that never died.",
+  "tags": [
+    "history",
+    "wild west",
+    "jesse james",
+    "outlaws",
+    "missouri",
+    "mystery",
+    "american history"
+  ],
+  "pinned_comment": "Dead in 1882 or alive for decades? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "Shot by a friend",
+      "accentText": "Or was he?",
+      "kicker": "Jesse James",
+      "icon": "key",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "sheriff"
+          ],
+          "action": "point",
+          "view": "side"
+        },
+        {
+          "place": "plains",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "horse"
+          ],
+          "action": "run",
+          "view": "side"
+        }
+      ],
+      "narration": "America's most famous outlaw was shot by a friend, and some say he survived.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1882",
+      "accentText": "Jesse James is shot",
+      "kicker": "St. Joseph, Missouri",
+      "value": 1882.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "saloon",
+            "general_store"
+          ],
+          "action": "stand",
+          "view": "back"
+        }
+      ],
+      "narration": "It is the third of April, eighteen eighty-two, in a small house in Saint Joseph, Missouri.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "A bullet from behind",
+      "accentText": "Robert Ford",
+      "art": [
+        {
+          "place": "interior",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "sheriff",
+            "saloon"
+          ],
+          "action": "shrug",
+          "view": "front"
+        },
+        {
+          "place": "city",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "sheriff",
+            "settler",
+            "telegraph"
+          ],
+          "action": "shout",
+          "view": "front"
+        }
+      ],
+      "narration": "Robert Ford shot him from behind. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "What we know",
+      "items": [
+        "A reward on his head",
+        "A friend turned traitor",
+        "A crowd at the funeral"
+      ],
+      "art": [
+        {
+          "place": "interior",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "sheriff"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "A large reward was on his head, and Ford and his brother wanted it.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "The reward",
+      "accentText": "a fortune in 1882",
+      "value": 10000.0,
+      "unit": "dollars",
+      "art": [
+        {
+          "place": "plaza",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sheriff",
+            "settler",
+            "crowd"
+          ],
+          "action": "wave",
+          "view": "front"
+        }
+      ],
+      "narration": "The governor had offered ten thousand dollars for him, a fortune in those days.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Theory one",
+      "accentText": "It was Jesse",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "settler",
+            "pioneer_woman",
+            "sheriff"
+          ],
+          "action": "pray",
+          "view": "front"
+        }
+      ],
+      "narration": "One theory says it was him: relatives and neighbors looked at the body and said so.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "Doubts that lived on",
+      "items": [
+        "1882|The shooting",
+        "1948|A man claims to be him",
+        "1995|The grave is opened"
+      ],
+      "art": [
+        {
+          "place": "plains",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "horse"
+          ],
+          "action": "sneak",
+          "view": "side"
+        }
+      ],
+      "narration": "The doubts began early, and they never fully went away, for decades.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "statement",
+      "text": "Theory two",
+      "accentText": "He escaped",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "prospector",
+            "wagon"
+          ],
+          "action": "walk",
+          "view": "back"
+        }
+      ],
+      "narration": "The other theory says he faked his death, and many men later claimed to be Jesse.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1995",
+      "accentText": "The grave is opened",
+      "kicker": "Kearney, Missouri",
+      "value": 1995.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "plains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "surgeon",
+            "settler",
+            "outlaw"
+          ],
+          "action": "dig",
+          "view": "side"
+        }
+      ],
+      "narration": "In nineteen ninety-five, scientists opened his grave and tested the remains against his family.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "The science speaks",
+      "accentText": "A very strong match",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "surgeon",
+            "pioneer_woman"
+          ],
+          "action": "read",
+          "view": "front"
+        }
+      ],
+      "narration": "The DNA matched his family line, which strongly suggests that the dead man was Jesse.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "Why it lasted",
+      "items": [
+        "Many false Jesses",
+        "No witness left",
+        "A hungry public"
+      ],
+      "art": [
+        {
+          "place": "desert",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "outlaw",
+            "cowboy",
+            "horse"
+          ],
+          "action": "watch",
+          "view": "back"
+        }
+      ],
+      "narration": "Still, the legend lives, because many claimed to be him and no witness remains.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Alive",
+      "narration": "Alive? Nobody could say.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Dead or alive?",
+      "items": [
+        "Dead in 1882",
+        "Alive for decades"
+      ],
+      "narration": "So was he dead in eighteen eighty-two, or alive for decades?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "mystery",
+  "look": "frontier",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

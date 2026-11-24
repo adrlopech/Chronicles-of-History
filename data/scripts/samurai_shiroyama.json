@@ -1,0 +1,313 @@
+{
+  "topic": "The last stand of the samurai at Shiroyama",
+  "screen_title": "The Last Samurai",
+  "title": "The Last Stand of the Samurai, 1877 #history #samurai",
+  "description": "In 1877 a few hundred samurai faced an army of thirty thousand on a hill in Kagoshima. This is the choice that ended an era.",
+  "tags": [
+    "history",
+    "samurai",
+    "japan",
+    "saigo takamori",
+    "meiji",
+    "satsuma rebellion",
+    "shiroyama"
+  ],
+  "pinned_comment": "Honor or folly? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "Four hundred against thirty thousand",
+      "accentText": "They knew",
+      "kicker": "Shiroyama",
+      "icon": "sword",
+      "art": [
+        {
+          "place": "mountains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "volcano"
+          ],
+          "action": "stand",
+          "view": "back"
+        },
+        {
+          "place": "battlefield",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "soldiers",
+            "cannon",
+            "samurai"
+          ],
+          "action": "watch",
+          "view": "side"
+        }
+      ],
+      "narration": "A few hundred samurai faced thirty thousand soldiers, and they all knew how it would end.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1877",
+      "accentText": "Dawn on the last hill",
+      "kicker": "Shiroyama, Kagoshima",
+      "value": 1877.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "mountains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "pagoda"
+          ],
+          "action": "kneel",
+          "view": "front"
+        }
+      ],
+      "narration": "It is the twenty-fourth of September, eighteen seventy-seven, on a hill above Kagoshima.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "A hero of the new Japan",
+      "accentText": "Now its rebel",
+      "art": [
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "soldiers",
+            "japanese_castle"
+          ],
+          "action": "salute",
+          "view": "side"
+        },
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "shogun",
+            "samurai",
+            "dojo"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "Saigo helped build modern Japan, yet he rebelled. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "What the state took",
+      "items": [
+        "Their stipends",
+        "Their right to the sword",
+        "Their class itself"
+      ],
+      "art": [
+        {
+          "place": "plaza",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "crowd"
+          ],
+          "action": "plead",
+          "view": "front"
+        }
+      ],
+      "narration": "The new army had ended the samurai's privileges, their stipends and even their swords.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "The rebellion spreads",
+      "accentText": "Months of war",
+      "art": [
+        {
+          "place": "plains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "mongol_horseman",
+            "horse"
+          ],
+          "action": "run",
+          "view": "side"
+        }
+      ],
+      "narration": "So he marched, and for months his army fought the government across the island of Kyushu.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "The rebellion",
+      "items": [
+        "Jan|Satsuma rises",
+        "Mar|Siege of Kumamoto",
+        "Sep|Retreat to Kagoshima",
+        "24 Sep|Shiroyama"
+      ],
+      "art": [
+        {
+          "place": "mountains",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "fortress"
+          ],
+          "action": "sneak",
+          "view": "side"
+        }
+      ],
+      "narration": "His rebellion burned for most of eighteen seventy-seven, then shrank, step by step.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "ledger",
+      "text": "Samurai left on the hill",
+      "accentText": "against about thirty thousand",
+      "value": 400.0,
+      "unit": "samurai",
+      "art": [
+        {
+          "place": "battlefield",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "soldiers"
+          ],
+          "action": "slash",
+          "view": "side"
+        }
+      ],
+      "narration": "By the end, his army had dwindled to a few hundred men on that single hill.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "Guns against swords",
+      "items": [
+        "Rifles and artillery",
+        "A bombardment first",
+        "Swords against bullets"
+      ],
+      "art": [
+        {
+          "place": "battlefield",
+          "time": "dusk",
+          "weather": "smoke",
+          "subjects": [
+            "soldiers",
+            "cannon",
+            "samurai"
+          ],
+          "action": "shoot",
+          "view": "side"
+        }
+      ],
+      "narration": "The army had rifles and artillery, and it bombarded the hill before it attacked.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "The final charge",
+      "accentText": "Reportedly, his end",
+      "art": [
+        {
+          "place": "mountains",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "volcano",
+            "fire"
+          ],
+          "action": "fall",
+          "view": "side"
+        }
+      ],
+      "narration": "Saigo was wounded in the final charge, and according to tradition he took his own life.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1877",
+      "accentText": "The samurai age ends",
+      "kicker": "Japan",
+      "value": 1877.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "city",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "soldiers",
+            "samurai",
+            "pagoda"
+          ],
+          "action": "cheer",
+          "view": "front"
+        }
+      ],
+      "narration": "The rebellion was over, and it was the last major armed uprising of the samurai.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Honored after all",
+      "accentText": "Pardoned in 1889",
+      "art": [
+        {
+          "place": "plaza",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "samurai",
+            "crowd",
+            "torii"
+          ],
+          "action": "pray",
+          "view": "front"
+        }
+      ],
+      "narration": "Yet Saigo became a folk hero, and was officially pardoned in eighteen eighty-nine.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Honor",
+      "narration": "Honor, to the very end.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Last charge?",
+      "items": [
+        "Honor",
+        "Folly"
+      ],
+      "narration": "So was his last charge honor or folly?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "turning",
+  "look": "orient",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

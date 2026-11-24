@@ -1,0 +1,327 @@
+{
+  "topic": "A day in the life of a Lascaux cave painter",
+  "screen_title": "The Cave Painter",
+  "title": "A Day as a Cave Painter 17,000 Years Ago #history #prehistory",
+  "description": "You are a painter in the Ice Age, climbing into the dark with a lamp of burning fat. This is what historians know about the people who painted Lascaux.",
+  "tags": [
+    "history",
+    "prehistory",
+    "lascaux",
+    "cave painting",
+    "ice age",
+    "stone age",
+    "ancient art"
+  ],
+  "pinned_comment": "Ritual or storytelling? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "Painted before writing",
+      "accentText": "Seventeen thousand years",
+      "kicker": "Lascaux",
+      "icon": "sun",
+      "art": [
+        {
+          "place": "forest",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "cave",
+            "bison"
+          ],
+          "action": "watch",
+          "view": "back"
+        },
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "torch",
+            "horse"
+          ],
+          "action": "lift",
+          "view": "side"
+        }
+      ],
+      "narration": "Seventeen thousand years ago, someone painted a galloping horse by the light of burning fat.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1940",
+      "accentText": "A hidden cave is found",
+      "kicker": "Montignac, France",
+      "value": 1940.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "plains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "mammoth_hunter",
+            "deer"
+          ],
+          "action": "walk",
+          "view": "side"
+        }
+      ],
+      "narration": "In nineteen forty, four teenagers and a dog found the hole, and the paintings woke up.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Red earth, ground fine",
+      "accentText": "Colour from stone",
+      "art": [
+        {
+          "place": "mountains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "fire"
+          ],
+          "action": "dig",
+          "view": "side"
+        },
+        {
+          "place": "forest",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "shaman",
+            "cave_painter",
+            "bison"
+          ],
+          "action": "kneel",
+          "view": "front"
+        }
+      ],
+      "narration": "Go back: you grind red ochre at dawn. Wait for the last part, nobody expects it.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "A day underground",
+      "items": [
+        "Dawn|Grind the pigments",
+        "Noon|Gather animal fat",
+        "Dusk|Light the lamps",
+        "Night|Paint in the dark"
+      ],
+      "art": [
+        {
+          "place": "forest",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "mammoth_hunter",
+            "horse"
+          ],
+          "action": "carry",
+          "view": "side"
+        }
+      ],
+      "narration": "Your day has a rhythm: pigments, fat for the lamps, then the long hours in darkness.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "list",
+      "text": "Your paint box",
+      "items": [
+        "Red and yellow ochre",
+        "Black manganese",
+        "Charcoal",
+        "Bone tubes and moss"
+      ],
+      "art": [
+        {
+          "place": "interior",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "fire"
+          ],
+          "action": "crouch",
+          "view": "side"
+        }
+      ],
+      "narration": "Your paint box is minerals and charcoal, blown through hollow bones or dabbed with moss.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "One flame in the dark",
+      "accentText": "A lamp of fat",
+      "icon": "key",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "torch",
+            "deer"
+          ],
+          "action": "stand",
+          "view": "front"
+        },
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "shaman",
+            "fire",
+            "cave_painter"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "Stone lamps burning animal fat are your only light, and archaeologists found more than a hundred.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Figures on the walls",
+      "accentText": "mostly animals",
+      "value": 2000.0,
+      "unit": "figures",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "bison",
+            "horse"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "Painters and engravers left about two thousand figures on these walls, mostly animals.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Animals, almost no people",
+      "accentText": "The herd, not the hunters",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "horse",
+            "bison",
+            "deer"
+          ],
+          "action": "cheer",
+          "view": "back"
+        }
+      ],
+      "narration": "Horses, deer, aurochs and bison gallop across the ceiling, while humans almost never appear.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "Why paint here?",
+      "items": [
+        "A ritual",
+        "A story",
+        "Teaching hunters",
+        "Nobody knows"
+      ],
+      "art": [
+        {
+          "place": "interior",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "shaman",
+            "mammoth_hunter"
+          ],
+          "action": "shout",
+          "view": "front"
+        }
+      ],
+      "narration": "Why you paint is a mystery. Historians suggest ritual, storytelling, or teaching young hunters.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "The cave closes",
+      "accentText": "Silence for millennia",
+      "art": [
+        {
+          "place": "mountains",
+          "time": "night",
+          "weather": "storm",
+          "subjects": [
+            "cave_painter",
+            "cave"
+          ],
+          "action": "fall",
+          "view": "side"
+        }
+      ],
+      "narration": "Then the entrance was sealed, probably by a rockfall, and the darkness kept them safe.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Dark",
+      "narration": "Only your lamp, and the dark.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Protected by absence",
+      "accentText": "Closed in 1963",
+      "art": [
+        {
+          "place": "forest",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "cave_painter",
+            "bison"
+          ],
+          "action": "wave",
+          "view": "front"
+        }
+      ],
+      "narration": "Visitors' breath later damaged the art, so Lascaux closed to the public in nineteen sixty-three.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Why paint?",
+      "items": [
+        "Ritual",
+        "Storytelling"
+      ],
+      "narration": "So why did you paint in the dark: ritual or storytelling?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "dayinlife",
+  "look": "prehistory",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}
