@@ -40,6 +40,19 @@ A look is one period of history: paper, ink, accent ("rubric"), gilt, typefaces 
 Common fields: `kicker`, `callout` + `calloutCue` (a marginal note that pops up when the narrator says it), `accentCue`, `narration`, `durationInFrames` (60-150).
 Names of the old tech engine (`bigText`, `textWithAccent`, `counter`, `footage`...) still render, as the closest history scene (`ALIAS` in `Chronicle.tsx`).
 
+## Illustrations: animated vector art
+
+Behind every scene (except `flash`, `map` and `outro`) an animated vector picture is drawn, and it **changes shot by shot as the narration moves on** (1-2 shots per scene, joined by a wipe or an iris). Nothing is a photograph or an AI image:
+everything is SVG drawn in code (`src/chronicle/art/`), so it is free, always on-style and moves.
+
+- A **shot** = `place` (desert, sea, coast, plains, mountains, forest, snow, city, plaza, interior, battlefield) + `time` (dawn, day, dusk, night) + optional `weather` (clear, rain, snow, storm, smoke) + 1-4 `subjects` (the first is the hero).
+  The script writer picks them from the closed lists in `art/vocab.ts` (42 subjects: castle, temple, pyramids, soldiers, cavalry, king, crowd, caravan, elephants, ship, fleet, galley, train, tank, plane, sword, crown, scroll, fire, volcano, comet, eclipse...).
+  `services/motion_generator.py` repeats the lists; a test keeps both identical.
+- `Diorama.tsx` lays the subjects out in depth (far, mid, near, foreground), slides the layers at different speeds with the camera (parallax), moves marching armies, ships and trains across the shot and adds weather.
+  `places.tsx` draws the sky, sun or moon, stars, clouds and the layered ground of each place; `people.tsx` and `things.tsx` draw and animate the subjects (legs that walk, sails that billow, oars, flags, smoke, flames, a cannon that fires).
+  `palette.ts` grades a time-of-day sky toward the era's colours and makes silhouettes darker toward the viewer.
+- With a picture behind it, a scene's content sits on a parchment plate at the bottom so the drawing stays in view. `fix_art_for_era` removes anachronisms (no tank in ancient Rome) once the look is known.
+
 ## Files
 
 | File | What it holds |
@@ -47,7 +60,8 @@ Names of the old tech engine (`bigText`, `textWithAccent`, `counter`, `footage`.
 | `Chronicle.tsx` | The composition: scene sequencing, entrances (rise, ink iris, slide, fade), chronology rail, loop tease |
 | `scenes.tsx` | Every scene and the callout |
 | `ink.tsx` | Ink words, hand-drawn underline, ornament, kicker, wax seal, stamp, text fitting, seeded random |
-| `icons.tsx` | The 16 engravings and the keyword picker |
+| `icons.tsx` | The 16 engravings (used when a scene has no picture) and the keyword picker |
+| `art/` | The vector illustration kit: `vocab.ts`, `palette.ts`, `draw.tsx`, `places.tsx`, `people.tsx`, `things.tsx`, `Diorama.tsx`, `Stage.tsx` |
 | `paper.tsx` | The sheet: backdrop, frame, dust |
 | `looks.ts`, `fonts.ts`, `types.ts`, `captions.tsx` | Eras, Google Fonts, the props contract, word-by-word captions |
 

@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from services.motion_generator import ACTORS, EFFECTS, PLACES, PROPS, STRUCTURES, SUBJECTS, TIMES, WEATHERS, ArtShot, fix_art_for_era
 from services.looks import AVOID_LAST, LOOKS, choose_look, era_look
 from services.motion_generator import (FORMAT_NEEDS, FORMAT_RULES, FORMAT_WEIGHTS, FORMATS, SCENE_TYPES, TOPIC_HINTS, CaptionWord, MotionProject, MotionSceneModel, add_vote_items,
                                        fix_duplicate_accents, looks_english, make_validator, retention_problems, vote_options)
@@ -18,8 +19,17 @@ LOOP = "Stay to the end, the catch comes last, because nobody expected this part
 VOTE = "So was it betrayal or bad luck?"
 
 
+_SHOT = iter(range(10**6))
+
+
+def next_shot():
+    """A different illustration shot every call (a video may not repeat one)."""
+    i = next(_SHOT)
+    return ArtShot(place=PLACES[i % len(PLACES)], time=TIMES[(i // 3) % 4], subjects=[SUBJECTS[(i * 7) % len(SUBJECTS)], SUBJECTS[(i * 7 + 11) % len(SUBJECTS)]] if (i * 7) % len(SUBJECTS) != (i * 7 + 11) % len(SUBJECTS) else ["crowd"])
+
+
 def sc(kind, **kw):
-    base = dict(narration=NARR, durationInFrames=90)
+    base = dict(narration=NARR, durationInFrames=90, art=None if kind in ("flash", "map", "outro") else [next_shot()])
     extra = {
         "statement": dict(text="Rome fell quietly", accentText="Nobody noticed"),
         "date": dict(text="476", value=476, unit="AD", kicker="Rome, Italy", accentText="The last emperor falls"),
@@ -428,3 +438,47 @@ def test_generic_closing_vote_is_rejected_by_the_style_check():
     assert GENERIC_CLOSER.search("Did that surprise you, or did you know it? Tell me below, and follow for more.")
     assert not GENERIC_CLOSER.search("Follow for more tech. Team DDR4 or team DDR5?")
     assert BAD_OPENER.search("Let us test five beliefs.") and not BAD_OPENER.search("Five beliefs, one is wrong.")
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------ illustrations
+def test_the_python_art_vocabulary_matches_the_remotion_one():
+    ts = (Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "chronicle" / "art" / "vocab.ts").read_text(encoding="utf-8")
+    for name, values in (("PLACES", PLACES), ("TIMES", TIMES), ("WEATHERS", WEATHERS), ("STRUCTURES", STRUCTURES), ("ACTORS", ACTORS), ("PROPS", PROPS), ("EFFECTS", EFFECTS)):
+        m = re.search(rf"export const {name} = \[(.*?)\] as const", ts, re.S)
+        assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == values, name
+    assert len(SUBJECTS) == 42
+
+
+def test_every_scene_but_flash_map_and_outro_needs_illustration_shots():
+    p = script("turning")
+    p.scenes[3].art = None
+    assert any("needs `art`" in x for x in problems_of(p))
+    p = script("journey")  # map and outro have none and pass
+    assert problems_of(p, "journey") == [] or all("art" not in x for x in problems_of(p, "journey"))
+
+
+def test_a_shot_is_limited_and_never_repeated():
+    p = script("turning")
+    p.scenes[3].art = [p.scenes[2].art[0]]
+    assert any("repeated" in x for x in problems_of(p))
+    p = script("turning")
+    p.scenes[3].art = [next_shot(), next_shot(), next_shot()]
+    assert not any("art" in x for x in problems_of(p)) and len(p.scenes[3].art) == 2  # a third shot is trimmed, not rejected
+
+
+def test_anachronistic_subjects_are_removed_for_the_era():
+    p = script("turning")
+    p.look = "antiquity"
+    for other in p.scenes[1:]:
+        other.art = None
+    p.scenes[0].art = [ArtShot(place="plains", time="day", subjects=["tank", "soldiers", "castle"]), ArtShot(place="city", time="night", subjects=["plane"])]
+    assert fix_art_for_era(p) == 3
+    assert p.scenes[0].art[0].subjects == ["soldiers"] and p.scenes[0].art[1].subjects == ["crowd"]
+    p.look = "wartime"
+    p.scenes[0].art = [ArtShot(place="battlefield", time="dusk", subjects=["tank", "plane"])]
+    assert fix_art_for_era(p) == 0
+
+
+def test_the_art_travels_to_the_renderer_in_the_props():
+    props = script("turning").to_props()
+    assert props["scenes"][0]["art"][0]["subjects"] and "place" in props["scenes"][0]["art"][0]

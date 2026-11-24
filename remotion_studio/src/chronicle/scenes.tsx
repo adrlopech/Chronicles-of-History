@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import { AbsoluteFill, Easing, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Engraving, pickIcon } from './icons';
 import { EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Seal, Stamp, Underline, clamp, fit, hash, lines, rng, smoothClosed } from './ink';
@@ -10,9 +10,19 @@ export const CONTENT_TOP = SAFE_TOP + 40;
 export const CONTENT_H = HEIGHT - CONTENT_TOP - SAFE_BOTTOM - CAPTION_SPACE;
 const W = 880;
 
-const Page: React.FC<{ children: React.ReactNode; gap?: number; justify?: 'center' | 'flex-start' }> = ({ children, gap = 26, justify = 'center' }) => (
-  <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 100px ${SAFE_BOTTOM + CAPTION_SPACE}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: justify, gap }}>{children}</AbsoluteFill>
-);
+/** True when an illustration is drawn behind the scene: the content then sits on a parchment plate at the bottom and leaves the picture in view. */
+export const ArtCtx = createContext(false);
+
+const Page: React.FC<{ children: React.ReactNode; gap?: number; justify?: 'center' | 'flex-start' }> = ({ children, gap = 26, justify = 'center' }) => {
+  const art = useContext(ArtCtx);
+  const look = useLook();
+  if (!art) return <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 100px ${SAFE_BOTTOM + CAPTION_SPACE}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: justify, gap }}>{children}</AbsoluteFill>;
+  return (
+    <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 60px ${SAFE_BOTTOM + CAPTION_SPACE}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end' }}>
+      <div style={{ width: 960, padding: '22px 36px 26px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 14), background: `${look.paper}EB`, border: `5px double ${look.accent2}`, boxShadow: '0 20px 50px rgba(0,0,0,0.5)', borderRadius: 4 }}>{children}</div>
+    </AbsoluteFill>
+  );
+};
 
 const cueFrame = (s: MotionScene, fallback: number) => (s.accentCue != null ? Math.max(10, Math.round(s.accentCue * FPS)) : fallback);
 const wordCount = (t: string) => t.split(/\s+/).filter(Boolean).length;
@@ -22,10 +32,11 @@ export const Statement: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
   const text = scene.text;
   const acc = scene.accentText ?? '';
-  const headSize = fit(text, 128, W, 3, look.k, 56);
+  const art = useContext(ArtCtx);
+  const headSize = fit(text, art ? 96 : 128, W, 3, look.k, 52);
   const accSize = acc ? fit(acc, Math.round(headSize * 1.06), W, 2, 0.46, 50) : 0;
   const used = lines(text, headSize, W, look.k) * headSize * 1.1 + (acc ? lines(acc, accSize, W, 0.46) * accSize * 1.12 + 40 : 0) + (scene.kicker ? 70 : 0) + 100;
-  const iconSize = Math.max(0, Math.min(380, CONTENT_H - used));
+  const iconSize = art ? 0 : Math.max(0, Math.min(380, CONTENT_H - used));
   const icon = scene.icon ?? pickIcon(`${text} ${acc} ${scene.narration ?? ''}`, hash(text));
   const headWords = wordCount(text);
   const at = cueFrame(scene, 26 + headWords * 3);
@@ -227,7 +238,7 @@ export const Ledger: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const t = interpolate(frame, [6, 50], [0, 1], { ...clamp, easing: EASE_OUT });
   const shown = Math.round(value * t).toLocaleString('en-US');
   const size = fit(value.toLocaleString('en-US'), 330, W, 1, 0.64, 110);
-  const rules = interpolate(frame, [0, 24], [0, 1], clamp);
+  const rules = interpolate(frame, [0, 24], [0, 1], clamp) * (useContext(ArtCtx) ? 0 : 1);
   return (
     <>
       <AbsoluteFill style={{ opacity: 0.42 * rules, backgroundImage: `repeating-linear-gradient(180deg, transparent 0, transparent 70px, ${look.muted} 70px, ${look.muted} 72px)`, backgroundPosition: `0 ${CONTENT_TOP}px`, WebkitMaskImage: `linear-gradient(180deg, transparent ${CONTENT_TOP - 20}px, #000 ${CONTENT_TOP}px, #000 ${HEIGHT - SAFE_BOTTOM - CAPTION_SPACE}px, transparent ${HEIGHT - SAFE_BOTTOM - CAPTION_SPACE + 20}px)` }} />

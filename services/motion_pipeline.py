@@ -531,7 +531,7 @@ def _select_source(fmt: str, topic: Optional[str], facts: Optional[str], script:
 def _prepare_project(project: Any) -> None:
     """Cleans a script and gives it its identity: no markers, no duplicated accents, the vote cards, an era look and a series number."""
     from services.looks import choose_look
-    from services.motion_generator import add_vote_items, fix_duplicate_accents, strip_markers
+    from services.motion_generator import add_vote_items, fix_art_for_era, fix_duplicate_accents, strip_markers
     from services.series import apply_series
     strip_markers(project)  # *asterisks* around the accent phrase (a habit of the models) would be drawn and spoken literally
     fix_duplicate_accents(project.scenes)
@@ -539,6 +539,9 @@ def _prepare_project(project: Any) -> None:
     if not project.look:
         project.look = choose_look(project.format, project.topic)  # the era of the topic (antiquity, manuscript, seachart, empire, industrial, wartime)
     logger.info("Look: %s", project.look)
+    dropped = fix_art_for_era(project)  # no tank in ancient Rome
+    if dropped:
+        logger.info("Illustrations: %d anachronistic subject(s) removed for the %s era.", dropped, project.look)
     label = apply_series(project)  # "Turning Point #7": the title, the first frame and a series hashtag repeat from video to video
     if label:
         logger.info("Series: %s", label)

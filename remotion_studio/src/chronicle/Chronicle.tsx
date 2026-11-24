@@ -2,9 +2,10 @@ import React, { useMemo } from 'react';
 import { AbsoluteFill, Sequence, interpolate, useCurrentFrame } from 'remotion';
 import { Captions, chunkCaptions } from './captions';
 import { clamp, EASE_OUT, InkWords, fit } from './ink';
-import { LookCtx, lookFor } from './looks';
+import { LookCtx, lookFor, useLook } from './looks';
 import { Backdrop } from './paper';
-import { Callout, Chapter, DateScene, Flash, ImageScene, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
+import { ArtStage } from './art/Stage';
+import { ArtCtx, Callout, Chapter, DateScene, Flash, ImageScene, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
 import { HEIGHT, MotionGraphicProps, MotionScene, OVERLAP, SAFE_BOTTOM, SAFE_TOP, WIDTH, totalFrames } from './types';
 
 export { totalFrames };
@@ -36,10 +37,13 @@ const SceneShell: React.FC<{ scene: MotionScene; index: number; last: boolean; c
   const kind = index === 0 ? 'fade' : ENTRANCES[(index * 7 + scene.type.length) % ENTRANCES.length];
   const style: React.CSSProperties = !last && pout > 0 ? { opacity: 1 - pout, transform: `translateY(${-pout * 24}px)` } : index === 0 ? {} : enter(kind, pin);
   return (
-    <AbsoluteFill style={style}>
-      {children}
-      <Callout scene={scene} />
-    </AbsoluteFill>
+    <ArtCtx.Provider value={!!scene.art?.length}>
+      {scene.art?.length ? <AbsoluteFill style={{ opacity: last || pout <= 0 ? 1 : 1 - pout }}><ArtStage shots={scene.art} dur={scene.durationInFrames} look={useLook()} seed={`${scene.text}${index}`} /></AbsoluteFill> : null}
+      <AbsoluteFill style={style}>
+        {children}
+        <Callout scene={scene} />
+      </AbsoluteFill>
+    </ArtCtx.Provider>
   );
 };
 

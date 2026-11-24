@@ -4,6 +4,8 @@ export type SceneType =
   // legacy names the pipeline may still send; they are drawn with the closest history scene (see ALIAS in Chronicle.tsx)
   | 'bigText' | 'textWithAccent' | 'card' | 'headline' | 'counter' | 'progressBar' | 'curve' | 'codeBlock' | 'footage' | 'tier' | 'rank' | 'quiz' | 'split' | 'units' | 'ui';
 
+import type { ArtShot } from './art/vocab';
+
 export type IconName =
   | 'column' | 'laurel' | 'sword' | 'ship' | 'crown' | 'scroll' | 'hourglass' | 'castle' | 'quill' | 'key' | 'coin' | 'compass' | 'pyramid' | 'book' | 'gear' | 'sun';
 
@@ -21,6 +23,7 @@ export interface MotionScene {
   rightValue?: number;
   winner?: 'left' | 'right' | 'none';
   verdict?: 'myth' | 'fact' | 'partly' | 'buy' | 'wait' | 'skip';
+  art?: ArtShot[]; // 1-2 vector illustration shots drawn behind the scene (see art/vocab.ts); the picture changes from shot to shot as the narration moves on
   icon?: IconName; // the engraving drawn on a statement scene (picked from the words when empty)
   mediaSrc?: string; // image scene: a file in the public folder (an engraving or a public-domain photograph)
   callout?: string; // a short marginal note (a figure, a name) that appears mid-scene

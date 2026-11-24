@@ -26,6 +26,28 @@ WORDS_PER_SECOND = 2.5  # natural narration pace used to estimate the final leng
 
 SceneType = Literal["statement", "chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "image", "flash", "outro"]
 SCENE_TYPES = ("statement", "chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "flash", "outro")  # `image` exists in the renderer but needs artwork the pipeline does not fetch yet
+# The vocabulary of the vector illustrations (remotion_studio/src/chronicle/art/vocab.ts; a test keeps both lists identical)
+PLACES = ("desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield")
+TIMES = ("dawn", "day", "dusk", "night")
+WEATHERS = ("clear", "rain", "snow", "storm", "smoke")
+STRUCTURES = ("castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins")
+ACTORS = ("soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", "farmer", "merchant", "ship", "fleet", "galley", "elephants", "train", "tank", "plane")
+PROPS = ("scroll", "crown", "sword", "chest", "torch", "banner", "throne", "map", "cannon")
+EFFECTS = ("fire", "smoke", "birds", "comet", "eclipse", "volcano")
+SUBJECTS = STRUCTURES + ACTORS + PROPS + EFFECTS
+PlaceT = Literal["desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield"]
+TimeT = Literal["dawn", "day", "dusk", "night"]
+WeatherT = Literal["clear", "rain", "snow", "storm", "smoke"]
+SubjectT = Literal["castle", "temple", "pyramids", "tower", "gate", "windmill", "factory", "lighthouse", "tents", "bridge", "ruins", "soldiers", "cavalry", "king", "crowd", "caravan", "scholar", "monk", "farmer", "merchant",
+                   "ship", "fleet", "galley", "elephants", "train", "tank", "plane", "scroll", "crown", "sword", "chest", "torch", "banner", "throne", "map", "cannon", "fire", "smoke", "birds", "comet", "eclipse", "volcano"]
+# Subjects that did not exist in every era: the looks where each may be drawn (an anachronistic one is dropped, see fix_art_for_era)
+ERA_ONLY = {
+    "tank": {"wartime"}, "plane": {"wartime"}, "train": {"industrial", "wartime"}, "factory": {"industrial", "wartime"},
+    "cannon": {"manuscript", "seachart", "empire", "industrial", "wartime"}, "windmill": {"manuscript", "seachart", "empire", "industrial"}, "castle": {"manuscript", "empire", "seachart"},
+    "galley": {"antiquity", "manuscript", "seachart"},
+}
+ART_OPTIONAL = ("flash", "map", "outro")  # every other scene carries 1-2 illustration shots
+
 ICONS = ("column", "laurel", "sword", "ship", "crown", "scroll", "hourglass", "castle", "quill", "key", "coin", "compass", "pyramid", "book", "gear", "sun")
 
 # The eight formats. mystery: an unsolved case. dayinlife: an ordinary person's day. turning: the decision that changed everything. lies: myths of history stamped true or false.
@@ -33,6 +55,13 @@ ICONS = ("column", "laurel", "sword", "ship", "crown", "scroll", "hourglass", "c
 FORMATS = ("mystery", "dayinlife", "turning", "lies", "whatif", "duel", "journey", "portrait")
 # How often `--motion-format any` picks each format (the first test wave decides the real weights, see scripts/genera_batch.py).
 FORMAT_WEIGHTS = {"mystery": 3, "turning": 2, "lies": 2, "whatif": 2, "dayinlife": 2, "duel": 2, "journey": 2, "portrait": 2}
+
+
+class ArtShot(BaseModel):
+    place: PlaceT = Field(..., description="Where the picture is set")
+    time: TimeT = Field(..., description="Time of day: sets the sky and the light")
+    weather: WeatherT = Field(default="clear", description="clear, rain, snow, storm (rain and lightning) or smoke")
+    subjects: List[SubjectT] = Field(..., description="1-4 DIFFERENT things drawn in the picture, the first is the hero: " + ", ".join(SUBJECTS))
 
 
 class MotionSceneModel(BaseModel):
@@ -50,6 +79,7 @@ class MotionSceneModel(BaseModel):
     winner: Optional[Literal["left", "right", "none"]] = Field(default=None, description="versus: who wins the round; leave empty when the BIGGER figure wins, set it when lower is better")
     verdict: Optional[Literal["myth", "fact", "partly"]] = Field(default=None, description="verdict scenes only: is the claim a myth, a fact or partly true")
     icon: Optional[str] = Field(default=None, description="statement scenes: the engraving drawn under the text, one of: " + ", ".join(ICONS) + ". Optional: picked from the words when empty")
+    art: Optional[List[ArtShot]] = Field(default=None, description="1-2 illustration SHOTS drawn behind this scene as animated vector art. Each shot is a place + a time of day + optional weather + 1-4 subjects from the fixed lists. The picture changes shot by shot as the narration moves on, so a scene with two ideas gets two shots, in the order of the narration. Required on every scene except flash, map and outro")
     mediaSrc: Optional[str] = Field(default=None, description="Set by the pipeline, never by the model")
     callout: Optional[str] = Field(default=None, description="Set by the pipeline from the narration, never by the model: a short marginal note (a figure or a name) that pops up mid-scene")
     calloutCue: Optional[float] = Field(default=None, description="Set by the pipeline from the voice timing, never by the model")
@@ -146,6 +176,13 @@ STORY (11 to 19 scenes, aim for 13+, each 60-150 frames at 30 fps), using a vari
 - list: `text` = a heading, `items` = 2-4 short lines (max 6 words). verdict: a claim stamped MYTH, FACT or PARTLY (`verdict`), `text` = the claim as people say it (max 8 words), `accentText` = the one-line truth (max 6 words).
 - chapter: `value` = a chapter number, `text` = a title, `accentText` = a subtitle: a section break, rarely needed. flash: ONE word on a bare page (a rhythm break; at most two per video, at least four scenes apart).
 - Last scene: type outro. `text` and `accentText` are replaced by the vote cards (see VOTE).
+ART DIRECTION (the video is mostly ANIMATED VECTOR DRAWINGS): behind every scene a picture is drawn and moves, and it changes as the narration moves on, so the viewer SEES the story. Every scene except flash, map and outro carries `art`:
+one or two SHOTS. A shot = `place` (desert, sea, coast, plains, mountains, forest, snow, city, plaza, interior, battlefield) + `time` (dawn, day, dusk, night) + optional `weather` (clear, rain, snow, storm, smoke) + 1-4 `subjects`:
+structures (castle temple pyramids tower gate windmill factory lighthouse tents bridge ruins), people and vehicles (soldiers cavalry king crowd caravan scholar monk farmer merchant ship fleet galley elephants train tank plane),
+props (scroll crown sword chest torch banner throne map cannon) and effects (fire smoke birds comet eclipse volcano). The first subject is the hero of the picture. Choose what the narrator is saying AT THAT MOMENT:
+"the army crossed the Alps" = mountains, dawn, [elephants, soldiers]; "the city burned" = city, dusk, smoke, [crowd, fire, gate]; "the king grew afraid" = interior, night, [throne, king, torch]. A scene with two ideas gets two shots in the order of the narration.
+Vary place, time and hero from scene to scene so the picture keeps changing; a night scene after a day scene, a wide landscape after an interior. Depict the period faithfully: tank and plane only in 20th-century stories, train and factory only in the industrial age and later,
+cannon only after 1300, castle and windmill never in antiquity (anachronistic subjects are removed). Never repeat the same shot twice in a video.
 Rules: never repeat the same scene type back to back (except versus and verdict); on-screen text is short and readable in 2 seconds; no emojis.
 Metadata: title <= 80 characters + 2-3 hashtags (#history first, then one-word tags such as #ancientrome); the title is a specific question, a claim or a duel ("What If Rome Never Fell?", "The Day Rome Fell"), never a catalogue line;
 description 2 sentences; 6-8 tags; pinned_comment = the two-option vote of the outro. screen_title <= 24 characters."""
@@ -284,6 +321,13 @@ def _repair(p: MotionProject) -> None:
         else:
             s.icon = s.icon.lower()
         s.mediaSrc = None
+        if s.art is not None:
+            kept = []
+            for sh in s.art[:2]:
+                sh.subjects = list(dict.fromkeys(sh.subjects))[:4]
+                if sh.subjects:
+                    kept.append(sh)
+            s.art = kept or None
         if len(s.narration.split()) < 3 and s.type in ("flash", "outro"):  # a one-word punch scene may simply speak its own text
             s.narration = " ".join(x for x in (s.text, s.accentText) if x)
 
@@ -461,6 +505,29 @@ def _scene_problems(i: int, s: MotionSceneModel) -> List[str]:
     return out
 
 
+def _art_problems(i: int, s: MotionSceneModel) -> List[str]:
+    if not s.art:
+        return [] if s.type in ART_OPTIONAL else [f"scene {i}: every scene except flash, map and outro needs `art`: 1-2 illustration shots (place, time, subjects)"]
+    out = []
+    if len(s.art) > 2:
+        out.append(f"scene {i}: at most two illustration shots per scene")
+    for sh in s.art:
+        if not 1 <= len(sh.subjects) <= 4 or len(set(sh.subjects)) != len(sh.subjects):
+            out.append(f"scene {i}: a shot has 1-4 different subjects")
+    return out
+
+
+def fix_art_for_era(project: Any) -> int:
+    """Removes the subjects that did not exist in the video's era (a tank in ancient Rome) once the look is known; a shot left empty gets a crowd. Returns how many subjects were dropped."""
+    dropped = 0
+    for s in project.scenes:
+        for sh in s.art or []:
+            keep = [x for x in sh.subjects if x not in ERA_ONLY or (project.look or "manuscript") in ERA_ONLY[x]]
+            dropped += len(sh.subjects) - len(keep)
+            sh.subjects = keep or ["crowd"]
+    return dropped
+
+
 def _count(p: MotionProject, kind: str) -> int:
     return sum(1 for s in p.scenes if s.type == kind)
 
@@ -624,8 +691,15 @@ def make_validator(facts: Optional[str] = None, fmt: Optional[str] = None, reten
         if any(s.type == "image" for s in p.scenes):
             out.append("image scenes are not available yet: use the other scene types")
         fix_duplicate_accents(p.scenes)
+        seen_shots: set = set()
         for i, s in enumerate(p.scenes, 1):
             out += _scene_problems(i, s)
+            out += _art_problems(i, s)
+            for sh in s.art or []:
+                key = (sh.place, sh.time, tuple(sh.subjects))
+                if key in seen_shots:
+                    out.append(f"scene {i}: an illustration shot is repeated: every shot of the video must be different")
+                seen_shots.add(key)
             if i > 1 and s.type == p.scenes[i - 2].type and s.type not in ("outro", "versus", "verdict"):
                 out.append(f"scenes {i - 1} and {i} have the same type")
         if not looks_english(p.all_text):
@@ -661,12 +735,13 @@ def _review_prompt(p: MotionProject, facts: Optional[str]):
             extra = f" | DATE: {int(s.value or 0)} {s.unit or ''} at {s.kicker}: {s.accentText}"
         elif s.type == "quote":
             extra = f" | QUOTE by {s.accentText}"
-        rows.append(f"{i}. [{s.type}] {s.text} | narration: \"{s.narration}\" | accent: {s.accentText or '-'} | value: {s.value if s.value is not None else '-'} {s.unit or ''} | items: {s.items or '-'}{extra}")
+        art = " | PICTURES: " + "; ".join(f"{sh.place}, {sh.time}, {', '.join(sh.subjects)}" for sh in s.art) if s.art else ""
+        rows.append(f"{i}. [{s.type}] {s.text} | narration: \"{s.narration}\" | accent: {s.accentText or '-'} | value: {s.value if s.value is not None else '-'} {s.unit or ''} | items: {s.items or '-'}{extra}{art}")
     rule = (" You are given the SOURCE TEXT. Any claim about the subject (names, dates, figures, who said what) that the SOURCE TEXT does not state or clearly imply is definitely_wrong, even if it sounds plausible; "
             "fixed_narration must then use only what the text supports." if facts else "")
     fmt_rule = (" Scenes of type date state a year and a place: flag a wrong year or place. timeline scenes list milestones as when|label: flag a wrong year or a wrong order. map scenes list places in route order: flag a place that is not part of the story. "
                 "versus scenes compare two contenders on one metric: flag any figure that is clearly wrong and a winner that contradicts the figures. quote scenes attribute a quotation: flag any quotation that is invented, misattributed or not well documented. "
-                "verdict scenes stamp a belief MYTH, FACT or PARTLY: flag a stamp that is wrong. Counterfactual (what if) claims must be hedged: flag any consequence stated as a fact.")
+                "verdict scenes stamp a belief MYTH, FACT or PARTLY: flag a stamp that is wrong. Counterfactual (what if) claims must be hedged: flag any consequence stated as a fact. PICTURES list the animated drawing shown while the narrator speaks: flag a picture whose place or hero clearly contradicts the narration (a desert for a sea battle).")
     system = ("You are a strict but fair historian and fact-checker. List in `errors` only statements that are clearly FALSE, anachronistic or misleading, names or places that are wrong, "
               "and numbers that are clearly wrong (check arithmetic). Simplifications for a general audience are fine: mark definitely_wrong=false for those or leave them out. "
               "Where historians genuinely disagree, a statement is fine only if it says so. For every definitely_wrong issue also give fixed_narration (and fixed_verdict when a verdict stamp is the error)." + rule + fmt_rule)
