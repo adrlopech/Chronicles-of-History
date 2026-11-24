@@ -4,7 +4,7 @@ import { Engraving, pickIcon } from './icons';
 import { Corners, EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Seal, Stamp, TornLabel, Underline, clamp, fit, foilText, hash, lines, rng, smoothClosed } from './ink';
 import { useLook } from './looks';
 import { Seal as BrandSeal } from '../brand/Brand';
-import { Chart, atlasStyle, fitView, parsePlaces, placeLabels, project, smoothRoute } from './geo/atlas';
+import { Chart, CompassRose, atlasStyle, fitView, parsePlaces, placeLabels, project, smoothRoute } from './geo/atlas';
 import { CAPTION_SPACE, CHANNEL, FPS, HEIGHT, MotionScene, SAFE_BOTTOM, SAFE_TOP, WIDTH } from './types';
 
 /** Content area: below the platform's top bar, above the caption strip and the platform's bottom bar. */
@@ -157,41 +157,56 @@ export const MapScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
   const frame = useCurrentFrame();
   const art = useContext(ArtCtx);
-  const MW = art ? 880 : 880;
+  const MW = 880;
   const MH = art ? 640 : 760;
   const geo = useMemo(() => parsePlaces(scene.items), [scene.items]);
   const view = useMemo(() => fitView(geo, MW, MH), [geo, MW, MH]);
   const places = useMemo(() => geo.map((g) => { const [x, y] = project(view, g.lon, g.lat); return { name: g.name, x, y }; }), [geo, view]);
-  const labelPos = useMemo(() => placeLabels(places.map((p) => ({ ...p, size: fit(p.name, 38, 280, 1, 0.62, 24) })), MW, MH), [places, MW, MH]);
-  const style = useMemo(() => atlasStyle(look.paper, look.ink, look.accent2), [look]);
+  const labelPos = useMemo(() => placeLabels(places.map((p) => ({ ...p, size: 30 })), MW, MH), [places, MW, MH]);
+  const style = useMemo(() => atlasStyle(), []);
   const step = 20;
   const route = places.length > 1 ? smoothRoute(places.map((p) => [p.x, p.y] as [number, number])) : '';
   const routeP = interpolate(frame, [18, 18 + step * places.length], [0, 1], clamp);
   const tSize = fit(scene.text, 62, W, 2, look.k, 38);
   const frameIn = interpolate(frame, [0, 16], [0, 1], { ...clamp, easing: EASE_OUT });
-  const zoom = 1.03 - 0.03 * interpolate(frame, [0, 120], [0, 1], clamp); // the camera settles slowly over the chart
+  const zoom = 1.03 - 0.03 * interpolate(frame, [0, 120], [0, 1], clamp); // the camera settles slowly over the map
+  const seed = hash(scene.text) % 9973;
+  const last = places[places.length - 1];
+  const xPop = spring({ frame: frame - (18 + places.length * step), fps: FPS, config: { damping: 9, stiffness: 160, mass: 0.7 } });
   return (
     <Page gap={20} card>
       <InkWords text={scene.text} size={tSize} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={2} />
-      <div style={{ opacity: frameIn, transform: `scale(${0.96 + 0.04 * frameIn})`, boxShadow: '0 18px 40px rgba(0,0,0,0.45)', overflow: 'hidden', border: `5px double ${look.accent2}` }}>
-        <svg width={MW} height={MH} viewBox={`0 0 ${MW} ${MH}`} style={{ display: 'block', transform: `scale(${zoom})`, transformOrigin: '50% 50%' }}>
-          <Chart v={view} s={style} id="atlas" />
-          {route && <path d={route} fill="none" stroke="#2a170a" strokeWidth={11} strokeLinecap="round" strokeLinejoin="round" pathLength={1} style={{ strokeDasharray: `${routeP} 2` }} opacity={0.45} />}
-          {route && <path d={route} pathLength={1} fill="none" stroke={look.accent} strokeWidth={6.5} strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: `${routeP} 2` }} opacity={0.98} />}
+      <div style={{ opacity: frameIn, transform: `scale(${0.96 + 0.04 * frameIn}) rotate(${((seed % 7) - 3) * 0.25}deg)`, filter: 'drop-shadow(0 20px 28px rgba(0,0,0,0.6))' }}>
+        <svg width={MW} height={MH} viewBox={`0 0 ${MW} ${MH}`} style={{ display: 'block', transform: `scale(${zoom})`, transformOrigin: '50% 50%', overflow: 'visible' }}>
+          <Chart v={view} s={style} id="atlas" places={places} seed={seed} />
+          {/* the trail: a dashed line in red ink, revealed along the route and ending at the X */}
+          <defs>
+            <mask id="trailmask"><path d={route} fill="none" stroke="#fff" strokeWidth={22} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray={`${routeP} 2`} /></mask>
+          </defs>
+          {route && <path d={route} fill="none" stroke="#2a0a04" strokeWidth={7} strokeLinecap="round" strokeDasharray="13 11" opacity={0.28} transform="translate(2 3)" mask="url(#trailmask)" />}
+          {route && <path d={route} fill="none" stroke="#9a2a18" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" strokeDasharray="13 11" mask="url(#trailmask)" />}
           {places.map((p, i) => {
             const at = 18 + i * step;
             const pop = spring({ frame: frame - at, fps: FPS, config: { damping: 11, stiffness: 190, mass: 0.6 } });
-            const size = fit(p.name, 38, 280, 1, 0.62, 24);
+            const size = 30;
             const lp = labelPos[i];
+            const isLast = i === places.length - 1 && places.length > 1;
             return (
               <g key={i} opacity={Math.min(1, pop * 2)} transform={`translate(${p.x} ${p.y}) scale(${pop})`}>
-                <circle r={26} fill={look.accent} opacity={0.22} />
-                <circle r={11} fill={look.accent} stroke="#fff6d8" strokeWidth={3.5} />
-                <text x={lp.dx} y={lp.dy} textAnchor={lp.anchor} fontFamily={look.head} fontWeight={look.weight} fontSize={size} fill="#fff6d8" stroke="#1a0f07" strokeWidth={7} paintOrder="stroke" letterSpacing={look.caps ? 2 : 0}>{look.caps ? p.name.toUpperCase() : p.name}</text>
+                {!isLast && <><circle r={15} fill="#8e2a1c" opacity={0.18} /><circle r={7.5} fill="#8e2a1c" stroke={style.ink} strokeWidth={2.4} /></>}
+                {isLast && <circle r={5} fill={style.ink} />}
+                <text x={lp.dx} y={lp.dy} textAnchor={lp.anchor} fontFamily="IM Fell English, serif" fontStyle="italic" fontWeight={400} fontSize={size} fill={style.ink} stroke="#f1e0b0" strokeWidth={6} paintOrder="stroke" letterSpacing={0.5}>{p.name}</text>
               </g>
             );
           })}
-          <g transform={`translate(${MW - 128} 10)`}><foreignObject width={118} height={118}><Engraving name="compass" size={118} color="#f1e2bd" accent={look.accent} at={6} len={36} thick={2.4} /></foreignObject></g>
+          {last && places.length > 1 && (
+            <g transform={`translate(${last.x} ${last.y}) scale(${xPop}) rotate(-6)`} opacity={Math.min(1, xPop * 2)}>
+              <path d="M-26 -26 L26 26 M26 -26 L-26 26" stroke="#2a0a04" strokeWidth={16} strokeLinecap="round" opacity={0.35} transform="translate(2 3)" />
+              <path d="M-26 -26 L26 26 M26 -26 L-26 26" stroke="#a3200f" strokeWidth={11} strokeLinecap="round" />
+              <path d="M-23 -24 L22 22" stroke="#d6502f" strokeWidth={3} strokeLinecap="round" opacity={0.6} />
+            </g>
+          )}
+          <CompassRose x={96} y={MH - 120} r={62} ink={style.ink} ink2={style.ink2} />
         </svg>
       </div>
       {scene.accentText && <InkWords text={scene.accentText} size={fit(scene.accentText, 54, W, 2, 0.46, 34)} color={look.accent} font={look.italic} weight={400} delay={24} />}
