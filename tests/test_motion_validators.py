@@ -25,7 +25,9 @@ _SHOT = iter(range(10**6))
 def next_shot():
     """A different illustration shot every call (a video may not repeat one)."""
     i = next(_SHOT)
-    return ArtShot(place=PLACES[i % len(PLACES)], time=TIMES[(i // 3) % 4], subjects=[SUBJECTS[(i * 7) % len(SUBJECTS)], SUBJECTS[(i * 7 + 11) % len(SUBJECTS)]] if (i * 7) % len(SUBJECTS) != (i * 7 + 11) % len(SUBJECTS) else ["crowd"])
+    other = SUBJECTS[(i * 7 + 11) % len(SUBJECTS)]
+    # a protagonist on the stage in every shot, doing something different each time, with a different second subject
+    return ArtShot(place=PLACES[i % len(PLACES)], time=TIMES[(i // 3) % 4], subjects=["legionary", other] if other != "legionary" else ["legionary"], action=ACTIONS[i % len(ACTIONS)])
 
 
 def sc(kind, **kw):
@@ -498,6 +500,22 @@ def test_the_new_eras_pick_their_topics_and_draw_only_what_belongs():
     assert era_allows("saloon", "frontier") and era_allows("cowboy", "frontier") and not era_allows("samurai", "frontier") and not era_allows("pharaoh", "frontier")
     assert era_allows("lander", "spaceage") and era_allows("astronaut", "spaceage") and not era_allows("knight", "spaceage") and not era_allows("cavalry", "spaceage")
     assert era_allows("duomo", "renaissance") and era_allows("conquistador", "renaissance") and not era_allows("tank", "renaissance")
+
+
+def test_the_pictures_must_tell_the_story_through_its_people():
+    from services.motion_generator import story_problems
+    good = script("turning")
+    assert story_problems(good) == []
+    for s in good.scenes:
+        for sh in s.art or []:
+            sh.subjects, sh.action = ["castle", "windmill"], None
+    msgs = " ".join(story_problems(good))
+    assert "show a person" in msgs and "protagonist" in msgs
+    some = script("turning")
+    for s in some.scenes:
+        for sh in s.art or []:
+            sh.action = "run"
+    assert any("four different" in m for m in story_problems(some))
 
 
 def test_a_shot_can_carry_an_action_and_a_view_but_only_from_the_lists():

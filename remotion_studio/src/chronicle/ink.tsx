@@ -47,6 +47,9 @@ export const ROMAN = (n: number): string => {
 };
 
 /** The largest size (at most `size`) at which `text` fits `width` px in `maxLines` lines; `k` is the glyph width as a fraction of the size. */
+/** The on-screen words stay small so the story the drawings tell is what the eye follows: every size is scaled by this factor. */
+export const TEXT_SCALE = 0.72;
+
 export const fit = (text: string, size: number, width: number, maxLines: number, k: number, min = 36): number => {
   const words = text.split(/\s+/).filter(Boolean);
   const longest = Math.max(1, ...words.map((w) => w.length));
@@ -62,7 +65,7 @@ export const fit = (text: string, size: number, width: number, maxLines: number,
     if (lines <= maxLines) break;
     s *= 0.93;
   }
-  return Math.max(min, Math.round(s));
+  return Math.round(Math.max(min, s) * TEXT_SCALE);
 };
 export const lines = (text: string, size: number, width: number, k: number): number => {
   const cpl = Math.max(1, Math.floor(width / (size * k)));

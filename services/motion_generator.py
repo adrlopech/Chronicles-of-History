@@ -407,6 +407,10 @@ Vary place, time and hero from scene to scene so the picture keeps changing; a n
 cannon only after 1300, castle and windmill never in antiquity (anachronistic subjects are removed). Never repeat the same shot twice in a video.
 PEOPLE ACT. When a shot has any person (soldiers, king, crowd, scholar, monk, farmer, merchant or one of the hundred characters), add `action` (what they are doing) and, when it helps, `view` (front, side or back). The 37 actions: stand walk run sit point wave cheer kneel bow pray salute slash stab fall lie crouch carry push dig hammer write read think shout plead threaten shrug lift throw shoot drink dance sneak surrender cower lean watch.
 Match the action to the narration: "the army charged" = soldiers + run; "they begged for mercy" = crowd + plead; "he signed the decree" = king + write; "the soldiers laid down their arms" = soldiers + surrender; "she studied the stars" = scholar + read or think; "the crowd roared" = crowd + shout; "the city fell asleep" = crowd + lie. A view of `back` shows people facing the thing the viewer is looking at (an army of backs walking to a gate). Use at least five different actions across the video and never the same action in two shots in a row. Actions are ignored on shots with no people.
+STORY FIRST. The drawings are the story and the words are only a hint: the viewer must understand what happens by WATCHING the characters. Choose one PROTAGONIST (a named character such as legionary, knight, pharaoh, sailor or a group such as soldiers or crowd)
+and let that character appear in at least three shots, living the story beat by beat: arriving, hesitating, deciding, fighting, falling, celebrating. Every shot with people has an `action` that is what THEY are doing at that moment of the narration (use at least four different actions), and a `view`
+when it helps. Put at least 60% of the shots on people, with the hero person first in `subjects`; use structures, animals and props as the stage around them. Prefer two shots per scene so the picture follows each phase of the sentence.
+ON-SCREEN TEXT IS SMALL AND SHORT: `text` at most 6 words and `accentText` at most 3: the picture carries the story, the narration carries the detail.
 Rules: never repeat the same scene type back to back (except versus and verdict); on-screen text is short and readable in 2 seconds; no emojis.
 Metadata: title <= 80 characters + 2-3 hashtags (#history first, then one-word tags such as #ancientrome); the title is a specific question, a claim or a duel ("What If Rome Never Fell?", "The Day Rome Fell"), never a catalogue line;
 description 2 sentences; 6-8 tags; pinned_comment = the two-option vote of the outro. screen_title <= 24 characters."""
@@ -741,6 +745,31 @@ def _art_problems(i: int, s: MotionSceneModel) -> List[str]:
     return out
 
 
+def story_problems(p: MotionProject) -> List[str]:
+    """The pictures must tell the story through its people: most shots show a person doing something, the actions vary and one protagonist keeps coming back.
+    Only generated scripts are held to this."""
+    shots = [sh for sc in p.scenes for sh in (sc.art or [])]
+    if len(shots) < 8:
+        return []
+    out: List[str] = []
+    people = [sh for sh in shots if any(x in HUMANS for x in sh.subjects)]
+    if len(people) < 0.6 * len(shots):
+        out.append(f"only {len(people)} of {len(shots)} illustration shots show a person: the characters live the story, so at least 60% of the shots need a person (a named character, soldiers, king, crowd...) as a subject")
+    acting = [sh for sh in people if sh.action]
+    if len(acting) < 0.7 * len(people):
+        out.append("give every shot with people an `action` (what they are doing): the viewer follows the story through what the characters do")
+    if len({sh.action for sh in acting}) < 4:
+        out.append("use at least four different `action` values across the video (run, kneel, point, shout, fall, write, surrender...)")
+    seen: Dict[str, int] = {}
+    for sh in people:
+        for x in sh.subjects:
+            if x in HUMANS:
+                seen[x] = seen.get(x, 0) + 1
+    if not seen or max(seen.values()) < 3:
+        out.append("one protagonist (the same character subject) must appear in at least three shots, so the viewer follows somebody through the story")
+    return out
+
+
 def fix_art_for_era(project: Any) -> int:
     """Removes the subjects that did not exist in the video's era (a tank in ancient Rome) once the look is known; a shot left empty gets a crowd. Returns how many subjects were dropped."""
     dropped = 0
@@ -892,6 +921,7 @@ def make_validator(facts: Optional[str] = None, fmt: Optional[str] = None, reten
         out: List[str] = _format_problems(p, fmt)
         if retention:
             out += retention_problems(p)
+            out += story_problems(p)
         n = len(p.scenes)
         compact = fmt == "duel"  # a duel is built from a run of versus scenes, so it has fewer, wordier scenes
         if not (8 if compact else 10) <= n <= 21:

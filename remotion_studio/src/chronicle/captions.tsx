@@ -56,17 +56,17 @@ export const Captions: React.FC<{ chunks: Chunk[] }> = ({ chunks }) => {
   const fade = isLast ? interpolate(frame, [chunk.e + 20, chunk.e + 30], [1, 0], clamp) : 1;
   const edge = '#0a0710';
   const len = chunk.words.map((w) => w.w).join(' ').length;
-  const size = Math.max(50, Math.min(76, Math.floor(940 / (Math.max(8, len) * look.k * 1.08))));
+  const size = Math.max(38, Math.min(56, Math.floor(860 / (Math.max(8, len) * look.k * 1.08))));
   const rule = look.accent2;
   return (
     <div style={{ position: 'absolute', left: 54, right: 54, bottom: SAFE_BOTTOM + 8, display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: fade, transform: `translateY(${(1 - pop) * 16}px)` }}>
       {/* the documentary title rule: two gold lines around a diamond */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, width: 420, marginBottom: 6, opacity: 0.9 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, width: 300, marginBottom: 4, opacity: 0.9 }}>
         <div style={{ height: 3, flex: 1, background: `linear-gradient(90deg, transparent, ${rule})` }} />
         <div style={{ width: 14, height: 14, background: rule, transform: 'rotate(45deg)', boxShadow: `0 0 14px ${rule}` }} />
         <div style={{ height: 3, flex: 1, background: `linear-gradient(270deg, transparent, ${rule})` }} />
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 20px', transform: `scale(${0.95 + 0.05 * pop})` }}>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 14px', transform: `scale(${0.95 + 0.05 * pop})` }}>
         {chunk.words.map((w, i) => {
           const on = frame >= w.s - 1 && frame <= w.e + 2;
           return (

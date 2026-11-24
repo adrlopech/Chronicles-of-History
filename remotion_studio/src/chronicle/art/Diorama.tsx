@@ -23,6 +23,8 @@ const DRAW: Record<string, React.FC<Dr>> = {
 const PEOPLE_DRAW = Object.fromEntries(PEOPLE.map((who) => [who, (p: Dr) => <PersonGroup {...p} who={who as PersonKind} />])) as unknown as Record<PersonKind, React.FC<Dr>>;
 Object.assign(DRAW, PEOPLE_DRAW, NEW_ANIMALS, NEW_STRUCTURES, STRUCTURES3, VEHICLES3);
 const ANIMAL_SPEED = { mammoth: 18, sabertooth: 45, bison: 22, horse: 90, camel: 28, wagon: 30, junk: 22, dog: 70, wolf: 90, fox: 80, deer: 80, lion: 40, tiger: 45, bear: 25, boar: 60, pig: 20, cow: 12, ox: 12, sheep: 16, goat: 20, donkey: 24, rat: 70, snake: 24, crocodile: 10, eagle: 60, raven: 60, whale: 12 } as Record<string, number>;
+/** Everyone drawn as a person: the first one in a shot is the hero and is drawn larger, because the pictures tell the story. */
+const HUMAN = new Set<string>([...PEOPLE, 'soldiers', 'king', 'crowd', 'scholar', 'monk', 'farmer', 'merchant']);
 const MOVES = new Set(['walk', 'run', 'carry', 'push', 'sneak']);
 const SPEED: Partial<Record<Subject, number>> = { soldiers: 46, cavalry: 150, caravan: 38, elephants: 30, ship: 26, fleet: 22, galley: 34, train: 190, tank: 80, plane: 230, farmer: 20 };
 const WATER = new Set<string>(['ship', 'fleet', 'galley', 'whale', 'junk']);
@@ -112,7 +114,7 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     if (WATER.has(sj)) y = GY + (place === 'sea' || place === 'coast' ? 300 : 260);
     if (sj === 'plane') y = GY - 230 + Math.sin(t) * 14;
     const lx = -260 + cam * 200 * D.f;
-    items.push({ z: y + (slot.d === 'far' ? -500 : 0), key: `${sj}${k}`, node: <g transform={`translate(${x + lx} ${y}) scale(${slot.s * D.s})`}><C c={c} t={t} seed={seed + k * 3} dir={dir} act={shot.action} view={shot.view} /></g> });
+    items.push({ z: y + (slot.d === 'far' ? -500 : 0), key: `${sj}${k}`, node: <g transform={`translate(${x + lx} ${y}) scale(${slot.s * D.s * (HUMAN.has(sj) && k === 10 ? 1.3 : 1)})`}><C c={c} t={t} seed={seed + k * 3} dir={dir} act={shot.action} view={shot.view} /></g> });
   };
   structures.slice(0, 2).forEach((sj, i) => put(sj, sS[i], i, false));
   actors.slice(0, 3).forEach((sj, i) => put(sj, aS[i], 10 + i, true));
