@@ -79,6 +79,7 @@ Instructions for the AI assistant that operates the repository: [`CLAUDE.md`](CL
 ```bash
 .venv/bin/python -m pytest && .venv/bin/ruff check .
 cd remotion_studio && npx tsc --noEmit -p .
+python3 scripts/build_portal.py   # regenerates the web portal in docs/
 python3 docs/check_portal.py
 ```
 

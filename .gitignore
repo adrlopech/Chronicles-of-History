@@ -84,3 +84,4 @@ data/batches/
 # Local helpers
 .venv
 scratch_gen/
+!docs/assets/themes/*.jpg
