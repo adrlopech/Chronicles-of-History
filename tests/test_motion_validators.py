@@ -36,7 +36,7 @@ def sc(kind, **kw):
         "statement": dict(text="Rome fell quietly", accentText="Nobody noticed"),
         "date": dict(text="476", value=476, unit="AD", kicker="Rome, Italy", accentText="The last emperor falls"),
         "timeline": dict(text="The long fall", items=["410|Rome is sacked", "455|Sacked again", "476|Last emperor falls"]),
-        "map": dict(text="The route", items=["Rome|50|50", "Carthage|40|80", "Alexandria|80|90"], accentText="Three cities, one road"),
+        "map": dict(text="The route", items=["Rome|41.9|12.5", "Carthage|36.85|10.3", "Alexandria|31.2|29.9"], accentText="Three cities, one road"),
         "quote": dict(text="The fall of Rome is the greatest scene in history", accentText="Edward Gibbon", narration="Edward Gibbon wrote that the fall of Rome was the greatest scene in history."),
         "ledger": dict(text="Years the empire lasted", value=500, unit="years", narration="It lasted five hundred years, and nobody planned for the end of it."),
         "versus": dict(text="Soldiers", left="Rome", right="Carthage", leftValue=450000, rightValue=120000, unit="soldiers", narration="Rome fielded four hundred thousand soldiers against a much smaller army."),
@@ -178,9 +178,9 @@ def test_timeline_years_must_be_in_order_and_short():
 
 def test_map_places_need_coordinates_in_range_and_no_duplicates():
     p = script("journey")
-    p.scenes[2].items = ["Rome|50|50", "Carthage|140|80", "Alexandria|80|90"]
-    assert any("between 0 and 100" in x for x in problems_of(p))
-    p.scenes[2].items = ["Rome|50|50", "Carthage|50|50", "Alexandria|80|90"]
+    p.scenes[2].items = ["Town A|50|50", "Town B|140|80", "Town C|20|90"]
+    assert any("latitude must be between" in x for x in problems_of(p))
+    p.scenes[2].items = ["Town A|50.5|9.5", "Town B|50.5|9.5", "Town C|20.5|9.5"]
     assert any("same spot" in x for x in problems_of(p))
 
 
@@ -595,3 +595,42 @@ def test_a_script_shorter_than_a_minute_is_rejected_and_the_final_qa_rejects_a_s
         out = tmp_path / "short.mp4"
         subprocess.run([ff, "-y", "-f", "lavfi", "-i", "color=c=black:s=1080x1920:d=30", "-f", "lavfi", "-i", "sine=d=30", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(out)], check=True, capture_output=True)
         assert any("duration" in f for f in qa_motion(out))
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------ real maps
+def test_the_gazetteer_snaps_known_places_and_leaves_unknown_ones():
+    from services.gazetteer import fix_map_places, lookup
+    p = script("journey")
+    m = next(s for s in p.scenes if s.type == "map")
+    m.items = ["Rome|50.0|60.0", "Carthago Nova|37.6|-0.98", "Lisbon|38.7|-9.1"]  # Rome is far off, Lisbon right, the third unknown to the table
+    assert fix_map_places(p) == 1
+    assert m.items[0].startswith("Rome|41.9") and m.items[1].endswith("-0.98") and m.items[2] == "Lisbon|38.7|-9.1"
+    assert lookup("Saint Joseph") == lookup("St. Joseph") and lookup("Constantinople") == lookup("Istanbul") and lookup("Nowhereville") is None
+
+
+def test_map_items_must_be_real_coordinates_not_schematic_x_y():
+    from services.motion_generator import _map_problems
+    p = script("journey")
+    m = next(s for s in p.scenes if s.type == "map")
+    m.items = ["Rome|41.9|12.5", "Carthage|36.85|10.3", "Alexandria|31.2|29.9"]
+    assert _map_problems(1, m) == []
+    m.items = ["Rome|52|55", "Constantinople|82|35", "Carthage|40|78"]
+    assert any("schematic" in x for x in _map_problems(1, m))
+    m.items = ["Rome|141.9|12.5", "Carthage|36.85|10.3"]
+    assert any("latitude" in x for x in _map_problems(1, m))
+    m.items = ["Rome|a|b", "Carthage|36.85|10.3"]
+    assert any("decimal" in x for x in _map_problems(1, m))
+
+
+def test_the_land_data_of_the_real_maps_is_there_and_the_sample_uses_real_coordinates():
+    import json
+    root = Path(__file__).resolve().parent.parent / "remotion_studio" / "src" / "chronicle"
+    land = json.loads((root / "geo" / "land.json").read_text(encoding="utf-8"))
+    assert len(land) > 300 and all(len(r["p"]) % 2 == 0 for r in land)
+    xs = [v for r in land for v in r["p"][0::2]]
+    ys = [v for r in land for v in r["p"][1::2]]
+    assert -180 <= min(xs) and max(xs) <= 180 and -90 <= min(ys) and max(ys) <= 84
+    sample = json.loads((root / "sample.json").read_text(encoding="utf-8"))
+    for s in sample["scenes"]:
+        if s["type"] == "map":
+            assert all(-90 <= float(i.split("|")[1]) <= 90 and abs(float(i.split("|")[2])) <= 180 for i in s["items"])

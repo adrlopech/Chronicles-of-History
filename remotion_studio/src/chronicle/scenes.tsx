@@ -4,6 +4,7 @@ import { Engraving, pickIcon } from './icons';
 import { Corners, EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Seal, Stamp, TornLabel, Underline, clamp, fit, foilText, hash, lines, rng, smoothClosed } from './ink';
 import { useLook } from './looks';
 import { Seal as BrandSeal } from '../brand/Brand';
+import { Chart, atlasStyle, fitView, parsePlaces, placeLabels, project, smoothRoute } from './geo/atlas';
 import { CAPTION_SPACE, CHANNEL, FPS, HEIGHT, MotionScene, SAFE_BOTTOM, SAFE_TOP, WIDTH } from './types';
 
 /** Content area: below the platform's top bar, above the caption strip and the platform's bottom bar. */
@@ -156,63 +157,41 @@ export const MapScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
   const frame = useCurrentFrame();
   const art = useContext(ArtCtx);
-  const MW = art ? 840 : 880;
-  const MH = art ? 520 : 700;
-  const places = (scene.items ?? []).slice(0, 5).map((it) => {
-    const [name, x, y] = it.split('|');
-    return { name: name.trim(), x: 70 + (Math.min(100, Math.max(0, parseFloat(x) || 50)) / 100) * (MW - 140), y: 70 + (Math.min(100, Math.max(0, parseFloat(y) || 50)) / 100) * (MH - 140) };
-  });
-  const land = useMemo(() => {
-    const r = rng(hash(scene.text) + 5);
-    return Array.from({ length: 3 }, (_, b) => {
-      const cx = 140 + r() * (MW - 280);
-      const cy = 120 + r() * (MH - 240);
-      const rad = 120 + r() * 130 + (b === 0 ? 40 : 0);
-      const pts: [number, number][] = Array.from({ length: 16 }, (_, i) => {
-        const a = (i / 16) * Math.PI * 2;
-        const rr = rad * (0.55 + r() * 0.75);
-        return [Math.min(MW - 24, Math.max(24, cx + Math.cos(a) * rr * 1.25)), Math.min(MH - 24, Math.max(24, cy + Math.sin(a) * rr * 0.9))];
-      });
-      return smoothClosed(pts);
-    });
-  }, [scene.text]);
+  const MW = art ? 880 : 880;
+  const MH = art ? 640 : 760;
+  const geo = useMemo(() => parsePlaces(scene.items), [scene.items]);
+  const view = useMemo(() => fitView(geo, MW, MH), [geo, MW, MH]);
+  const places = useMemo(() => geo.map((g) => { const [x, y] = project(view, g.lon, g.lat); return { name: g.name, x, y }; }), [geo, view]);
+  const labelPos = useMemo(() => placeLabels(places.map((p) => ({ ...p, size: fit(p.name, 38, 280, 1, 0.62, 24) })), MW, MH), [places, MW, MH]);
+  const style = useMemo(() => atlasStyle(look.paper, look.ink, look.accent2), [look]);
   const step = 20;
-  const route = places.length > 1 ? places.map((p, i) => `${i ? 'L' : 'M'}${p.x} ${p.y}`).join(' ') : '';
+  const route = places.length > 1 ? smoothRoute(places.map((p) => [p.x, p.y] as [number, number])) : '';
   const routeP = interpolate(frame, [18, 18 + step * places.length], [0, 1], clamp);
   const tSize = fit(scene.text, 62, W, 2, look.k, 38);
   const frameIn = interpolate(frame, [0, 16], [0, 1], { ...clamp, easing: EASE_OUT });
+  const zoom = 1.03 - 0.03 * interpolate(frame, [0, 120], [0, 1], clamp); // the camera settles slowly over the chart
   return (
     <Page gap={20} card>
       <InkWords text={scene.text} size={tSize} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={2} />
-      <div style={{ opacity: frameIn, transform: `scale(${0.96 + 0.04 * frameIn})`, boxShadow: '0 18px 40px rgba(0,0,0,0.35)' }}>
-        <svg width={MW} height={MH} viewBox={`0 0 ${MW} ${MH}`} style={{ display: 'block', background: look.dark ? `${look.paper}` : look.paper, border: `5px double ${look.ink}` }}>
-          <defs>
-            <pattern id="sea" width="16" height="9" patternUnits="userSpaceOnUse"><path d="M0 5 q4 -4 8 0 t8 0" fill="none" stroke={look.muted} strokeWidth="1.3" opacity="0.5" /></pattern>
-          </defs>
-          <rect width={MW} height={MH} fill="url(#sea)" />
-          {Array.from({ length: 7 }, (_, i) => <line key={`v${i}`} x1={(i + 1) * (MW / 8)} y1={0} x2={(i + 1) * (MW / 8)} y2={MH} stroke={look.muted} strokeWidth={1.2} strokeDasharray="3 9" opacity={0.55} />)}
-          {Array.from({ length: 6 }, (_, i) => <line key={`h${i}`} x1={0} y1={(i + 1) * (MH / 7)} x2={MW} y2={(i + 1) * (MH / 7)} stroke={look.muted} strokeWidth={1.2} strokeDasharray="3 9" opacity={0.55} />)}
-          {land.map((d, i) => (
-            <g key={i}>
-              <path d={d} fill={look.paper2} stroke={look.ink} strokeWidth={6} strokeOpacity={0.12} transform="translate(5 6)" />
-              <path d={d} fill={look.dark ? look.accent2 : look.paper} fillOpacity={look.dark ? 0.32 : 1} stroke={look.ink} strokeWidth={3} strokeLinejoin="round" />
-            </g>
-          ))}
-          {route && <path d={route} pathLength={1} fill="none" stroke={look.accent} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: `${routeP} 2` }} opacity={0.95} />}
+      <div style={{ opacity: frameIn, transform: `scale(${0.96 + 0.04 * frameIn})`, boxShadow: '0 18px 40px rgba(0,0,0,0.45)', overflow: 'hidden', border: `5px double ${look.accent2}` }}>
+        <svg width={MW} height={MH} viewBox={`0 0 ${MW} ${MH}`} style={{ display: 'block', transform: `scale(${zoom})`, transformOrigin: '50% 50%' }}>
+          <Chart v={view} s={style} id="atlas" />
+          {route && <path d={route} fill="none" stroke="#2a170a" strokeWidth={11} strokeLinecap="round" strokeLinejoin="round" pathLength={1} style={{ strokeDasharray: `${routeP} 2` }} opacity={0.45} />}
+          {route && <path d={route} pathLength={1} fill="none" stroke={look.accent} strokeWidth={6.5} strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: `${routeP} 2` }} opacity={0.98} />}
           {places.map((p, i) => {
             const at = 18 + i * step;
             const pop = spring({ frame: frame - at, fps: FPS, config: { damping: 11, stiffness: 190, mass: 0.6 } });
-            const right = p.x < MW * 0.58;
             const size = fit(p.name, 38, 280, 1, 0.62, 24);
+            const lp = labelPos[i];
             return (
               <g key={i} opacity={Math.min(1, pop * 2)} transform={`translate(${p.x} ${p.y}) scale(${pop})`}>
-                <circle r={30} fill={look.accent} opacity={0.18} />
-                <circle r={13} fill={look.accent} stroke={look.paper} strokeWidth={4} />
-                <text x={right ? 26 : -26} y={-18} textAnchor={right ? 'start' : 'end'} fontFamily={look.head} fontWeight={look.weight} fontSize={size} fill={look.ink} stroke={look.paper} strokeWidth={7} paintOrder="stroke" letterSpacing={1}>{look.caps ? p.name.toUpperCase() : p.name}</text>
+                <circle r={26} fill={look.accent} opacity={0.22} />
+                <circle r={11} fill={look.accent} stroke="#fff6d8" strokeWidth={3.5} />
+                <text x={lp.dx} y={lp.dy} textAnchor={lp.anchor} fontFamily={look.head} fontWeight={look.weight} fontSize={size} fill="#fff6d8" stroke="#1a0f07" strokeWidth={7} paintOrder="stroke" letterSpacing={look.caps ? 2 : 0}>{look.caps ? p.name.toUpperCase() : p.name}</text>
               </g>
             );
           })}
-          <g transform={`translate(${MW - 150} ${MH - 150})`}><foreignObject width={120} height={120}><Engraving name="compass" size={120} color={look.ink} accent={look.accent2} at={6} len={36} thick={2.2} /></foreignObject></g>
+          <g transform={`translate(${MW - 128} 10)`}><foreignObject width={118} height={118}><Engraving name="compass" size={118} color="#f1e2bd" accent={look.accent} at={6} len={36} thick={2.4} /></foreignObject></g>
         </svg>
       </div>
       {scene.accentText && <InkWords text={scene.accentText} size={fit(scene.accentText, 54, W, 2, 0.46, 34)} color={look.accent} font={look.italic} weight={400} delay={24} />}

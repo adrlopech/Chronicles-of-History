@@ -237,7 +237,7 @@ SCRIPTS["apollo_11_journey"] = dict(
               text="1969", value=1969, unit="AD", kicker="Cape Kennedy, Florida", accentText="Apollo 11 lifts off"),
         scene("map", "The journey runs from Florida to Earth orbit, then to the Moon, then home to the Pacific.",
               None, frames=170,
-              text="The route", items=["Cape Kennedy|18|62", "Earth orbit|30|40", "Moon orbit|72|34", "Sea of Tranquility|82|52", "Pacific|26|78"], accentText="Eight days, three men"),
+              text="The route", items=["Cape Kennedy|28.5|-80.6", "Pearl Harbor|21.35|-157.97", "Splashdown|13.3|-169.1"], accentText="Eight days, three men"),
         scene("statement", "Neil Armstrong and Buzz Aldrin would land, while Michael Collins circled alone. Wait for the twist.",
               [shot("desert", "night", ["astronaut", "scientist", "satellite"], "watch", "side"), shot("interior", "night", ["astronaut", "engineer", "radar_dish"], "think", "front")],
               text="Three men, two roles", accentText="One stays above"),

@@ -81,10 +81,10 @@
       "type": "map",
       "text": "Where the empire shrank",
       "items": [
-        "Rome|52|55",
-        "Constantinople|82|35",
-        "Carthage|40|78",
-        "Londinium|22|14"
+        "Rome|41.9|12.5",
+        "Carthage|36.85|10.3",
+        "Constantinople|41.0|28.98",
+        "Londinium|51.5|-0.1"
       ],
       "accentText": "Borders pulled back, province by province",
       "durationInFrames": 160,

@@ -386,7 +386,7 @@ STORY (11 to 19 scenes, aim for 13+, each 60-150 frames at 30 fps), using a vari
   Use it for claims, stakes and turns of the story.
 - date: `value` = the year (whole number), `text` = the year as digits, `unit` = AD or BC, `kicker` = the PLACE ("Rome, Western Empire"), `accentText` = what happened (max 8 words). Stamps one decisive date into the page.
 - timeline: `text` = a title (max 5 words), `items` = 3 to 5 "when|label" entries in order ("476|Last emperor falls"; for a day: "6 AM|Wake before dawn"). when: at most 8 characters, label: at most 28 characters.
-- map: `text` = a title, `items` = 2 to 5 "Place|x|y" in the order of the route (x: 0 west to 100 east, y: 0 north to 100 south, schematic but geographically sensible), `accentText` = a caption (max 10 words). The route is inked from place to place.
+- map: `text` = a title, `items` = 2 to 5 "Place|lat|lon" in the order of the route, with the REAL latitude and longitude in decimal degrees ("Rome|41.9|12.5", "Carthage|36.85|10.3", "Lisbon|38.7|-9.1": north and east are positive, south and west negative). The video draws the real coastline of that region and puts each place on it, so the coordinates must be right to about one degree; the map frames itself around the places, so choose places of ONE region or one route. `accentText` = a caption (max 10 words). The route is inked from place to place.
 - quote: `text` = a famous, documented quotation (max 30 words), `accentText` = who said it. Rare: at most one per video, only when you are sure.
 - ledger: `text` = a label (max 8 words), `value` = a REAL whole number > 0 (never a decimal), `unit` = what it counts ("soldiers", "years", "miles"), `accentText` = a short remark. The figure must be said in the narration.
 - versus: `left`/`right` names (max 16 characters, identical in every versus scene), `leftValue`/`rightValue` real approximate whole numbers, `unit` shared, `text` = the round's metric. Two banners unfurl to the figures.
@@ -470,7 +470,7 @@ FORMAT = HISTORY DUEL. Two real contenders (two armies, empires, leaders, cities
 - Versus scenes may follow each other. Be fair to both sides: no contender is a joke.""",
     "journey": FORMAT_COMMON + """
 FORMAT = THE ROUTE. ONE journey that mattered (an expedition, a campaign, a migration, a trade route, an escape, a pilgrimage) told as a route inked on a hand-drawn map.
-Structure: (1) cold open with the cost or the impossibility of the journey; (2) a `date` scene: the start, the year and the place; (3) a `map` scene with 3 to 5 places in route order (schematic but geographically sensible x/y: west to east, north to south) and a caption;
+Structure: (1) cold open with the cost or the impossibility of the journey; (2) a `date` scene: the start, the year and the place; (3) a `map` scene with 3 to 5 places in route order, each as "Place|lat|lon" with its REAL latitude and longitude (the video draws the real coastline) and a caption;
 (4) then the journey in stages, one scene per stage (statement with an icon, ledger with a real distance or number of people, timeline of key dates); you may use a second `map` for a different leg (never two maps in a row);
 (5) the arrival or the failure, with a real figure of who made it; (6) what the journey changed; (7) the outro vote ("Heroes or fools?"). Names of places must be real and spelled as in English books.""",
     "portrait": FORMAT_COMMON + """
@@ -531,6 +531,8 @@ def strip_markers(p: MotionProject) -> None:
 def _repair(p: MotionProject) -> None:
     """Fixes what can be fixed without asking again: clamps scene lengths, trims lists, makes a date scene's text its year, drops unknown icons and unusable media."""
     strip_markers(p)
+    from services.gazetteer import fix_map_places
+    fix_map_places(p)  # places the gazetteer knows go to their real position
     for s in p.scenes:
         s.durationInFrames = max(60, min(150, int(s.durationInFrames)))
         if s.items:
@@ -672,18 +674,20 @@ def _timeline_problems(i: int, s: MotionSceneModel) -> List[str]:
 def _map_problems(i: int, s: MotionSceneModel) -> List[str]:
     rows = [it.split("|") for it in (s.items or [])]
     if not (2 <= len(rows) <= 5) or any(len(r) != 3 for r in rows):
-        return [f"scene {i}: map needs 2-5 \"Place|x|y\" items"]
+        return [f"scene {i}: map needs 2-5 \"Place|lat|lon\" items (real latitude and longitude, for example \"Rome|41.9|12.5\")"]
     try:
         coords = [(float(r[1]), float(r[2])) for r in rows]
     except ValueError:
-        return [f"scene {i}: map x and y must be numbers from 0 to 100"]
+        return [f"scene {i}: map lat and lon must be decimal numbers (north and east positive)"]
     out: List[str] = []
-    if any(not (0 <= x <= 100 and 0 <= y <= 100) for x, y in coords):
-        out.append(f"scene {i}: map x and y are between 0 and 100")
+    if any(not (-75 <= la <= 80 and -180 <= lo <= 180) for la, lo in coords):
+        out.append(f"scene {i}: map latitude must be between -75 and 80 and longitude between -180 and 180")
     if any(not (0 < len(r[0].strip()) <= 18) for r in rows):
         out.append(f"scene {i}: map place names are at most 18 characters")
     if len(set(coords)) != len(coords):
         out.append(f"scene {i}: two places of the map sit at the same spot")
+    if all(0 <= la <= 100 and 0 <= lo <= 100 for la, lo in coords) and len(coords) >= 3 and all(float(c).is_integer() for xy in coords for c in xy):
+        out.append(f"scene {i}: map items look like schematic x/y (0-100): write the real latitude and longitude of each place instead")
     return out
 
 
