@@ -23,8 +23,12 @@ def norm(s: str) -> str:
 
 
 def parse_title(title: str):
-    """'Unsolved #1: Did Jesse James Fake His Death? #history #wildwest' -> ('Unsolved', 1, 'Did Jesse James Fake His Death?')."""
+    """Both title shapes -> ('Unsolved', 1, 'Did Jesse James Fake His Death?'):
+    'Did Jesse James Fake His Death? | Unsolved #1 #history' (the current one, hook first) and 'Unsolved #1: Did Jesse James Fake His Death? #history' (the first videos)."""
     t = re.sub(r"\s+#[A-Za-z]\w*", "", title).strip()
+    m = re.match(r"^(.*?)\s*\|\s*(.+?)\s*#(\d+)$", t)
+    if m:
+        return m.group(2), int(m.group(3)), m.group(1)
     m = re.match(r"^(.*?)\s*#(\d+):\s*(.*)$", t)
     return (m.group(1), int(m.group(2)), m.group(3)) if m else ("", 0, t)
 

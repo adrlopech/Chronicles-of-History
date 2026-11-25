@@ -3,7 +3,7 @@
 Every video follows one of eight formats (`FORMATS` in `services/motion_generator.py`). A format fixes the **structure** of the story, the scene types it needs and the rules the validator enforces; `FORMAT_RULES` holds the prompt,
 `FORMAT_NEEDS` the checks, `TOPIC_HINTS` the subject hints, `services/series.py` the series name and hashtag. Make one with `.venv/bin/python main.py --motion-format <format> [--topic "..."]`; `any` draws a weighted random one.
 
-| Format | Series (title prefix) | What it is | Needs |
+| Format | Series (after the hook in the title: "Caesar Crosses the Rubicon \| Turning Point #2") | What it is | Needs |
 |---|---|---|---|
 | `mystery` | Unsolved #n | One real unsolved or disputed mystery: what we know, two leading theories, what is missing. Vote: which theory | a `date`; a `timeline`, `list` or `map` |
 | `dayinlife` | A Day In #n | The day of an ordinary person at a precise place and year, told in the second person. Vote: would you survive it? | one `timeline` of 4-5 hours; a `date` |

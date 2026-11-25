@@ -32,8 +32,8 @@ def _norm(title: str) -> str:
 
 
 TITLE_PATTERNS = [
-    ("Unsolved", r"^Unsolved"), ("A Day In", r"^A Day In"), ("Turning Point", r"^Turning Point"), ("History Lies", r"^History Lies"), ("What If History", r"^What If"),
-    ("History Duel", r"^History Duel"), ("The Route", r"^The Route"), ("Life in Dates", r"^Life in Dates"), ("Why ...?", r"^Why\b"), ("How ...", r"^How\b"), ("What is ...", r"^What\b"),
+    ("Unsolved", r"(^|\| )Unsolved"), ("A Day In", r"(^|\| )A Day In"), ("Turning Point", r"(^|\| )Turning Point"), ("History Lies", r"(^|\| )History Lies"), ("What If History", r"(^|\| )What If"),
+    ("History Duel", r"(^|\| )History Duel"), ("The Route", r"(^|\| )The Route"), ("Life in Dates", r"(^|\| )Life in Dates"), ("Why ...?", r"^Why\b"), ("How ...", r"^How\b"), ("What is ...", r"^What\b"),
 ]
 
 

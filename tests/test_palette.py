@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parent.parent / "remotion_studio" / "src"
-HEX = re.compile(r"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b")
+HEX = re.compile(r"#([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b")  # 8 digits = a colour with alpha (#0b1226F5 slipped through before)
 RGB = re.compile(r"rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)")
 
 
@@ -20,7 +20,7 @@ def off_palette():
         text = f.read_text(encoding="utf-8")
         for m in HEX.finditer(text):
             h = m.group(1)
-            h = "".join(c * 2 for c in h) if len(h) == 3 else h
+            h = "".join(c * 2 for c in h) if len(h) == 3 else h[:6]
             r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
             if not is_warm(r, g, b):
                 bad.append(f"{f.relative_to(SRC)}: #{m.group(1)}")

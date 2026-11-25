@@ -12,7 +12,16 @@ import { Action, ArtShot, Camera, PEOPLE } from './vocab';
  * - a change of place is a wipe or an iris; the film only fades to the backdrop around scenes that have no picture (flash, map, outro);
  * - each shot gets a camera (wide, medium, close, push, pull, follow), written in the script or chosen here from the story: a new place opens wide, emotion goes close, movement is followed.
  */
-export interface FilmShot { shot: ArtShot; start: number; end: number; camera: Camera; set: number; same: boolean; seed: number; open: boolean; close: boolean }
+export interface FilmShot {
+  shot: ArtShot; start: number; end: number; camera: Camera; set: number; same: boolean; seed: number; open: boolean; close: boolean;
+  /** A second framing of the same picture (a cut on the action): the people go on moving from `offset` frames in, only the camera changes. */
+  beat?: boolean; offset?: number;
+}
+
+/** No framing is held longer than this (frames): a longer shot is cut into two framings of the same picture, so something on screen changes every 2-3 seconds. */
+const BEAT_MAX = 105;
+/** The framing that answers another one in a cut: wide and medium go in to the face, close and push go back out to the place. */
+const ANSWER: Record<Camera, Camera> = { wide: 'close', medium: 'close', follow: 'close', close: 'pull', push: 'medium', pull: 'close' };
 
 const MOVING = new Set<Action>(['walk', 'run', 'carry', 'push', 'sneak', 'dance']);
 const FEELING = new Set<Action>(['shout', 'plead', 'think', 'cower', 'fall', 'pray', 'surrender', 'threaten', 'drink', 'write', 'read', 'kneel', 'bow', 'watch', 'lift']);
@@ -57,24 +66,36 @@ export const buildFilm = (scenes: { art?: ArtShot[]; durationInFrames: number; t
     });
   });
   out.forEach((f, i) => { f.close = !(out[i + 1] && out[i + 1].start === f.end); });
-  return out;
+  // cut long shots into two framings at the narration phrase nearest their middle
+  const beats: FilmShot[] = [];
+  for (const f of out) {
+    const len = f.end - f.start;
+    if (len <= BEAT_MAX || HUMANS.has(f.shot.subjects[0]) === false) { beats.push(f); continue; }
+    const mid = f.start + len / 2;
+    const cut = Math.round(phrases.filter((p) => p >= f.start + 45 && p <= f.end - 45).sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid))[0] ?? mid);
+    beats.push({ ...f, end: cut, close: false });
+    beats.push({ ...f, start: cut, camera: ANSWER[f.camera], same: true, open: false, beat: true, offset: cut - f.start });
+  }
+  return beats;
 };
 
 const MIX = 10; // frames of a dissolve inside one place
+const CUT = 3; // frames of a cut between two framings of the same picture (almost a hard cut)
 const WIPE = 16; // frames of a wipe or an iris to a new place
 const FADE = 14; // frames of the fade to and from the backdrop
 
 /** Plays the film: at most two shots at once, the newer one entering over the older. */
 export const ArtFilm: React.FC<{ film: FilmShot[]; look: Look }> = ({ film, look }) => {
   const frame = useCurrentFrame();
-  const live = film.map((f, i) => ({ f, i })).filter(({ f }) => frame >= f.start - 1 && frame < f.end + (f.close ? FADE : WIPE + 1));
+  const live = film.map((f, i) => ({ f, i })).filter(({ f, i }) => frame >= f.start - 1 && frame < f.end + (f.close ? FADE : film[i + 1]?.beat ? CUT + 1 : WIPE + 1));
   if (!live.length) return null;
   return (
     <AbsoluteFill>
       {live.map(({ f, i }) => {
         const since = frame - f.start;
-        const tr = f.same ? MIX : WIPE;
-        const p = interpolate(since, [0, f.open ? FADE : tr], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+        const tr = f.beat ? CUT : f.same ? MIX : WIPE;
+        // the very first picture of the video is there on frame 0: the feed starts playing on that frame, so it must already be the hook
+        const p = f.start === 0 ? 1 : interpolate(since, [0, f.open ? FADE : tr], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
         const out = f.close ? interpolate(frame, [f.end, f.end + FADE], [1, 0], clamp) : 1;
         let style: React.CSSProperties = { opacity: out };
         if (f.open) style = { opacity: p * out };
@@ -82,7 +103,7 @@ export const ArtFilm: React.FC<{ film: FilmShot[]; look: Look }> = ({ film, look
         else if (p < 1) style = i % 2 ? { clipPath: `inset(0 0 0 ${(1 - p) * 100}%)` } : { clipPath: `circle(${p * 140}% at 50% 38%)` };
         return (
           <AbsoluteFill key={i} style={style}>
-            <Diorama shot={f.shot} frame={since} dur={f.end - f.start + tr} look={look} seed={f.seed} set={f.set} camera={f.camera} />
+            <Diorama shot={f.shot} frame={since + (f.offset ?? 0)} prog={since / Math.max(1, f.end - f.start + tr)} dur={f.end - f.start + tr} look={look} seed={f.seed} set={f.set} camera={f.camera} />
             {!f.open && !f.same && p > 0 && p < 1 && i % 2 === 1 && <div style={{ position: 'absolute', top: 0, bottom: 0, left: `${(1 - p) * 100}%`, width: 6, background: look.accent2, opacity: 0.9 }} />}
           </AbsoluteFill>
         );

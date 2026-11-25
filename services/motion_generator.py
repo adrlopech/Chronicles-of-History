@@ -435,6 +435,7 @@ RETENTION RULES (they decide whether people keep watching; the validator checks 
 - PACE. No narration is longer than 16 words (24 in duel videos): something on screen changes at least every 5 seconds. Keep the whole script at 150-190 words: use more scenes of 8-16 words, never fewer words.
 - VOTE. The outro narration ends with a TWO-OPTION question the viewer can answer in one word ("Betrayal or bad luck?", "Team Rome or team Carthage?") and `pinned_comment` repeats the SAME choice
   as "A or B? Reply with one word." (at most 120 characters). The two options are NAMED in the question and belong to THIS video; never "What do you think?" nor "Tell me below and follow for more".
+  The Short loops: after the vote it starts again on the cold open, so let the question come back to the subject of the first line (the hook asks "Did he fake his death?", the vote asks "Faked it or shot dead?").
 - HOOK. Scene 1 states a tension or a verdict, not the topic ("A label would be 'The fall of Rome'; a hook is 'Rome fell and almost nobody alive noticed'"). Never "Let us", "Let's" or "Did you know".
 - YOU. Put the viewer in the story when it helps ("you wake before dawn", "your army is out of food"), not "people back then".
 - ACCENT. `accentText` adds words that are NOT in `text` (the headline and the accent are drawn one under the other): never repeat the headline's last word in the accent."""

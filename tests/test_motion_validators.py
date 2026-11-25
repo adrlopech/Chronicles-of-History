@@ -261,7 +261,7 @@ def test_an_accent_that_repeats_the_headline_is_taken_out_of_the_headline():
 def test_series_prefixes_title_kicker_tags_and_description_and_is_idempotent():
     p = script("turning")
     label = apply_series(p, number=7)
-    assert label == "Turning Point #7" and p.title.startswith("Turning Point #7: ") and p.scenes[0].kicker == "turning point #7"
+    assert label == "Turning Point #7" and " | Turning Point #7" in p.title and not p.title.startswith("Turning Point") and p.scenes[0].kicker == "turning point #7"
     assert "turningpoint" in p.tags and "Part of the Turning Point series" in p.description
     assert apply_series(p, number=8) is None  # already carries it
     long = script("lies", title="History Lies: " + "x" * 80)

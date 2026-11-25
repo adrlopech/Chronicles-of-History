@@ -37,13 +37,14 @@ def joined_hashtag(text: str) -> str:
 
 
 def apply_series(project: Any, number: Optional[int] = None) -> Optional[str]:
-    """Prefixes the title with the series label ("Turning Point #7: ..."), puts the label on the first scene's kicker (the cover frame), adds the series hashtag to the tags and a line to the
-    description. Returns the label, or None when the format has no series or the project already carries it."""
+    """Adds the series label AFTER the hook ("Caesar Crosses the Rubicon | Turning Point #7"): the Shorts feed cuts long titles, so the subject and the hook come first.
+    Also puts the label on the first scene's kicker (the cover frame), adds the series hashtag to the tags and a line to the description.
+    Returns the label, or None when the format has no series or the project already carries it."""
     entry = SERIES.get(project.format or "")
     if not entry:
         return None
     name, tag = entry
-    if project.title.lower().startswith(name.lower()):
+    if f"{name.lower()} #" in project.title.lower() or project.title.lower().startswith(name.lower()):
         return None
     n = number if number is not None else next_number(project.format)
     label = f"{name} #{n}"
@@ -52,7 +53,7 @@ def apply_series(project: Any, number: Optional[int] = None) -> Optional[str]:
     room = MAX_TITLE - len(label) - 2 - len(hashtags)
     if len(text) > room:
         text = text[: max(10, room - 1)].rstrip(" ,:;-") + "…"
-    project.title = f"{label}: {text}{hashtags}"
+    project.title = f"{text} | {label}{hashtags}"
     if project.scenes:
         project.scenes[0].kicker = label.lower()
     if tag not in [t.lstrip("#").lower() for t in project.tags]:

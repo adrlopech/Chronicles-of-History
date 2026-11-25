@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { AbsoluteFill, Sequence, interpolate, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, Easing, Sequence, interpolate, useCurrentFrame } from 'remotion';
 import { Captions, chunkCaptions, fallbackCaptions } from './captions';
 import { Corners, clamp, EASE_OUT, InkWords, fit } from './ink';
 import { Look, LookCtx, lookFor, modernLook, themedLook, useLook } from './looks';
 import { ModernBackdrop } from './paper';
-import { ArtFilm, buildFilm } from './art/Stage';
-import { ArtCtx, Callout, Chapter, DateScene, Flash, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
+import { ArtFilm, FilmShot, buildFilm } from './art/Stage';
+import { ArtCtx, FirstCtx, Callout, Chapter, DateScene, Flash, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
 import { HEIGHT, MotionGraphicProps, MotionScene, OVERLAP, SAFE_BOTTOM, SAFE_TOP, WIDTH, totalFrames } from './types';
 
 export { totalFrames };
@@ -33,12 +33,14 @@ const SceneShell: React.FC<{ scene: MotionScene; index: number; last: boolean; c
   const kind = index === 0 ? 'fade' : ENTRANCES[(index * 7 + scene.type.length) % ENTRANCES.length];
   const style: React.CSSProperties = !last && pout > 0 ? { opacity: 1 - pout, transform: `translateY(${-pout * 24}px)` } : index === 0 ? {} : enter(kind, pin);
   return (
+    <FirstCtx.Provider value={index === 0}>
     <ArtCtx.Provider value={!!scene.art?.length}>
       <AbsoluteFill style={style}>
         {children}
         <Callout scene={scene} />
       </AbsoluteFill>
     </ArtCtx.Provider>
+    </FirstCtx.Provider>
   );
 };
 
@@ -63,14 +65,25 @@ const Rail: React.FC<{ starts: number[]; scenes: MotionScene[]; total: number }>
 };
 const EraCtx = React.createContext<Look>(lookFor(undefined));
 
-/** The last moments fade to the hook line, so the loop that restarts the video feels continuous. */
-const LoopTease: React.FC<{ scene: MotionScene; total: number }> = ({ scene, total }) => {
+/** The last frames fade into the video's own first frame (the same picture, the same headline), so when the Short loops the cut back to the start is invisible.
+    A video whose first scene has no picture fades to the hook line on the dark paper instead. */
+const TEASE = 26;
+const LoopTease: React.FC<{ scene: MotionScene; opening?: FilmShot; era: Look }> = ({ scene, opening, era }) => {
   const frame = useCurrentFrame();
   const look = useLook();
-  const p = interpolate(frame, [total - 26, total - 4], [0, 1], clamp);
-  if (p <= 0.001) return null;
+  const p = interpolate(frame, [0, TEASE - 4], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const C = sceneFor(scene.type);
+  if (opening) {
+    return (
+      <AbsoluteFill style={{ opacity: p }}>
+        <ModernBackdrop look={look} frame={frame} />
+        <ArtFilm film={[{ ...opening, start: 0, end: opening.end - opening.start, open: false, close: false, beat: false, offset: 0 }]} look={era} /* the same length as the real opening, so the camera is where it was on frame 0 */ />
+        <SceneShell scene={scene} index={0} last><C scene={scene} /></SceneShell>
+      </AbsoluteFill>
+    );
+  }
   return (
-    <AbsoluteFill style={{ opacity: p, background: 'radial-gradient(ellipse 85% 60% at 50% 50%, #0b1226F5 0%, #050814EE 100%)', alignItems: 'center', justifyContent: 'center', padding: 90 }}>
+    <AbsoluteFill style={{ opacity: p, background: 'radial-gradient(ellipse 85% 60% at 50% 50%, #1c130cF5 0%, #0d0805EE 100%)', alignItems: 'center', justifyContent: 'center', padding: 90 }}>
       <InkWords text={scene.text} size={fit(scene.text, 120, 900, 4, look.k, 56)} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={0} stagger={0} />
     </AbsoluteFill>
   );
@@ -109,10 +122,10 @@ export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, loo
               </Sequence>
             );
           })}
+          <Sequence from={Math.max(0, total - TEASE)} durationInFrames={TEASE} layout="none"><LoopTease scene={scenes[0]} opening={film[0]?.start === 0 ? film[0] : undefined} era={era} /></Sequence>
           {!flash && <Rail starts={starts} scenes={scenes} total={total} />}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}><Corners color={look.accent2} size={64} inset={26} weight={5} /></div>
           <Captions chunks={chunks} />
-          <LoopTease scene={scenes[0]} total={total} />
         </AbsoluteFill>
       </LookCtx.Provider>
     </EraCtx.Provider>

@@ -33,7 +33,7 @@ Remotion, mixes the sound, runs a quality gate and uploads it. Videos last 62-90
 | **Look** | One of eleven era identities (antiquity, manuscript, seachart, empire, industrial, wartime, prehistory, renaissance, orient, frontier, spaceage), chosen from the topic. All are warm |
 | **Theme** | The colour variant of the paper and ink inside the palette (gilded, sepia, bronze...) |
 | **Shot** (`art`) | An illustration behind a scene: place, time of day, weather and subjects from a closed vocabulary, checked against the era |
-| **Series** | The recurring name and number of a format ("Turning Point #7"), in the title, on the first frame and as a hashtag |
+| **Series** | The recurring name and number of a format ("Turning Point #7"), after the hook in the title, on the first frame and as a hashtag |
 | **Slot** | One of the four publication hours of a `genera` batch: 13:00, 16:00, 19:00, 22:00 UTC (14:00, 17:00, 20:00, 23:00 in Madrid in winter) |
 | **Story bank** | SQLite table of ready scripts that the pipeline uses before asking an LLM |
 | **Validator** | The code that rejects a script that breaks a rule (length, cold open, open loop, vote, anachronisms...). LLM answers that fail are retried, then fall back to another provider |

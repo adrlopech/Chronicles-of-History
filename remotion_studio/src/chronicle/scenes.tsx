@@ -14,6 +14,8 @@ const W = 880;
 
 /** True when an illustration is drawn behind the scene: the content then sits on a parchment plate at the bottom and leaves the picture in view. */
 export const ArtCtx = createContext(false);
+/** True for the first scene of the video: its words are already on screen on frame 0 (the feed starts playing there, so the first frame must be the hook). */
+export const FirstCtx = createContext(false);
 
 const Page: React.FC<{ children: React.ReactNode; gap?: number; justify?: 'center' | 'flex-start'; card?: boolean }> = ({ children, gap = 26, justify = 'center', card = false }) => {
   const art = useContext(ArtCtx);
@@ -35,6 +37,7 @@ export const Statement: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const text = scene.text;
   const acc = scene.accentText ?? '';
   const art = useContext(ArtCtx);
+  const first = useContext(FirstCtx);
   const headSize = fit(text, art ? 96 : 128, W, 3, look.k, 52);
   const accSize = acc ? fit(acc, Math.round(headSize * 1.06), W, 2, 0.46, 50) : 0;
   const used = lines(text, headSize, W, look.k) * headSize * 1.1 + (acc ? lines(acc, accSize, W, 0.46) * accSize * 1.12 + 40 : 0) + (scene.kicker ? 70 : 0) + 100;
@@ -45,8 +48,8 @@ export const Statement: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const accW = Math.min(W, lines(acc, accSize, W, 0.46) > 1 ? W * 0.8 : acc.length * accSize * 0.44);
   return (
     <Page gap={22}>
-      {scene.kicker && <Kicker text={scene.kicker} />}
-      <InkWords text={text} size={headSize} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} ls={look.caps ? headSize * 0.02 : -headSize * 0.012} delay={4} />
+      {scene.kicker && <Kicker text={scene.kicker} at={first ? -20 : 0} />}
+      <InkWords text={text} size={headSize} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} ls={look.caps ? headSize * 0.02 : -headSize * 0.012} delay={first ? -20 : 4} stagger={first ? 0 : 3} />
       {acc && art && (
         <TornLabel color={look.accent} seed={hash(acc)} at={at} tilt={-1.6 + (hash(acc) % 3)}>
           <span style={{ fontFamily: look.head, fontWeight: look.weight, fontSize: Math.round(accSize * 0.86), lineHeight: 1.05, textTransform: 'uppercase', letterSpacing: look.caps ? 2 : 0 }}>{acc}</span>

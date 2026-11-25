@@ -88,12 +88,12 @@ type Frame = { fx: number; fy: number; z: number; ax: number; ay: number };
 const lerpFrame = (A: Frame, B: Frame, u: number): Frame => ({ fx: A.fx + (B.fx - A.fx) * u, fy: A.fy + (B.fy - A.fy) * u, z: A.z + (B.z - A.z) * u, ax: A.ax + (B.ax - A.ax) * u, ay: A.ay + (B.ay - A.ay) * u });
 const smooth = (u: number) => { const x = Math.max(0, Math.min(1, u)); return x * x * (3 - 2 * x); };
 
-export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look: Look; seed: number; bare?: boolean; set?: number; camera?: Camera }> = ({ shot, frame, dur, look, seed: seed0, bare, set, camera }) => {
+export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look: Look; seed: number; bare?: boolean; set?: number; camera?: Camera; prog?: number }> = ({ shot, frame, dur, look, seed: seed0, bare, set, camera, prog: progIn }) => {
   const seed = (seed0 + hash(shot.subjects.join())) % 1000;
   const setSeed = set ?? seed; // the place itself (hills, clouds, walls): shared by consecutive shots of one place so the set does not jump
   const t = frame / 30;
   const c = makeColors(look, shot.time, shot.weather ?? 'clear');
-  const prog = frame / Math.max(1, dur);
+  const prog = progIn ?? frame / Math.max(1, dur); // the camera's progress; `frame` drives the people (a second framing of a shot goes on from where they were)
   const dirCam = seed % 2 ? 1 : -1;
   const close = camera === 'close' || camera === 'push' || camera === 'pull' || camera === 'follow';
   const cam = dirCam * (smooth(prog) * 2 - 1) * (close ? 0.25 : 0.9); // the pan eases in and out; a close shot barely pans
