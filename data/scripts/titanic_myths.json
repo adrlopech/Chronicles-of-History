@@ -1,0 +1,350 @@
+{
+  "topic": "Titanic: myths versus facts",
+  "screen_title": "Titanic: Myth or Fact",
+  "title": "Titanic: Five Beliefs, Myth or Fact? #history #titanic",
+  "description": "Everyone knows the Titanic story, and a lot of it is wrong. Five famous beliefs, tested against what historians have documented.",
+  "tags": [
+    "history",
+    "titanic",
+    "myths",
+    "1912",
+    "ocean liner",
+    "facts",
+    "maritime history"
+  ],
+  "pinned_comment": "Unsinkable or head-on? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "You know the story",
+      "accentText": "Much of it is wrong",
+      "kicker": "Titanic",
+      "icon": "ship",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "gentleman",
+            "lady",
+            "ship"
+          ],
+          "action": "point",
+          "view": "side"
+        },
+        {
+          "place": "coast",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "gentleman",
+            "harbor"
+          ],
+          "action": "wave",
+          "view": "front"
+        }
+      ],
+      "narration": "Everyone knows the Titanic story, and a good part of it is wrong.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1912",
+      "accentText": "The maiden voyage begins",
+      "kicker": "Southampton, England",
+      "value": 1912.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "coast",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "lady",
+            "harbor"
+          ],
+          "action": "cheer",
+          "view": "front"
+        }
+      ],
+      "narration": "On the tenth of April, nineteen twelve, the Titanic leaves Southampton for New York.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Five beliefs, tested",
+      "accentText": "Myth or fact?",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "gentleman",
+            "lady",
+            "scroll"
+          ],
+          "action": "read",
+          "view": "side"
+        }
+      ],
+      "narration": "We will test five beliefs. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "verdict",
+      "text": "Called unsinkable",
+      "accentText": "Practically unsinkable, said ads",
+      "kicker": "myth or fact?",
+      "verdict": "partly",
+      "art": [
+        {
+          "place": "sea",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "engineer",
+            "ship"
+          ],
+          "action": "stand",
+          "view": "side"
+        }
+      ],
+      "narration": "The Titanic was called unsinkable.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Where it came from",
+      "accentText": "A magazine's phrase",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "gentleman",
+            "engineer",
+            "printing_press"
+          ],
+          "action": "write",
+          "view": "side"
+        }
+      ],
+      "narration": "A magazine called her practically unsinkable, but the company never officially promised it.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "verdict",
+      "text": "Hit head-on",
+      "accentText": "A long glancing scrape",
+      "kicker": "myth or fact?",
+      "verdict": "myth",
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "navy_sailor",
+            "ship"
+          ],
+          "action": "shout",
+          "view": "front"
+        }
+      ],
+      "narration": "It hit the iceberg head-on.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "What really happened",
+      "items": [
+        "A glancing scrape",
+        "Seams opened",
+        "Several compartments flooded"
+      ],
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "engineer",
+            "ship"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "It scraped along the iceberg, and the hull seams opened across several of her watertight compartments.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "verdict",
+      "text": "Sank in minutes",
+      "accentText": "About two hours forty",
+      "kicker": "myth or fact?",
+      "verdict": "myth",
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "gentleman",
+            "ship"
+          ],
+          "action": "run",
+          "view": "side"
+        }
+      ],
+      "narration": "It sank in minutes.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "The longest night",
+      "items": [
+        "11:40 PM|Iceberg struck",
+        "12:45 AM|First boat lowered",
+        "2:20 AM|Titanic sinks"
+      ],
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "lady",
+            "ship"
+          ],
+          "action": "lift",
+          "view": "side"
+        }
+      ],
+      "narration": "It struck at eleven forty, lowered boats soon after midnight, and sank at two twenty.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "verdict",
+      "text": "Too few lifeboats",
+      "accentText": "Room for about half",
+      "kicker": "myth or fact?",
+      "verdict": "fact",
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "lady",
+            "engineer",
+            "ship"
+          ],
+          "action": "carry",
+          "view": "side"
+        }
+      ],
+      "narration": "There were too few lifeboats.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Seats in lifeboats",
+      "accentText": "for about 2,224 aboard",
+      "value": 1178.0,
+      "unit": "seats",
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "navy_sailor",
+            "gentleman",
+            "ship"
+          ],
+          "action": "push",
+          "view": "side"
+        }
+      ],
+      "narration": "Her lifeboats held about eleven hundred seventy-eight people, for over twenty-two hundred aboard.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "verdict",
+      "text": "The band played on",
+      "accentText": "They played; the tune is disputed",
+      "kicker": "myth or fact?",
+      "verdict": "partly",
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "gentleman",
+            "lady",
+            "ship"
+          ],
+          "action": "watch",
+          "view": "back"
+        }
+      ],
+      "narration": "The band played as she sank.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Survivors disagreed",
+      "accentText": "The last tune",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "gentleman",
+            "scholar",
+            "scroll"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "Survivors agreed the musicians played, but they disagreed about what the final tune was.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Slowly",
+      "narration": "Truth sinks slowly.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Which did you believe?",
+      "items": [
+        "Unsinkable",
+        "Head-on crash"
+      ],
+      "narration": "So which one did you believe: unsinkable, or the head-on crash?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "lies",
+  "look": "industrial",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

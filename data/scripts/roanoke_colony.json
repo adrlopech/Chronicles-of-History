@@ -1,0 +1,337 @@
+{
+  "topic": "The lost colony of Roanoke",
+  "screen_title": "The Lost Colony",
+  "title": "The Lost Colony of Roanoke #history #mystery",
+  "description": "In 1590 an English governor came back to Roanoke Island and found the settlement empty, with a single word carved on a post. Here is what we know, and the two theories.",
+  "tags": [
+    "history",
+    "roanoke",
+    "lost colony",
+    "virginia dare",
+    "mystery",
+    "american history",
+    "english colonies"
+  ],
+  "pinned_comment": "Joined them or perished? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "A whole colony gone",
+      "accentText": "One carved word",
+      "kicker": "Roanoke",
+      "icon": "key",
+      "art": [
+        {
+          "place": "coast",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "navigator",
+            "ship"
+          ],
+          "action": "point",
+          "view": "side"
+        },
+        {
+          "place": "forest",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "sailor",
+            "torch"
+          ],
+          "action": "watch",
+          "view": "back"
+        }
+      ],
+      "narration": "A hundred settlers vanished, and left behind a single carved word.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1587",
+      "accentText": "The colony lands",
+      "kicker": "Roanoke Island, Carolina",
+      "value": 1587.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "coast",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "sailor",
+            "ship"
+          ],
+          "action": "walk",
+          "view": "side"
+        }
+      ],
+      "narration": "In fifteen eighty-seven, about a hundred and fifteen English settlers land on Roanoke Island.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "First English child",
+      "accentText": "Virginia Dare",
+      "art": [
+        {
+          "place": "forest",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "missionary",
+            "native_chief"
+          ],
+          "action": "cheer",
+          "view": "front"
+        },
+        {
+          "place": "coast",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "explorer",
+            "pioneer_woman"
+          ],
+          "action": "carry",
+          "view": "side"
+        }
+      ],
+      "narration": "Virginia Dare is born there. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "The long wait",
+      "items": [
+        "1587|White sails home",
+        "1588|The Armada delays him",
+        "1590|He returns"
+      ],
+      "art": [
+        {
+          "place": "sea",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "navigator",
+            "ship"
+          ],
+          "action": "lean",
+          "view": "side"
+        }
+      ],
+      "narration": "Governor John White sails home for supplies, but war with Spain keeps him away for three years.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "date",
+      "text": "1590",
+      "accentText": "The settlement is empty",
+      "kicker": "Roanoke Island",
+      "value": 1590.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "coast",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "sailor",
+            "ruins"
+          ],
+          "action": "kneel",
+          "view": "front"
+        }
+      ],
+      "narration": "He returns on the eighteenth of August, fifteen ninety, his granddaughter's third birthday. The houses are gone.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Carved on a post",
+      "accentText": "CROATOAN",
+      "art": [
+        {
+          "place": "forest",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "sailor",
+            "palisade"
+          ],
+          "action": "read",
+          "view": "front"
+        },
+        {
+          "place": "coast",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "torch",
+            "ruins"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "On a post he finds the word Croatoan, and no distress cross.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "map",
+      "text": "Where could they have gone?",
+      "accentText": "Three places in the story",
+      "items": [
+        "Roanoke Island|35.92|-75.70",
+        "Croatoan Island|35.22|-75.70",
+        "Chesapeake Bay|37.00|-76.30"
+      ],
+      "narration": "Croatoan was an island to the south, and the Chesapeake lay far to the north.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Theory one",
+      "accentText": "They joined them",
+      "art": [
+        {
+          "place": "forest",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "native_chief",
+            "explorer",
+            "tipi"
+          ],
+          "action": "wave",
+          "view": "front"
+        }
+      ],
+      "narration": "One theory says they moved south and lived with the Croatoan people.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "Clues for theory one",
+      "items": [
+        "The word on the post",
+        "A few English objects",
+        "Native oral stories"
+      ],
+      "art": [
+        {
+          "place": "coast",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "scholar",
+            "explorer",
+            "tents"
+          ],
+          "action": "dig",
+          "view": "side"
+        }
+      ],
+      "narration": "Archaeologists have found a few English objects on Hatteras Island, though none prove it.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Theory two",
+      "accentText": "They went north",
+      "art": [
+        {
+          "place": "forest",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "sailor",
+            "native_chief"
+          ],
+          "action": "sneak",
+          "view": "side"
+        }
+      ],
+      "narration": "Other historians argue they headed north toward the Chesapeake, where some may have died.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "People who vanished",
+      "accentText": "no proven grave",
+      "value": 115.0,
+      "unit": "settlers",
+      "art": [
+        {
+          "place": "coast",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "explorer",
+            "pioneer_woman",
+            "torch"
+          ],
+          "action": "cower",
+          "view": "front"
+        }
+      ],
+      "narration": "In all, about one hundred and fifteen people vanished.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "What is missing",
+      "accentText": "Any proof",
+      "art": [
+        {
+          "place": "forest",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "scholar",
+            "explorer",
+            "torch"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "What is missing is proof: no letter and no grave that anyone can tie to them.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Lost",
+      "narration": "Lost, but not forgotten.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Joined or perished?",
+      "items": [
+        "Joined them",
+        "Perished"
+      ],
+      "narration": "So did they join the Croatoan or did they perish?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "mystery",
+  "look": "seachart",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

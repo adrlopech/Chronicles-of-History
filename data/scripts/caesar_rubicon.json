@@ -1,0 +1,309 @@
+{
+  "topic": "Caesar crosses the Rubicon, 49 BC",
+  "screen_title": "The Rubicon",
+  "title": "Caesar Crosses the Rubicon, 49 BC #history #rome",
+  "description": "In 49 BC Julius Caesar stood at a small river in northern Italy. One step would start a civil war. This is the choice that ended the Roman Republic.",
+  "tags": [
+    "history",
+    "rome",
+    "julius caesar",
+    "rubicon",
+    "roman republic",
+    "civil war",
+    "ancient history"
+  ],
+  "pinned_comment": "Genius or mistake? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "One river, no way back",
+      "accentText": "A point of no return",
+      "kicker": "Caesar",
+      "icon": "sword",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "aqueduct"
+          ],
+          "action": "stand",
+          "view": "back"
+        },
+        {
+          "place": "coast",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "torch",
+            "banner"
+          ],
+          "action": "watch",
+          "view": "side"
+        }
+      ],
+      "narration": "One step across a small river, and Rome could never go back.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "49",
+      "accentText": "Caesar halts at a river",
+      "kicker": "The Rubicon, Italy",
+      "value": 49.0,
+      "unit": "BC",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "centurion",
+            "legionary",
+            "gate"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "By tradition it is January the tenth, forty-nine BC, at the Rubicon in northern Italy.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "No army may cross",
+      "accentText": "Roman law",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "senator",
+            "roman_emperor",
+            "torch"
+          ],
+          "action": "threaten",
+          "view": "front"
+        },
+        {
+          "place": "plaza",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "senator",
+            "crowd",
+            "triumphal_arch"
+          ],
+          "action": "shout",
+          "view": "front"
+        }
+      ],
+      "narration": "Roman law forbade generals to bring armies across. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "His three choices",
+      "items": [
+        "Disband and face trial",
+        "Wait and bargain",
+        "Cross and fight"
+      ],
+      "art": [
+        {
+          "place": "interior",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "centurion",
+            "scribe",
+            "scroll"
+          ],
+          "action": "think",
+          "view": "side"
+        }
+      ],
+      "narration": "He could disband his army and face trial, wait and bargain, or cross and fight.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "The die is cast",
+      "accentText": "Alea iacta est",
+      "art": [
+        {
+          "place": "coast",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "centurion",
+            "legionary",
+            "torch"
+          ],
+          "action": "run",
+          "view": "side"
+        },
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "horse"
+          ],
+          "action": "salute",
+          "view": "front"
+        }
+      ],
+      "narration": "He crossed. According to the writer Suetonius, he said, the die is cast.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Men who crossed with him",
+      "accentText": "one legion, reportedly",
+      "value": 5000.0,
+      "unit": "soldiers",
+      "art": [
+        {
+          "place": "plains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "banner"
+          ],
+          "action": "walk",
+          "view": "side"
+        }
+      ],
+      "narration": "He reportedly had only one legion with him, about five thousand men.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "The war that followed",
+      "items": [
+        "49 BC|Civil war begins",
+        "48 BC|Pharsalus",
+        "46 BC|Caesar dictator",
+        "44 BC|Caesar killed"
+      ],
+      "art": [
+        {
+          "place": "battlefield",
+          "time": "dusk",
+          "weather": "smoke",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "cavalry"
+          ],
+          "action": "slash",
+          "view": "side"
+        }
+      ],
+      "narration": "Civil war followed. Pompey fled, lost at Pharsalus, and Caesar became dictator.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "date",
+      "text": "44",
+      "accentText": "Caesar is assassinated",
+      "kicker": "Rome",
+      "value": 44.0,
+      "unit": "BC",
+      "art": [
+        {
+          "place": "plaza",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "senator",
+            "roman_emperor",
+            "triumphal_arch"
+          ],
+          "action": "stab",
+          "view": "front"
+        }
+      ],
+      "narration": "On the Ides of March, forty-four BC, senators stabbed him in Rome.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "If he had stopped",
+      "accentText": "A republic saved?",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "senator",
+            "scribe",
+            "scroll"
+          ],
+          "action": "shrug",
+          "view": "front"
+        }
+      ],
+      "narration": "Had he stopped at the river, the republic might have lasted longer, though most historians doubt it.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "A republic already cracking",
+      "items": [
+        "Years of civil wars",
+        "Generals with armies",
+        "Then came Augustus"
+      ],
+      "art": [
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "roman_emperor",
+            "legionary",
+            "colosseum"
+          ],
+          "action": "stand",
+          "view": "front"
+        }
+      ],
+      "narration": "The republic was already cracking from years of rival armies, and within decades Rome had an emperor.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Cast",
+      "narration": "The die was cast.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Genius or mistake?",
+      "items": [
+        "Genius",
+        "Mistake"
+      ],
+      "narration": "So was crossing the Rubicon genius or a mistake?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "turning",
+  "look": "antiquity",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

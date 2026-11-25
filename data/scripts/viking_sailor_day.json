@@ -1,0 +1,307 @@
+{
+  "topic": "A day in the life of a Viking sailor in 900 AD",
+  "screen_title": "The Viking Sailor",
+  "title": "A Day as a Viking Sailor in 900 AD #history #vikings",
+  "description": "You sleep on the deck, eat dried fish and row when the wind dies. This is a day in the life of a Viking sailor, from what historians know.",
+  "tags": [
+    "history",
+    "vikings",
+    "norse",
+    "longship",
+    "daily life",
+    "middle ages",
+    "sailors"
+  ],
+  "pinned_comment": "Take the oar or stay home? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "No cabin, no bed",
+      "accentText": "Open to the sea",
+      "kicker": "Viking sailor",
+      "icon": "ship",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "sailor",
+            "ship"
+          ],
+          "action": "lean",
+          "view": "back"
+        },
+        {
+          "place": "coast",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "jarl",
+            "viking",
+            "galley"
+          ],
+          "action": "watch",
+          "view": "side"
+        }
+      ],
+      "narration": "You will eat, sleep and row on an open deck, with no cabin at all.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "900",
+      "accentText": "A Norse crew sets out",
+      "kicker": "The North Sea, a sailor",
+      "value": 900.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "sea",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "jarl",
+            "ship"
+          ],
+          "action": "stand",
+          "view": "side"
+        }
+      ],
+      "narration": "It is the year nine hundred, and you sail a Norse longship across the North Sea.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "A farmer who sails",
+      "accentText": "A seasonal crew",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "farmer",
+            "longhouse"
+          ],
+          "action": "carry",
+          "view": "side"
+        },
+        {
+          "place": "coast",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "sailor",
+            "harbor"
+          ],
+          "action": "push",
+          "view": "side"
+        }
+      ],
+      "narration": "Most sailors were also farmers. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "Your day at sea",
+      "items": [
+        "5 AM|Wake on deck",
+        "8 AM|Row against the wind",
+        "12 PM|Eat dried fish",
+        "4 PM|Raise the sail",
+        "9 PM|Sleep under the sky"
+      ],
+      "art": [
+        {
+          "place": "coast",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "jarl",
+            "viking",
+            "ship"
+          ],
+          "action": "walk",
+          "view": "side"
+        }
+      ],
+      "narration": "Your day follows the wind: you wake at dawn, row, eat, sail, and sleep under the stars.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "statement",
+      "text": "Dawn on the deck",
+      "accentText": "Wet with dew",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "sailor",
+            "galley"
+          ],
+          "action": "crouch",
+          "view": "side"
+        }
+      ],
+      "narration": "At dawn you wake wet with dew, and stretch on the oak boards.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "Your meals",
+      "items": [
+        "Dried fish",
+        "Salted meat",
+        "Bread or porridge",
+        "Ale or water"
+      ],
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "jarl",
+            "tavern"
+          ],
+          "action": "drink",
+          "view": "front"
+        }
+      ],
+      "narration": "Typically you eat dried fish, salted meat, and bread, with water or ale.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "When the wind dies",
+      "accentText": "You row",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "sailor",
+            "galley"
+          ],
+          "action": "push",
+          "view": "side"
+        },
+        {
+          "place": "sea",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "jarl",
+            "sailor",
+            "galley"
+          ],
+          "action": "lift",
+          "view": "side"
+        }
+      ],
+      "narration": "When the wind dies, you row in turns on a wooden bench.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Rowers on the Gokstad ship",
+      "accentText": "sixteen oars a side",
+      "value": 32.0,
+      "unit": "rowers",
+      "art": [
+        {
+          "place": "sea",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "sailor",
+            "galley"
+          ],
+          "action": "hammer",
+          "view": "side"
+        }
+      ],
+      "narration": "The famous Gokstad ship had sixteen oars on each side, so thirty-two rowers pulled together.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "793",
+      "accentText": "The Viking Age begins",
+      "kicker": "Lindisfarne, England",
+      "value": 793.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "coast",
+          "time": "dusk",
+          "weather": "smoke",
+          "subjects": [
+            "viking",
+            "monk",
+            "monastery"
+          ],
+          "action": "threaten",
+          "view": "front"
+        }
+      ],
+      "narration": "In seven ninety-three, raiders sacked the monastery of Lindisfarne, and the Viking Age began.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Not only raiders",
+      "accentText": "Mostly farmers",
+      "art": [
+        {
+          "place": "plains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "viking",
+            "farmer",
+            "longhouse"
+          ],
+          "action": "dig",
+          "view": "side"
+        }
+      ],
+      "narration": "Yet many voyages were for trade, and most Vikings lived and died as farmers.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Salt and oak",
+      "narration": "Salt, oak and wind.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Oar or farm?",
+      "items": [
+        "Take the oar",
+        "Stay home"
+      ],
+      "narration": "So would you take the oar, or stay on the farm?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "dayinlife",
+  "look": "manuscript",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}
