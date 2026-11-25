@@ -59,7 +59,7 @@ the upload guards (one-minute floor, channel check), output layout, notification
 ## The portal
 
 `docs/` is a static site built by `scripts/build_portal.py`; Pages rebuild on every push. After editing, run `python3 docs/check_portal.py`. Details in [Web portal](portal.md).
-Assets of the portal come from `scripts/make_portal_assets.py` and `node scripts/make_brand_assets.mjs`.
+The brand files of the portal come from `node scripts/make_brand_assets.mjs` (copied to `docs/assets/brand/`); the era drawings from `scripts/web_art.tsx` ([Web portal](portal.md)). `docs/og-image.png` and `docs/logo.png` were made once by hand: keep them under 300 KB.
 
 ## Troubleshooting
 

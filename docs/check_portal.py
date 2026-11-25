@@ -14,6 +14,7 @@ for page in sorted(D.glob("*.html")):
         if url.startswith(("http", "mailto:", "data:", "//")):
             continue
         path, _, frag = url.partition("#")
+        path = path.split("?", 1)[0]  # site.css?v=... is site.css
         if path and not (page.parent / path).exists():
             bad.append(f"{page.name}: missing file {url}")
         if frag and not path and frag not in ids:

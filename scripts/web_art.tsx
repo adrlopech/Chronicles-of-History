@@ -22,11 +22,13 @@ const ERA_SHOTS: Record<string, { look: string; shot: any; seed: number; frame: 
   spaceage: { look: 'spaceage', seed: 21, frame: 40, shot: { place: 'plains', time: 'night', subjects: ['rocket', 'radar_dish', 'astronaut', 'lander'], action: 'watch' } },
   draw: { look: 'manuscript', seed: 5, frame: 30, shot: { place: 'city', time: 'day', subjects: ['castle', 'knight', 'jester', 'banner'], action: 'cheer' } },
 };
+/** The frame of each drawing (viewBox, 1280:1000): the people and props with a margin, buildings may be cropped. Measured in a browser from the rendered figures; re-measure when a shot above changes. */
+const VIEWBOX: Record<string, string> = {'antiquity': '-377 104 1581 1235', 'draw': '-241 219 1423 1112', 'empire': '-481 85 1606 1255', 'frontier': '-154 144 1389 1085', 'industrial': '-328 246 1221 954', 'manuscript': '-261 248 1386 1083', 'orient': '-158 160 1340 1047', 'prehistory': '-453 -159 1733 1354', 'renaissance': '-447 226 1471 1149', 'seachart': '-434 146 1524 1190', 'spaceage': '-211 182 1297 1013', 'wartime': '-416 31 1486 1161'};
 const STYLE = '<style>.it{transform-box:fill-box;transform-origin:50% 100%}.act{animation:b 3.4s ease-in-out infinite;animation-delay:calc(var(--i)*-.8s)}.pr{animation:b 4.2s ease-in-out infinite;animation-delay:calc(var(--i)*-1.1s)}.fx{animation:f .9s ease-in-out infinite alternate}@keyframes b{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-5px) scaleY(1.025) rotate(.5deg)}}@keyframes f{from{transform:scale(1);opacity:.9}to{transform:scale(1.07,1.12);opacity:1}}@media (prefers-reduced-motion:reduce){.it{animation:none!important}}</style>';
-// only the people and the buildings (no sky or ground), animated by CSS; the viewBox is fitted afterwards by scripts/fit_art.html
+// only the people and the buildings (no sky or ground), animated by CSS, framed by VIEWBOX
 for (const [name, e] of Object.entries(ERA_SHOTS)) {
   let svg = renderToStaticMarkup(<Diorama bare shot={e.shot} frame={e.frame} dur={150} look={lookFor(e.look)} seed={e.seed} />);
-  svg = svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/>/, '>' + STYLE);
+  svg = svg.replace(/<svg width="\d+" height="\d+" viewBox="[^"]*"/, `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1000" viewBox="${VIEWBOX[name]}"`).replace(/>/, '>' + STYLE);
   writeFileSync(`${out}/eras/${name}.svg`, svg);
 }
 

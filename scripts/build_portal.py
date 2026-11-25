@@ -13,6 +13,19 @@ VIDEOS = json.loads((D / "data" / "videos.json").read_text(encoding="utf-8"))  #
 YT = "https://www.youtube.com/@chroniclesofhistorytv"
 TT = "https://www.tiktok.com/@chroniclesofhistorytv"
 REPO = "https://github.com/adrlopech/Chronicles-of-History"
+VOCAB = (D.parent / "remotion_studio" / "src" / "chronicle" / "art" / "vocab.ts").read_text(encoding="utf-8")
+
+
+def ver(text: str) -> str:
+    """A short fingerprint of a file's content for its URL (site.css?v=...): a visitor's browser fetches the new file after each change instead of an old cached copy."""
+    import hashlib
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:8]
+
+
+def vocab_count(name: str) -> int:
+    """How many entries a list of the art vocabulary has (remotion_studio/src/chronicle/art/vocab.ts), so the workshop numbers follow the engine."""
+    m = re.search(rf"export const {name} = \[(.*?)\] as const", VOCAB, re.S)
+    return len(re.findall(r"'(\w+)'", m.group(1))) if m else 0
 
 
 # ---------------------------------------------------------------- the skyline: monuments of every age, drawn as silhouettes
@@ -96,7 +109,7 @@ STEPS = [
     ("Write", "An AI-drafted script that must pass strict checks: story first, people in every picture, 150–190 words."),
     ("Fact-check", "A second pass verifies dates, names, figures and quotes and rewrites whatever is wrong."),
     ("Narrate", "A synthetic voice reads the script and the subtitles follow every word."),
-    ("Draw", "Remotion paints each scene with a cast of historical characters, animals and buildings of the right era."),
+    ("Draw", "Each sentence becomes a shot of a hand-drawn film: a cast of the right era, wide shots, close-ups and a camera that follows the hero."),
     ("Check &amp; publish", "A technical gate checks length, format and sound before the story is scheduled."),
 ]
 COVERS = [
@@ -213,9 +226,9 @@ def head(title: str, desc: str, fname: str) -> str:
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="{canon}">
 <link rel="manifest" href="manifest.webmanifest">{jsonld}
-<meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:image" content="{BASE}/og-image.png"><meta property="og:type" content="website"><meta property="og:url" content="{canon}">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="site.css">
+<meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:site_name" content="The Chronicles of History"><meta property="og:image" content="{BASE}/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="The Chronicles of History: true stories, drawn alive"><meta property="og:type" content="website"><meta property="og:url" content="{canon}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{BASE}/og-image.png">
+<link rel="stylesheet" href="site.css?v={ver(CSS)}">
 <noscript><style>.rv{{opacity:1;transform:none}}.title .w{{opacity:1;transform:none;animation:none}}</style></noscript>
 </head>
 <body>
@@ -230,7 +243,7 @@ def foot() -> str:
     return f'''<footer><div class="container foot"><div class="fbrand"><img src="logo.png" alt="" width="54" height="54"><div>&copy; 2026 The Chronicles of History. All rights reserved.<br><small>Narrated, hand-drawn history. Facts first.</small></div></div>
 <ul><li><a href="index.html">Home</a></li><li><a href="presskit.html">Press kit</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="{REPO}/issues" target="_blank" rel="noopener">Contact</a></li><li><a href="{REPO}" target="_blank" rel="noopener">GitHub</a></li><li><a href="{TT}" target="_blank" rel="noopener">TikTok</a></li><li><a href="{YT}" target="_blank" rel="noopener">YouTube</a></li><li><a href="https://adrlopech.github.io/Silicon-Verdict/" target="_blank" rel="noopener">Sister channel: Silicon Verdict</a></li></ul></div></footer>
 <button class="backtop" type="button" aria-label="Back to top">&#8593;</button>
-<script src="site.js"></script>
+<script src="site.js?v={ver(JS)}"></script>
 </body>
 </html>
 '''
@@ -280,7 +293,7 @@ def index() -> str:
 <p class="sub rv">A new story joins the shelf every day. Filter by era or by series.</p>{feat}
 <div class="chips rv">{chips_e}</div><div class="chips rv">{chips_s}</div><div class="lib" id="lib">{cards}</div><p class="empty" id="libempty" hidden>No story matches that mix yet.</p></div></section>'''
 
-    nums = [(127, "historical characters"), (25, "animals"), (71, "structures"), (37, "actions"), (11, "eras"), (7, "colour themes")]
+    nums = [(vocab_count("PEOPLE"), "historical characters"), (vocab_count("ANIMALS"), "animals"), (vocab_count("STRUCTURES"), "structures"), (vocab_count("ACTIONS"), "actions"), (11, "eras"), (7, "colour themes")]
     numbers = f'''<section class="block numbers" id="numbers"><div class="container">{kicker("III", "The workshop")}<h2 class="rv">A whole world, <em>drawn by code</em></h2>
 <div class="nums">{"".join(f'<div class="num rv" style="--d:{i * .08}s"><strong data-to="{n}">0</strong><span>{t}</span></div>' for i, (n, t) in enumerate(nums))}</div>
 <div class="fmts rv">{"".join(f"<div><b>{a}</b><span>{b}</span></div>" for a, b in FORMATS)}</div></div></section>'''
@@ -468,7 +481,7 @@ h2 em{font-style:normal;background:linear-gradient(180deg,#FFF3C8,var(--gold) 70
 @media(max-height:760px){.stick{--pw:min(19vh,220px)}.stick .sub{display:none}.stick h2{font-size:clamp(28px,4.4vw,48px);margin-bottom:6px}}
 /* numbers */
 .numbers{background:linear-gradient(180deg,transparent,rgba(42,26,12,.8) 20%,rgba(42,26,12,.8) 80%,transparent)}
-.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin:46px 0 50px}
+.nums{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin:46px 0 50px}@media(max-width:1020px){.nums{grid-template-columns:repeat(3,1fr)}}@media(max-width:560px){.nums{grid-template-columns:repeat(2,1fr);gap:12px}}
 .num{text-align:center;padding:26px 10px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(255,233,168,.06),rgba(255,233,168,0));position:relative;overflow:hidden}
 .num:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(217,164,65,.28),transparent 65%);opacity:0;transition:.4s}.num:hover:before{opacity:1}
 .num strong{display:block;font:900 clamp(44px,6vw,70px)/1 var(--disp);background:linear-gradient(180deg,#FFF3C8,var(--gold) 70%,#9A6B1F);-webkit-background-clip:text;background-clip:text;color:transparent}.num span{display:block;font:600 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--paper2);margin-top:6px}
@@ -535,9 +548,11 @@ footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#
 .doc h2{text-align:left;font-size:22px;margin:0 0 10px;color:var(--gold2);display:flex;gap:14px;align-items:baseline}.doc h2 i{font:700 14px var(--disp);color:var(--brick);font-style:normal}
 .doc p,.doc li{color:#E8D8B2;margin:8px 0}.doc ul{padding-left:22px}
 .e404{min-height:100vh;display:grid;place-items:center;text-align:center;padding:120px 24px}
+@media(max-width:1180px){
+ nav ul{position:fixed;left:0;right:0;top:62px;flex-direction:column;background:rgba(16,11,7,.97);padding:16px;border-bottom:1px solid var(--gold);transform:translateY(-130%);transition:.35s;margin:0}nav ul.open{transform:none}nav .btn.sm{display:none}.burger{display:flex}}
 @media(max-width:1020px){
  .steps{grid-template-columns:repeat(2,1fr)}.step:nth-child(3n):after{display:block}.step:nth-child(2n):after{display:none}
- nav ul{position:fixed;left:0;right:0;top:62px;flex-direction:column;background:rgba(16,11,7,.97);padding:16px;border-bottom:1px solid var(--gold);transform:translateY(-130%);transition:.35s;margin:0}nav ul.open{transform:none}nav .btn.sm{display:none}.burger{display:flex}}
+}
 @media(max-width:860px){
  .doclay{grid-template-columns:1fr}.toc{display:none}
  .brand span{font-size:14px}.block{padding:80px 0}.two{grid-template-columns:1fr;gap:30px}.two.rev .copy{order:0}.two .copy .kicker{justify-content:center}.two .copy h2,.two .copy .sub{text-align:center}
@@ -553,10 +568,10 @@ footer{position:relative;z-index:3;border-top:1px solid var(--gold);background:#
 .ftxt small{font:700 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}.ftxt h3{font:800 clamp(24px,3.4vw,36px)/1.1 var(--disp);color:var(--paper);margin:8px 0 6px;text-transform:uppercase;letter-spacing:.02em}.ftxt p{color:var(--paper2);margin-bottom:16px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}.chip{cursor:pointer;font:700 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--paper2);background:rgba(255,233,168,.05);border:1px solid var(--line);border-radius:999px;padding:9px 16px;transition:.25s}
 .chip:hover{border-color:var(--gold);color:var(--gold3)}.chip.on{background:linear-gradient(180deg,var(--gold3),var(--gold));color:#2A1A08;border-color:var(--gold2)}
-.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:20px;margin-top:28px}
+.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(176px,40vw),1fr));gap:clamp(12px,3vw,20px);margin-top:28px}
 .lcard{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(42,28,16,.7);transition:transform .35s,opacity .35s,border-color .35s,box-shadow .35s}
 .lcard:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 18px 44px rgba(217,164,65,.25)}.lcard.off{display:none}.lc-img img{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover}
-.lc-txt{padding:12px 14px 16px}.lc-txt b{display:block;font:700 11px var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}.lc-txt span{display:block;font-size:15px;line-height:1.3;margin:4px 0 6px}.lc-txt small{color:var(--paper2);font-size:12px}
+.lc-txt{padding:12px 14px 16px}.lc-txt b{display:block;font:700 11px var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}.lc-txt span{display:block;font-size:15px;line-height:1.3;margin:4px 0 6px}.lc-txt small{display:block;color:var(--paper2);font-size:12px;line-height:1.4}
 .empty{text-align:center;color:var(--paper2);margin-top:26px}
 .pk{max-width:1000px;margin:0 auto;padding-bottom:70px;position:relative;z-index:3}.pk section{margin-bottom:22px;padding:30px 32px;border:1px solid var(--line);border-radius:18px;background:rgba(42,28,16,.7)}
 .pk h2{text-align:left;font-size:24px;margin:0 0 14px;color:var(--gold2)}.pk p{color:#E8D8B2;margin:8px 0}.pk .row{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
@@ -730,11 +745,11 @@ def build() -> None:
     }
     for name, html in pages.items():
         (D / name).write_text(html, encoding="utf-8")
-    e404 = (head("Page not found | The Chronicles of History", "Page not found.", "404.html")
+    e404 = (head("Page not found | The Chronicles of History", "Page not found.", "404.html").replace("<head>", f'<head><base href="{BASE}/">', 1)
             + '<main id="main" class="e404"><div><div class="rays small"></div><p class="kicker"><i></i>Error 404<i></i></p><h1 class="title" style="font-size:clamp(40px,9vw,100px)"><span class="w">Lost</span> <span class="w">to</span> <span class="w">history</span></h1><p class="sub">This page is not in the archive.</p><div class="cta"><a class="btn" href="index.html"><span>Back to the chronicles</span></a></div></div></main>' + foot())
     (D / "404.html").write_text(e404, encoding="utf-8")
     (D / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n", encoding="utf-8")
-    (D / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}/{p}</loc></url>\n" for p in ["", "presskit.html", "terms.html", "privacy.html"]) + "</urlset>\n", encoding="utf-8")
+    (D / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}/{p}</loc><lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod></url>\n" for p in ["", "presskit.html", "terms.html", "privacy.html"]) + "</urlset>\n", encoding="utf-8")
 
 
 if __name__ == "__main__":
