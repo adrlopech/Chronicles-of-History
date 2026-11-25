@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import { ERA_ACCENTS, THEMES, Sky } from './palette';
-import { BASKERVILLE, BASKERVILLE_ITALIC, CARDO, CARDO_ITALIC, CINZEL, CORMORANT, ELITE, FELL, FELL_ITALIC, GARAMOND, GARAMOND_ITALIC, MANROPE, MARCELLUS, PLAYFAIR, PLAYFAIR_ITALIC, SORA, SPACE, ANTON, BEBAS, ABRIL, OSWALD, MARKER, CINZEL_DECO, SHIPPORI, RYE, ORBITRON } from './fonts';
+import { BASKERVILLE, BASKERVILLE_ITALIC, CARDO, CARDO_ITALIC, CINZEL, CORMORANT, ELITE, FELL, FELL_ITALIC, GARAMOND, GARAMOND_ITALIC, MARCELLUS, PLAYFAIR, PLAYFAIR_ITALIC, SPACE, ANTON, BEBAS, ABRIL, OSWALD, MARKER, CINZEL_DECO, SHIPPORI, RYE, ORBITRON } from './fonts';
 
 /**
  * A LOOK is an ERA: the paper, the ink, the typefaces and the frame of one period of history. The pipeline picks one per video (services/looks.py) from the topic.
@@ -56,7 +56,6 @@ export const LOOKS: Record<string, Look> = {
   spaceage: { name: 'spaceage', era: 'Space age and modern times', dark: true, paper: '#301f12', paper2: '#140d07', ink: '#f8f1ec', muted: '#c2ab9a', accent: '#FF7A2F', accent2: '#c8a66c', head: ORBITRON, italic: SPACE, body: SPACE, date: ORBITRON, caps: true, k: 0.84, frame: 'corners', grain: 0.3, weight: 900 },
 };
 
-export const LOOK_NAMES = Object.keys(LOOKS);
 export const lookFor = (name?: string): Look => LOOKS[name ?? ''] ?? LOOKS.manuscript;
 export const LookCtx = createContext<Look>(LOOKS.manuscript);
 export const useLook = () => useContext(LookCtx);

@@ -6,11 +6,10 @@ Music beds (loops, quiet under the voice; the formats pick one in services/motio
   bed_bright.mp3   bright   upbeat plucks and claps, C major, 112 BPM      bed_minimal.mp3 minimal  clicky minimal groove, 118 BPM
   bed_epic.mp3     epic     cinematic pad and timpani, 96 BPM
 Effects (short wav files):
-  sfx_riser, sfx_hit      rise into a data reveal / low impact          sfx_boom      big impact          sfx_click   mouse click
+  sfx_riser, sfx_hit      rise into a data reveal / low impact          sfx_boom      big impact
   sfx_pop     UI pop (a grab, a chip landing)                           sfx_tick      counter tick        sfx_swish   quick swipe (a selection)
   sfx_slide   downward slide                                            sfx_whoosh_soft  gentle scene change   sfx_chime   success (a fact, the outro)
-  sfx_error   low buzz (a myth)                                         sfx_type      key click           sfx_glitch  digital stutter
-  sfx_ding    notification                                              sfx_sparkle   bright reveal
+  sfx_error   low buzz (a myth)                                         sfx_ding      notification
 
 Run: .venv/bin/python scripts/make_motion_sfx.py   (the beds are written as mp3 with ffmpeg: about a tenth of the size of wav)
 """
@@ -319,10 +318,6 @@ def bed_epic() -> np.ndarray:
 
 # ───────────── more effects ─────────────
 
-def sfx_click() -> np.ndarray:
-    n = int(SR * 0.09)
-    t = np.arange(n) / SR
-    return np.diff(noise(n), prepend=0) * np.exp(-t * 520) * 0.9 + np.sin(2 * np.pi * 1500 * t) * np.exp(-t * 110) * 0.6
 
 
 def sfx_pop() -> np.ndarray:
@@ -375,21 +370,8 @@ def sfx_error() -> np.ndarray:
     return np.convolve(w, np.ones(8) / 8, mode="same") * np.exp(-t * 4.5)
 
 
-def sfx_type() -> np.ndarray:
-    n = int(SR * 0.03)
-    t = np.arange(n) / SR
-    return np.diff(noise(n), prepend=0) * np.exp(-t * 420) * 0.6 + np.sin(2 * np.pi * 220 * t) * np.exp(-t * 200) * 0.4
 
 
-def sfx_glitch() -> np.ndarray:
-    n = int(SR * 0.42)
-    out = np.zeros(n)
-    for i in range(7):
-        a = int(SR * (i * 0.055 + RNG.random() * 0.02))
-        ln = int(SR * (0.015 + RNG.random() * 0.04))
-        seg = np.sign(np.sin(2 * np.pi * (300 + RNG.random() * 2200) * np.arange(ln) / SR)) * 0.4 + np.diff(noise(ln), prepend=0) * 0.5
-        out[a:a + ln] += seg[: max(0, min(ln, n - a))]
-    return np.round(out * 6) / 6  # a little bit-crush
 
 
 def sfx_ding() -> np.ndarray:
@@ -398,14 +380,6 @@ def sfx_ding() -> np.ndarray:
     return (np.sin(2 * np.pi * 1318.5 * t) + 0.4 * np.sin(2 * np.pi * 2637 * t)) * np.exp(-t * 7) * np.minimum(1, t * 600)
 
 
-def sfx_sparkle() -> np.ndarray:
-    n = int(SR * 0.8)
-    out = np.zeros(n)
-    for i, m in enumerate((84, 88, 91, 96, 100)):
-        a = int(SR * i * 0.06)
-        t = np.arange(n - a) / SR
-        out[a:] += np.sin(2 * np.pi * hz(m) * t) * np.exp(-t * 8) * (0.7 - i * 0.08)
-    return out
 
 
 def sfx_boom() -> np.ndarray:
@@ -417,9 +391,9 @@ def sfx_boom() -> np.ndarray:
 
 
 BEDS = {"bed_chill": bed_chill, "bed_drive": bed_drive, "bed_dark": bed_dark, "bed_bright": bed_bright, "bed_minimal": bed_minimal, "bed_epic": bed_epic}
-SFX = {"sfx_click": (sfx_click, 0.8), "sfx_pop": (sfx_pop, 0.8), "sfx_tick": (sfx_tick, 0.7), "sfx_swish": (sfx_swish, 0.7), "sfx_slide": (sfx_slide, 0.7),
-       "sfx_whoosh_soft": (sfx_whoosh_soft, 0.7), "sfx_chime": (sfx_chime, 0.7), "sfx_error": (sfx_error, 0.7), "sfx_type": (sfx_type, 0.7), "sfx_glitch": (sfx_glitch, 0.7),
-       "sfx_ding": (sfx_ding, 0.7), "sfx_sparkle": (sfx_sparkle, 0.65), "sfx_boom": (sfx_boom, 0.95)}
+SFX = {"sfx_pop": (sfx_pop, 0.8), "sfx_tick": (sfx_tick, 0.7), "sfx_swish": (sfx_swish, 0.7), "sfx_slide": (sfx_slide, 0.7),
+       "sfx_whoosh_soft": (sfx_whoosh_soft, 0.7), "sfx_chime": (sfx_chime, 0.7), "sfx_error": (sfx_error, 0.7), 
+       "sfx_ding": (sfx_ding, 0.7), "sfx_boom": (sfx_boom, 0.95)}
 
 
 def to_mp3(wav_name: str, mp3_name: str) -> None:

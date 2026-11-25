@@ -30,12 +30,8 @@ export const CARDO = loadCardo('normal', { weights: ['400', '700'], subsets: ['l
 export const CARDO_ITALIC = loadCardo('italic', { weights: ['400'], subsets: ['latin'] }).fontFamily;
 
 // Modern faces for the illustrated style.
-import { loadFont as loadSora } from '@remotion/google-fonts/Sora';
 import { loadFont as loadSpace } from '@remotion/google-fonts/SpaceGrotesk';
-import { loadFont as loadManrope } from '@remotion/google-fonts/Manrope';
-export const SORA = loadSora('normal', { weights: ['600', '800'], subsets: ['latin'] }).fontFamily;
 export const SPACE = loadSpace('normal', { weights: ['500', '700'], subsets: ['latin'] }).fontFamily;
-export const MANROPE = loadManrope('normal', { weights: ['500', '800'], subsets: ['latin'] }).fontFamily;
 
 // Poster and documentary display faces.
 import { loadFont as loadAnton } from '@remotion/google-fonts/Anton';

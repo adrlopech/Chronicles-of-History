@@ -177,4 +177,3 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     </svg>
   );
 };
-export const WIDTH_UNUSED = W;

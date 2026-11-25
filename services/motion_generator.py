@@ -26,8 +26,8 @@ MIN_SECONDS, MAX_SECONDS = 62.0, _settings.MAX_VIDEO_SECONDS  # final video: > 6
 MIN_FRAMES, MAX_FRAMES = int(MIN_SECONDS * FPS), int(MAX_SECONDS * FPS)
 WORDS_PER_SECOND = 2.5  # natural narration pace used to estimate the final length
 
-SceneType = Literal["statement", "chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "image", "flash", "outro"]
-SCENE_TYPES = ("statement", "chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "flash", "outro")  # `image` exists in the renderer but needs artwork the pipeline does not fetch yet
+SceneType = Literal["statement", "chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "flash", "outro"]
+SCENE_TYPES = ("statement", "chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "flash", "outro")
 # The vocabulary of the vector illustrations (remotion_studio/src/chronicle/art/vocab.ts; a test keeps both lists identical)
 PLACES = ("desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield")
 TIMES = ("dawn", "day", "dusk", "night")
@@ -901,7 +901,7 @@ SCENE_MAX_WORDS = 17  # about 6.5 s of speech: beyond that the screen sits still
 
 def retention_problems(p: MotionProject) -> List[str]:
     """Style checks: a cold open, an open loop early on, a visual break at least every third scene and a two-option vote at the end.
-    Only generated scripts are held to these; hand-written scripts are measured with `scripts/lint_retention.py`."""
+    Only generated scripts are held to these; hand-written scripts (data/scripts/) are held to them by tests/test_hand_scripts.py."""
     out: List[str] = []
     if not p.scenes:
         return out
@@ -959,8 +959,6 @@ def make_validator(facts: Optional[str] = None, fmt: Optional[str] = None, reten
             out.append("at most two flash scenes, at least four scenes apart")
         if sum(1 for s in p.scenes if s.type == "quote") > 2:
             out.append("at most two quote scenes")
-        if any(s.type == "image" for s in p.scenes):
-            out.append("image scenes are not available yet: use the other scene types")
         fix_duplicate_accents(p.scenes)
         seen_shots: set = set()
         for i, s in enumerate(p.scenes, 1):

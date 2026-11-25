@@ -5,19 +5,15 @@ import { Corners, clamp, EASE_OUT, InkWords, fit } from './ink';
 import { Look, LookCtx, lookFor, modernLook, themedLook, useLook } from './looks';
 import { ModernBackdrop } from './paper';
 import { ArtFilm, buildFilm } from './art/Stage';
-import { ArtCtx, Callout, Chapter, DateScene, Flash, ImageScene, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
+import { ArtCtx, Callout, Chapter, DateScene, Flash, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
 import { HEIGHT, MotionGraphicProps, MotionScene, OVERLAP, SAFE_BOTTOM, SAFE_TOP, WIDTH, totalFrames } from './types';
 
 export { totalFrames };
 
 const SCENES: Record<string, React.FC<{ scene: MotionScene }>> = {
-  statement: Statement, chapter: Chapter, date: DateScene, timeline: Timeline, map: MapScene, quote: Quote, ledger: Ledger, versus: Versus, list: ListScene, verdict: Verdict, image: ImageScene, flash: Flash, outro: Outro,
+  statement: Statement, chapter: Chapter, date: DateScene, timeline: Timeline, map: MapScene, quote: Quote, ledger: Ledger, versus: Versus, list: ListScene, verdict: Verdict, flash: Flash, outro: Outro,
 };
-/** Scene names of the old tech engine that a script may still use, drawn with the closest history scene. */
-const ALIAS: Record<string, string> = {
-  bigText: 'statement', textWithAccent: 'statement', card: 'statement', headline: 'statement', counter: 'ledger', progressBar: 'ledger', curve: 'ledger', codeBlock: 'quote', footage: 'image', tier: 'list', rank: 'list', quiz: 'list', split: 'versus', units: 'ledger', ui: 'statement',
-};
-const sceneFor = (t: string) => SCENES[t] ?? SCENES[ALIAS[t] ?? 'statement'];
+const sceneFor = (t: string) => SCENES[t] ?? SCENES.statement;
 
 type Entrance = 'rise' | 'ink' | 'slide' | 'fade';
 const ENTRANCES: Entrance[] = ['rise', 'ink', 'slide', 'fade'];

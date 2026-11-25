@@ -4,7 +4,6 @@ import { Look, useLook } from './looks';
 
 export const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 export const EASE_OUT = Easing.bezier(0.16, 1, 0.3, 1);
-export const EASE_IO = Easing.bezier(0.45, 0, 0.25, 1);
 
 /** Seeded random numbers: the same title always draws the same stains, coastlines and seals. */
 export const hash = (s: string): number => {
@@ -187,7 +186,6 @@ export const Stamp: React.FC<{ text: string; color: string; size: number; at?: n
 };
 
 /** Gold-foil lettering: a metallic gradient clipped to the glyphs with a stamped shadow. */
-export const FOIL = 'linear-gradient(180deg, #FFFCEB 0%, #FFE9A0 30%, #FFC93C 55%, #E8A317 80%, #FFE3A0 100%)';
 export const foilText: React.CSSProperties = {
   color: '#FFE08A',
   textShadow: '0 2px 0 #FFF4C8, 0 5px 0 #D9A021, 0 8px 0 #A06A0E, 0 11px 0 #6B430A, 0 22px 34px rgba(0,0,0,0.8)',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { hash, rng } from '../ink';
+import { rng } from '../ink';
 import type { Action, View } from './vocab';
 
 /** Shared drawing helpers for the vector illustrations. Everything is a function of time `t` (seconds), so it can be animated by frame. */
@@ -47,6 +47,5 @@ export const Cloth: React.FC<{ len: number; h: number; t: number; seed?: number;
   return <path d={`M${top.join(' L')} L${bot.reverse().join(' L')}Z`} fill={fill} stroke={stroke} strokeWidth={stroke ? 2 : 0} strokeLinejoin="round" />;
 };
 
-export const seedOf = (s: string) => hash(s);
 export const tri = (x: number, y: number, w: number, h: number) => `M${x - w / 2} ${y} L${x} ${y - h} L${x + w / 2} ${y}Z`;
 export const rect = (x: number, y: number, w: number, h: number) => `M${x} ${y} h${w} v${h} h${-w}Z`;

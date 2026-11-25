@@ -14,9 +14,7 @@ import { Engraving } from '../chronicle/icons';
  * a two-tone wordmark (cream roman + gold italic) and a monospaced tagline. The emblem is THE CHRONICLER, a character; the colours are brown leather, bronze and gold leaf.
  */
 export const GOLD = { hi: '#FFF1BF', mid: '#F0C25E', lo: '#B9822A', deep: '#6B430A' };
-export const OBSIDIAN = '#100b07';
 /** The brown and gold of the brand: leather, bronze and gold leaf. */
-export const DUSK = { top: '#3A2210', mid: '#B9822A', low: '#F0C25E' };
 export const EMBER = '#FF7A55';
 export const PARCHMENT = '#F4E6C8';
 

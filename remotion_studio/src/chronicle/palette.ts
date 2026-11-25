@@ -78,4 +78,3 @@ export const THEMES: Record<string, Theme> = {
     sky: { dawn: { top: '#3E3026', mid: '#9A7852', bottom: '#DCC49C', sun: '#F6E6C0' }, day: { top: '#6A5A48', mid: '#B8A688', bottom: '#E2D6BC', sun: '#F4EAD0' }, dusk: { top: '#1E1610', mid: '#6A4A32', bottom: '#C08A50', sun: '#E8B878' }, night: { top: '#0C0907', mid: '#221A14', bottom: '#3E3024', sun: '#ECE0C4' } },
   },
 };
-export const THEME_NAMES = Object.keys(THEMES);

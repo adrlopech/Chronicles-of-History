@@ -200,13 +200,10 @@ def test_a_quote_needs_its_author_in_the_narration():
     assert any("who said it" in x for x in problems_of(p))
 
 
-def test_statements_need_an_accent_and_images_are_not_available_yet():
+def test_statements_need_an_accent():
     p = script("turning")
     p.scenes[0].accentText = None
     assert any("accentText" in x for x in problems_of(p))
-    p = script("turning")
-    p.scenes[3] = MotionSceneModel(type="image", text="A map", narration=NARR, durationInFrames=90)
-    assert any("image scenes" in x for x in problems_of(p))
 
 
 def test_the_first_scene_is_a_statement_and_the_last_an_outro_and_types_do_not_repeat():

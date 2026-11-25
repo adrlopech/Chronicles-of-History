@@ -70,7 +70,7 @@ const specFor = (P: Pose, side: boolean, t: number, seed: number, held: Hold): S
   const hold: Hold = KEEPS_HOLD.includes(P) ? held : 'none';
   const p0 = t * 7 + seed;
   const f = (a: XY, b: XY): XY => (side ? b : a);
-  const o = Math.sin(t * 6 + seed), q = Math.sin(t * 9 + seed), sw = Math.sin(p0);
+  const o = Math.sin(t * 6 + seed), sw = Math.sin(p0);
   const base: Spec = {
     legs: 'stand', drop: 0, bend: 0, rot: 0, lift: 0, amp: 0, moving: false, item: hold === 'none' ? undefined : hold, itemRot: 0, itemDy: 0,
     near: f([21, -52], [6, -52]), far: f([-21, -52], [-6, -52]), eyes: 'open', mouth: 'smile', brow: [0, 0], tilt: 0, shake: 0,
@@ -141,7 +141,6 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
   const S = into >= 1 ? target : blendSpec(specFor('stand', side, t, seed, hold), target, into);
   const p = t * (P === 'run' ? 11 : P === 'push' || P === 'sneak' ? 5 : P === 'dance' ? 6 : 7) + seed;
   const sw = S.moving ? Math.sin(p) * S.amp : 0;
-  const sitting = S.legs === 'sit';
   const cheering = P === 'cheer' || P === 'lift' || P === 'dance';
   const bob = S.moving ? -Math.abs(Math.sin(p)) * (P === 'run' ? 6 : 4) * Math.min(1, S.amp + 0.3) : -Math.sin(t * 2 + seed) * 1.2 - (cheering ? Math.abs(Math.sin(t * 6 + seed)) * 10 : 0);
   const jit = S.shake ? (Math.sin(t * 22 + seed) * 0.7 + Math.sin(t * 13 + seed * 2) * 0.3) * S.shake : 0; // a tremble, not a buzz
@@ -193,8 +192,6 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
   );
   const boot = mix(c.shadow, '#000000', 0.3);
   const rb = drop > 0 ? -drop : 0; // robe hem rises with the body so it still ends at the ground
-  const hx = side ? 2 : 0;
-  const A = S.amp;
   // a leather boot: a shaft up the shin, a shaped foot, a darker sole (it used to be a black ellipse)
   const leather = mix(mix('#5a3a24', cloth, 0.15), c.shadow, 0.2);
   const sole = mix(leather, boot, 0.6);

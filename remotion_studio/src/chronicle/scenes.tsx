@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useMemo } from 'react';
-import { AbsoluteFill, Easing, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame } from 'remotion';
 import { Engraving, pickIcon } from './icons';
-import { Corners, EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Seal, Stamp, TornLabel, Underline, clamp, fit, foilText, hash, lines, rng, smoothClosed } from './ink';
+import { Corners, EASE_OUT, InkWords, Kicker, Ornament, ROMAN, Stamp, TornLabel, Underline, clamp, fit, foilText, hash, lines } from './ink';
 import { useLook } from './looks';
 import { Seal as BrandSeal } from '../brand/Brand';
 import { Chart, CompassRose, atlasStyle, fitView, parsePlaces, placeLabels, project, smoothRoute } from './geo/atlas';
-import { CAPTION_SPACE, CHANNEL, FPS, HEIGHT, MotionScene, SAFE_BOTTOM, SAFE_TOP, WIDTH } from './types';
+import { CAPTION_SPACE, CHANNEL, FPS, HEIGHT, MotionScene, SAFE_BOTTOM, SAFE_TOP } from './types';
 
 /** Content area: below the platform's top bar, above the caption strip and the platform's bottom bar. */
 export const CONTENT_TOP = SAFE_TOP + 40;
@@ -32,7 +32,6 @@ const wordCount = (t: string) => t.split(/\s+/).filter(Boolean).length;
 /** The standard headline scene: a headline, an accent phrase with a hand-drawn underline (drawn when the narrator says it) and an engraving. */
 export const Statement: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
-  const frame = useCurrentFrame();
   const text = scene.text;
   const acc = scene.accentText ?? '';
   const art = useContext(ArtCtx);
@@ -324,44 +323,16 @@ const VERDICTS = {
   fact: { label: 'Fact', dark: '#b5945b', light: '#6b552e' },
   partly: { label: 'Half true', dark: '#E3BC5C', light: '#A87618' },
 } as const;
-const VERDICT_ALIAS: Record<string, keyof typeof VERDICTS> = { myth: 'myth', fact: 'fact', partly: 'partly', buy: 'fact', wait: 'partly', skip: 'myth' };
 
 export const Verdict: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const look = useLook();
-  const v = VERDICTS[VERDICT_ALIAS[scene.verdict ?? 'partly'] ?? 'partly'];
+  const v = VERDICTS[scene.verdict ?? 'partly'] ?? VERDICTS.partly;
   const col = look.dark ? v.dark : v.light;
   return (
     <Page gap={52}>
       <Stamp text={v.label} color={col} size={fit(v.label, 190, 700, 1, 0.8, 90)} at={10} />
       <InkWords text={scene.text} size={fit(scene.text, 92, W, 3, look.k, 46)} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={24} />
       {scene.accentText && <InkWords text={scene.accentText} size={fit(scene.accentText, 68, W, 2, 0.46, 38)} color={look.accent} font={look.italic} weight={400} delay={36} />}
-    </Page>
-  );
-};
-
-/** An engraving or a public-domain photograph in a mounted frame, toned like old paper, with a caption plate. */
-export const ImageScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
-  const look = useLook();
-  const frame = useCurrentFrame();
-  const p = interpolate(frame, [0, 18], [0, 1], { ...clamp, easing: EASE_OUT });
-  const k = interpolate(frame, [0, scene.durationInFrames], [1.02, 1.16], clamp);
-  const FH = CONTENT_H - 200;
-  return (
-    <Page gap={26}>
-      <div style={{ width: 900, height: FH, padding: 18, background: look.paper2, border: `6px double ${look.accent2}`, boxShadow: '0 22px 46px rgba(0,0,0,0.45)', opacity: p, transform: `scale(${0.95 + 0.05 * p}) rotate(${(1 - p) * -1.2}deg)` }}>
-        <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', background: look.paper, border: `2px solid ${look.ink}` }}>
-          {scene.mediaSrc ? (
-            <Img src={staticFile(scene.mediaSrc)} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${k})`, filter: 'sepia(0.7) contrast(1.06) saturate(0.85) brightness(0.96)' }} />
-          ) : (
-            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Engraving name={scene.icon ?? pickIcon(scene.text, hash(scene.text))} size={Math.min(520, FH - 160)} color={look.ink} accent={look.accent2} at={6} /></div>
-          )}
-          <AbsoluteFill style={{ boxShadow: 'inset 0 0 120px rgba(40,22,6,0.55)' }} />
-        </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-        {scene.kicker && <Kicker text={scene.kicker} at={10} />}
-        <InkWords text={scene.text} size={fit(scene.text, 62, W, 2, look.k, 36)} color={look.ink} font={look.head} weight={look.weight} caps={look.caps} delay={12} />
-      </div>
     </Page>
   );
 };

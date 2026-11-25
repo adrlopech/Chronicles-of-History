@@ -9,14 +9,14 @@ Todo el proyecto es **marrón y dorado, con aire histórico** (nada de azules, v
 
 ## Regla fija: minuto mínimo
 
-Ningún vídeo dura menos de **1 minuto** (monetización; y es la norma del canal). Una sola constante, `FLOOR_SECONDS = 61` en `services/motion_generator.py`, la aplican el validador de guiones, el estirado de la voz (objetivo 62 s) y el QA final antes de subir. Si un vídeo sale por debajo, no se publica: se alarga el guion o se rehace. Los guiones hechos a mano también pasan el validador (`scripts/write_era_scripts.py`).
+Ningún vídeo dura menos de **1 minuto** (monetización; y es la norma del canal). Una sola constante, `FLOOR_SECONDS = 61` en `services/motion_generator.py`, la aplican el validador de guiones, el estirado de la voz (objetivo 62 s) y el QA final antes de subir. Si un vídeo sale por debajo, no se publica: se alarga el guion o se rehace. Los guiones hechos a mano (`data/scripts/*.json`) también pasan el validador: lo comprueba `tests/test_hand_scripts.py`.
 
 ## Status
 
 The visual style is new (an illustrated archive with eleven era looks (antiquity, manuscript, seachart, empire, industrial, wartime, prehistory, renaissance, orient, frontier, spaceage): `guide/motion-engine.md`). The eight history formats (`guide/formats.md`: mystery, dayinlife, turning, lies, whatif, duel, journey, portrait) and their generator, validators and prompts are new; the tech formats, games, prices and news are gone. The whole of `guide/` now describes this channel (`guide/README.md` is the index) and the brand assets are done (`guide/branding.md`, `node scripts/make_brand_assets.mjs`). Next steps, in order:
 
 1. ~~Brand assets~~ done: Chronicler mascot, avatar, YouTube banner and watermark in `assets/brand/` (`node scripts/make_brand_assets.mjs`, rules in `guide/branding.md`). Still to do by hand: upload them to the YouTube and TikTok profiles.
-2. Illustrations are animated vector art drawn in code (`remotion_studio/src/chronicle/art/`): grow the kit (more subjects, places, characters) by adding to `art/vocab.ts` AND `services/motion_generator.py`. No photographs and no AI images, by decision. The `image` scene is unused.
+2. Illustrations are animated vector art drawn in code (`remotion_studio/src/chronicle/art/`): grow the kit (more subjects, places, characters) by adding to `art/vocab.ts` AND `services/motion_generator.py`. No photographs and no AI images, by decision (there is no `image` scene).
 3. First test wave: bank 2-3 scripts per format (`scripts/refill_story_bank.py`), publish, and read the numbers with `scripts/report_retention.py` to set `FORMAT_WEIGHTS`.
 4. New YouTube OAuth for the new channel (`scripts/authenticate_yt.py`), new `tokens/`. Ask the operator each time.
 5. Pilot: 10 videos, 2-3 weeks, compare retention with Silicon Verdict (`scripts/report_retention.py`).

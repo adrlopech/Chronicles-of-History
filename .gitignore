@@ -1,94 +1,58 @@
-# Environment & Secrets
+# Secrets (this project's own; never copied from Silicon Verdict)
 .env
 client_secrets.json
 client_secret.json
 token.json
 tokens/
+data/*token*.json
+data/token_backups/
+.claude/settings.local.json
 
-# Python artifacts
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
+.venv
 .venv/
+venv/
+.pytest_cache/
+.ruff_cache/
 
-# Video & Temporary Processing Files
+# Renders, audio and images are generated: only the ones listed below are kept
 temp/
-/tmp/yt_automation/
+output/
 *.mp4
 *.mp3
-!assets/audio/*.mp3
 *.png
 *.jpg
+!assets/audio/*.mp3
+!assets/brand/*.png
 logs/
 *.log
 .DS_Store
 
+# Remotion
 remotion_studio/build
-# Remotion / generated render inputs
 remotion_studio/node_modules/
 remotion_studio/public/
-output/
+.remotion/
 
-# Auth material
-data/.tiktok_pkce_verifier.txt
-data/*token*.json
-.claude/settings.local.json
-
-# Private scripts and the history DB (it holds the banked scripts)
-data/story_seed/
+# Local state: the history and story bank, LLM cooldowns, batch manifests, analytics, notes
 data/history.db
 data/history.db.bak-*
-docs/generated_scripts/
-
-data/test_weekly_rotation.db
 data/gemini_state.json
-.remotion/
-assets/games/manifest.json
-data/game_facts/
-
-# Web portal assets
-!docs/og-image.png
-!docs/favicon-32.png
-!docs/icon-192.png
-!docs/apple-touch-icon.png
+data/batches/
+data/early_stats.json
+data/analytics_report.json
 notes/
+scratch_gen/
 
 # Reference clips of the ElevenLabs voices for the local backup voice (regenerate: scripts/make_voice_refs.py)
 assets/voice_refs/*.mp3
-data/token_backups/
-data/analytics_report.json
 
-# game logos of the portal (downloaded from the Steam store pages)
-!docs/assets/games/*.png
-!docs/assets/latest/*.jpg
-!docs/assets/recent/*.jpg
-!docs/assets/formats/*.jpg
-!docs/assets/looks/*.jpg
-
-# Batch manifests and slot log (local state)
-data/batches/
-
-# Web portal assets
-!docs/logo.png
-!docs/og-image.png
-!docs/favicon-32.png
-!docs/icon-192.png
-!docs/apple-touch-icon.png
-!docs/assets/covers/*.jpg
-!assets/brand/*.png
-
-# Local helpers
-.venv
-scratch_gen/
-!docs/assets/themes/*.jpg
-
-# web art: regenerate with scripts/web_art.tsx (see README of scripts/build_portal.py)
-!docs/assets/eras/*.svg
-!docs/assets/map.svg
+# Web portal (docs/): the images it serves are kept
+!docs/*.png
 !docs/assets/brand/*.png
 !docs/assets/brand/*.zip
+!docs/assets/covers/*.jpg
 !docs/assets/recent/*.jpg
+!docs/assets/themes/*.jpg

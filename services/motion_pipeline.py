@@ -97,7 +97,7 @@ def _norm_word(w: str) -> str:
 
 CALLOUT_UNITS = {"bc", "ad", "years", "men", "soldiers", "miles", "km", "%", "x", "ships", "tons", "people", "days"}
 CALLOUT_MIN_WORDS = 11  # a scene this long (about 4.5 s of speech) gets a second visual beat
-CALLOUT_SKIP = {"chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "image", "flash", "outro"}  # only a long statement gets a second visual beat
+CALLOUT_SKIP = {"chapter", "date", "timeline", "map", "quote", "ledger", "versus", "list", "verdict", "flash", "outro"}  # only a long statement gets a second visual beat
 
 
 def pick_callout(tokens: list) -> Optional[tuple]:
@@ -309,9 +309,9 @@ def scene_audio_info(scenes: list) -> list:
 
 # Mean level (dB, ffmpeg volumedetect) of each effect file, and the mean level each kind of cue is brought to. The old flat multipliers left sfx_whoosh (mean -5.9 dB) louder than the voice;
 # now every cue sits well under it. Without a voice (silent previews) the effects are 6 dB louder.
-SFX_MEAN = {"sfx_blip.wav": -11.8, "sfx_boom.wav": -14.3, "sfx_chime.wav": -17.9, "sfx_click.wav": -25.1, "sfx_ding.wav": -15.9, "sfx_error.wav": -10.9, "sfx_glitch.wav": -17.3, "sfx_hit.wav": -15.5,
-            "sfx_pop.wav": -13.7, "sfx_riser.wav": -19.7, "sfx_slide.wav": -19.8, "sfx_sparkle.wav": -17.1, "sfx_swish.wav": -18.1, "sfx_tick.wav": -21.2, "sfx_type.wav": -24.2, "sfx_whoosh.wav": -5.9, "sfx_whoosh_soft.wav": -20.5}
-CUE_TARGET_DB = {"rehook": -30, "first": -31, "flash": -30, "riser": -35, "click": -33, "select": -35, "grab": -33, "verdict": -32, "outro": -33, "tick": -37, "pop": -34}
+SFX_MEAN = {"sfx_boom.wav": -14.3, "sfx_chime.wav": -17.9, "sfx_ding.wav": -15.9, "sfx_error.wav": -10.9, "sfx_hit.wav": -15.5,
+            "sfx_pop.wav": -13.7, "sfx_riser.wav": -19.7, "sfx_slide.wav": -19.8, "sfx_swish.wav": -18.1, "sfx_tick.wav": -21.2, "sfx_whoosh.wav": -5.9, "sfx_whoosh_soft.wav": -20.5}
+CUE_TARGET_DB = {"rehook": -30, "first": -31, "flash": -30, "riser": -35, "verdict": -32, "outro": -33, "tick": -37, "pop": -34}
 WHOOSH_TARGET_DB = -38
 
 

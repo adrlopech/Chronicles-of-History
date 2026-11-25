@@ -19,7 +19,7 @@ Every video follows one of eight formats (`FORMATS` in `services/motion_generato
 - 11-19 scenes (duel: 9-19), 150-190 words of narration, 62-90 s. First scene a `statement` (cold open, at most 14 words), last scene the `outro` with a two-option vote that names this video's own two options.
 - An open loop in scene 2-5 ("Stay to the end, the catch comes last."), no more than two `statement` scenes in a row, no same scene type twice in a row (except `versus` and `verdict`).
 - Every scene except `flash`, `map` and `outro` carries 1-2 illustration shots (`art`): place + time of day + weather + subjects from a closed list, chosen for what the narrator says at that moment (see `guide/motion-engine.md`). A shot is never repeated within a video.
-- Figures in `ledger` and `versus` scenes are whole numbers and must be said in the narration. A `quote` names its author in the narration. `image` scenes are not available yet.
+- Figures in `ledger` and `versus` scenes are whole numbers and must be said in the narration. A `quote` names its author in the narration. There are no image scenes: every picture is drawn in code.
 - **Facts come first.** Every date, name and figure must be real and well documented; where historians disagree the script says so; a quotation is allowed only if it is famous and documented. A second model fact-checks every script
   (dates, figures, quotes, stamps, hedging) and rewrites the lines it finds wrong.
 

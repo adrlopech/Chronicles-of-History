@@ -35,7 +35,7 @@ Authorize YouTube once (see [Publishing](publishing.md#youtube-oauth)):
 
 ```bash
 .venv/bin/python scripts/authenticate_yt.py
-.venv/bin/python scripts/verify_credentials.py   # probes the API keys without spending credits
+.venv/bin/python scripts/health_check.py         # token, voice credits, Gemini, story bank and disk
 ```
 
 ## Render a first video
