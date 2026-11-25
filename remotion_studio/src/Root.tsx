@@ -5,6 +5,7 @@ import { MotionGraphicProps } from './chronicle/types';
 import { Cover } from './chronicle/Cover';
 import { Avatar, Banner, Watermark } from './brand/Brand';
 import sample from './chronicle/sample.json';
+import { CharacterSheet } from './chronicle/art/CharacterSheet';
 
 export const Root: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ export const Root: React.FC = () => {
     <Composition id="Cover" component={Cover as unknown as React.FC<Record<string, unknown>>} durationInFrames={60} fps={30} width={1080} height={1920} defaultProps={sample as unknown as Record<string, unknown>} />
     <Composition id="BrandAvatar" component={Avatar} durationInFrames={60} fps={30} width={800} height={800} />
     <Composition id="BrandBanner" component={Banner} durationInFrames={60} fps={30} width={2560} height={1440} />
+    <Composition id="CharacterSheet" component={CharacterSheet as unknown as React.FC<Record<string, unknown>>} durationInFrames={60} fps={30} width={1080} height={1920} />
     <Composition id="BrandWatermark" component={Watermark} durationInFrames={60} fps={30} width={300} height={300} />
   </>
   );

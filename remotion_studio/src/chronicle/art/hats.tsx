@@ -24,7 +24,8 @@ export const HatShape: React.FC<HatProps> = ({ hat, c, t, seed, HY, side, back, 
   const steel = mix(c.light, c.shadow, 0.22);
   const ol = c.shadow;
   const bronze = mix(c.gold, c.shadow, 0.35);
-  const y = HY;
+  // war helmets sit higher so the brim stops at the brow and the eyes show (their brim used to cross the eye line)
+  const y = (['crest', 'nasal', 'kabuto', 'helmet', 'conical', 'brodie', 'morion', 'mongol'] as Hat[]).includes(hat) ? HY - 4.5 : HY;
   const sway = Math.sin(t * 5 + seed) * 2;
   switch (hat) {
     case 'helmet': return <><path d={`M-16 ${y - 3} A16 15 0 0 1 16 ${y - 3}Z`} fill={c.light} stroke={ol} strokeWidth={1.6} /><path d={`M-16 ${y - 3} L16 ${y - 3}`} stroke={ol} strokeWidth={2.4} /><path d={`M0 ${y - 17} Q${8 + sway} ${y - 32} 18 ${y - 20}`} stroke={c.accent} strokeWidth={6} fill="none" strokeLinecap="round" /></>;

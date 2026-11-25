@@ -10,6 +10,11 @@ import { Hold } from './items';
 interface Costume { hat?: Hat; hold?: Hold; robe?: string; body?: string; cloak?: string; armor?: string; hatColor?: string; skin?: number; beard?: boolean; female?: boolean; shield?: boolean }
 const HEX: Record<string, string> = { R: '#a8232b', B: '#825430', W: '#e6dfcc', K: '#2b2623', G: '#6b603a', Y: '#d6b03a', P: '#7a372d', O: '#c8642a', N: '#6a4a2e', S: '#ada29a', T: '#785d2d', KH: '#6b6a45', OL: '#60583d', GR: '#6c6f73' };
 
+/** The cut of the clothes (Person `cut`): a tunic with a skirt for antiquity, the Middle Ages and warriors of every age before gunpowder; a coat with tails and lapels for officers and gentlemen; trousers for everybody else. */
+const TUNIC: readonly string[] = ['caveman', 'pyramid_builder', 'gladiator', 'legionary', 'centurion', 'hoplite', 'athlete', 'persian_immortal', 'babylonian', 'celt', 'carthaginian', 'qin_warrior', 'knight', 'crusader', 'templar', 'viking', 'jarl', 'peasant', 'blacksmith', 'longbowman', 'crossbowman', 'castle_guard', 'executioner', 'jester', 'samurai', 'mongol_horseman', 'saracen', 'aztec_warrior', 'inca_noble', 'neanderthal', 'shaman', 'cave_painter', 'mammoth_hunter', 'native_warrior', 'native_chief', 'rice_farmer', 'condottiero'];
+const COAT: readonly string[] = ['redcoat', 'grenadier', 'minuteman', 'general', 'nobleman', 'admiral', 'musketeer', 'gentleman', 'tycoon', 'banker', 'courtier', 'ww1_officer', 'field_marshal', 'navigator', 'merchant_prince', 'revolutionary', 'engineer', 'surgeon', 'spy'];
+const cutOf = (who: string): 'tunic' | 'coat' | undefined => (TUNIC.includes(who) ? 'tunic' : COAT.includes(who) ? 'coat' : undefined);
+
 /** Leaders and rulers stand alone; everyone else comes with two companions. */
 export const SOLO: readonly string[] = ['pharaoh', 'roman_emperor', 'jarl', 'pope', 'queen', 'shogun', 'khan', 'sultan', 'byzantine_emperor', 'chinese_emperor', 'admiral', 'merchant_prince', 'tycoon', 'field_marshal', 'president'];
 
@@ -160,7 +165,7 @@ export const PersonGroup: React.FC<Drawn & { c: Colors; who: PersonId }> = ({ c,
         const turn = lookOn && p.x > 0 ? -1 : 1; // the companion on the right turns left, toward the hero
         return (
           <g key={i} transform={`translate(${p.x} ${i ? -8 : 0}) scale(${turn} 1)`}>
-            <Person c={c} t={t} seed={seed + i * 0.7} scale={p.s} pose={lookOn ? (act === 'fall' || act === 'plead' ? 'cower' : 'stand') : act} view={lookOn ? 'side' : view} since={since} delay={i * 0.18} {...k} />
+            <Person c={c} t={t} seed={seed + i * 0.7} cut={cutOf(who)} scale={p.s} pose={lookOn ? (act === 'fall' || act === 'plead' ? 'cower' : 'stand') : act} view={lookOn ? 'side' : view} since={since} delay={i * 0.18} {...k} />
           </g>
         );
       })}
@@ -172,5 +177,5 @@ export { PEOPLE };
 /** One costumed figure alone (no companions), for branding and posters. */
 export const Costumed: React.FC<Drawn & { c: Colors; who: PersonId; scale?: number }> = ({ c, t, seed, act, view, who, scale = 1 }) => {
   const B = (k: string) => mix(HEX[k] ?? k, c.mid, 0.2);
-  return <Person c={c} t={t} seed={seed} scale={scale} pose={act} view={view} {...COSTUMES[who](c, B)} />;
+  return <Person c={c} t={t} seed={seed} scale={scale} pose={act} view={view} cut={cutOf(who)} {...COSTUMES[who](c, B)} />;
 };
