@@ -4,7 +4,7 @@ import { Captions, chunkCaptions, fallbackCaptions } from './captions';
 import { Corners, clamp, EASE_OUT, InkWords, fit } from './ink';
 import { Look, LookCtx, lookFor, modernLook, themedLook, useLook } from './looks';
 import { ModernBackdrop } from './paper';
-import { ArtStage } from './art/Stage';
+import { ArtFilm, buildFilm } from './art/Stage';
 import { ArtCtx, Callout, Chapter, DateScene, Flash, ImageScene, Ledger, ListScene, MapScene, Outro, Quote, Statement, Timeline, Verdict, Versus } from './scenes';
 import { HEIGHT, MotionGraphicProps, MotionScene, OVERLAP, SAFE_BOTTOM, SAFE_TOP, WIDTH, totalFrames } from './types';
 
@@ -38,7 +38,6 @@ const SceneShell: React.FC<{ scene: MotionScene; index: number; last: boolean; c
   const style: React.CSSProperties = !last && pout > 0 ? { opacity: 1 - pout, transform: `translateY(${-pout * 24}px)` } : index === 0 ? {} : enter(kind, pin);
   return (
     <ArtCtx.Provider value={!!scene.art?.length}>
-      {scene.art?.length ? <AbsoluteFill style={{ opacity: last || pout <= 0 ? 1 : 1 - pout }}><ArtStage shots={scene.art} dur={scene.durationInFrames} look={React.useContext(EraCtx)} seed={`${scene.text}${index}`} /></AbsoluteFill> : null}
       <AbsoluteFill style={style}>
         {children}
         <Callout scene={scene} />
@@ -93,6 +92,8 @@ export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, loo
     scenes.forEach((sc) => { s.push(at); at += sc.durationInFrames; });
     return { starts: s, total: at };
   }, [scenes]);
+  // the pictures of every scene play as one film under the text (art/Stage.tsx), cut where the narration moves on
+  const film = useMemo(() => buildFilm(scenes, starts, chunks.map((c) => c.s)), [scenes, starts, chunks]);
   const flash = (() => {
     for (let i = 0; i < scenes.length; i++) if (frame >= starts[i] && frame < starts[i] + scenes[i].durationInFrames) return scenes[i].type === 'flash';
     return false;
@@ -102,6 +103,7 @@ export const MotionGraphic: React.FC<MotionGraphicProps> = ({ scenes, title, loo
       <LookCtx.Provider value={look}>
         <AbsoluteFill style={{ width: WIDTH, height: HEIGHT }} data-title={title}>
           <ModernBackdrop look={look} frame={frame} />
+          <ArtFilm film={film} look={era} />
           {scenes.map((scene, i) => {
             const C = sceneFor(scene.type);
             const last = i === scenes.length - 1;

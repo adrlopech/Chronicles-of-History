@@ -143,18 +143,27 @@ const COSTUMES: Record<PersonId, (c: Colors, B: (k: string) => string) => Costum
   test_pilot: (c, B) => ({ hat: 'aviator', body: B('OL') }),
 };
 
-export const PersonGroup: React.FC<Drawn & { c: Colors; who: PersonId }> = ({ c, t, seed, dir, act, view, who }) => {
+/** Actions one person does while the others look on (a speech, a blow, a letter): the companions turn to the hero instead of repeating the gesture like a chorus. */
+const HERO_ACTS: readonly string[] = ['point', 'shout', 'threaten', 'write', 'read', 'think', 'drink', 'lift', 'throw', 'shoot', 'wave', 'plead', 'stab', 'slash', 'fall', 'dance', 'salute', 'shrug'];
+
+export const PersonGroup: React.FC<Drawn & { c: Colors; who: PersonId }> = ({ c, t, seed, dir, act, view, who, since }) => {
   const B = (k: string) => mix(HEX[k] ?? k, c.mid, 0.2);
   const k = COSTUMES[who](c, B);
   const solo = SOLO.includes(who);
   const slots = solo ? [{ x: 0, s: 1.3 }] : [{ x: 0, s: 1.15 }, { x: -66, s: 0.95 }, { x: 62, s: 0.95 }];
+  const react = !!act && HERO_ACTS.includes(act);
   return (
     <g transform={`scale(${dir} 1)`}>
-      {slots.map((p, i) => (
-        <g key={i} transform={`translate(${p.x} ${i ? -8 : 0})`}>
-          <Person c={c} t={t} seed={seed + i * 0.7} scale={p.s} pose={act} view={view} {...k} />
-        </g>
-      ))}
+      {/* companions first (behind), the hero last (in front) */}
+      {slots.map((p, i) => ({ p, i })).reverse().map(({ p, i }) => {
+        const lookOn = i > 0 && react;
+        const turn = lookOn && p.x > 0 ? -1 : 1; // the companion on the right turns left, toward the hero
+        return (
+          <g key={i} transform={`translate(${p.x} ${i ? -8 : 0}) scale(${turn} 1)`}>
+            <Person c={c} t={t} seed={seed + i * 0.7} scale={p.s} pose={lookOn ? (act === 'fall' || act === 'plead' ? 'cower' : 'stand') : act} view={lookOn ? 'side' : view} since={since} delay={i * 0.18} {...k} />
+          </g>
+        );
+      })}
     </g>
   );
 };

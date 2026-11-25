@@ -8,7 +8,7 @@ export const H = 1920;
 export const GY = 700; // the ground line (the horizon of land scenes)
 
 /** `act` and `view` come from the shot (art/vocab.ts): what the people in it are doing and which way they face. */
-export interface Drawn { t: number; seed: number; dir?: 1 | -1; act?: Action; view?: View }
+export interface Drawn { t: number; seed: number; dir?: 1 | -1; act?: Action; view?: View; /** seconds since the shot began: people ease into their action instead of starting mid-gesture */ since?: number }
 
 /** A ridge line across the whole canvas, filled down to the bottom: hills, dunes, mountains. `peaky` makes sharp mountains, otherwise smooth rolling lines. */
 export const ridge = (seed: number, y: number, amp: number, freq: number, peaky = false, bottom = H): string => {

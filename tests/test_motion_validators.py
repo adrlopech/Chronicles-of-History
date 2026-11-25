@@ -452,6 +452,9 @@ def test_the_python_art_vocabulary_matches_the_remotion_one():
     assert len(SUBJECTS) == len(set(SUBJECTS)) == 258
     m = re.search(r"export const ACTIONS = \[(.*?)\] as const", ts, re.S)
     assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == ACTIONS
+    from services.motion_generator import CAMERAS
+    m = re.search(r"export const CAMERAS = \[(.*?)\] as const", ts, re.S)
+    assert m and tuple(re.findall(r"'(\w+)'", m.group(1))) == CAMERAS
     assert len(ACTIONS) == 37
 
 

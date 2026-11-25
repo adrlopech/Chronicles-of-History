@@ -43,12 +43,14 @@ SUBJECTS = STRUCTURES + ACTORS + PEOPLE + ANIMALS + PROPS + EFFECTS
 # What the people in a shot can be doing (7 everyday + 30 more), and which way they face
 ACTIONS = ("stand", "walk", "run", "sit", "point", "wave", "cheer", "kneel", "bow", "pray", "salute", "slash", "stab", "fall", "lie", "crouch", "carry", "push", "dig", "hammer", "write", "read", "think", "shout", "plead", "threaten", "shrug", "lift", "throw", "shoot", "drink", "dance", "sneak", "surrender", "cower", "lean", "watch")
 VIEWS = ("front", "side", "back")
+CAMERAS = ("wide", "medium", "close", "push", "pull", "follow")  # how a shot is filmed (art/Stage.tsx picks one from the story when the script leaves it empty)
 HUMANS = ("soldiers", "king", "crowd", "scholar", "monk", "farmer", "merchant") + PEOPLE  # the actors an action applies to
 PlaceT = Literal["desert", "sea", "coast", "plains", "mountains", "forest", "snow", "city", "plaza", "interior", "battlefield"]
 TimeT = Literal["dawn", "day", "dusk", "night"]
 WeatherT = Literal["clear", "rain", "snow", "storm", "smoke"]
 ActionT = Literal["stand", "walk", "run", "sit", "point", "wave", "cheer", "kneel", "bow", "pray", "salute", "slash", "stab", "fall", "lie", "crouch", "carry", "push", "dig", "hammer", "write", "read", "think", "shout", "plead", "threaten", "shrug", "lift", "throw", "shoot", "drink", "dance", "sneak", "surrender", "cower", "lean", "watch"]
 ViewT = Literal["front", "side", "back"]
+CameraT = Literal["wide", "medium", "close", "push", "pull", "follow"]
 # NOT a Literal: a 258-value enum repeated in every shot makes Gemini refuse the schema ("too many states"); the names are checked by _art_problems instead
 # Subjects that did not exist in every era: the looks where each may be drawn (an anachronistic one is dropped, see fix_art_for_era)
 ERA_ONLY = {
@@ -279,6 +281,7 @@ class ArtShot(BaseModel):
     subjects: List[str] = Field(..., description="1-4 DIFFERENT things drawn in the picture, the first is the hero: " + ", ".join(SUBJECTS))
     action: Optional[ActionT] = Field(default=None, description="What the PEOPLE in the picture are doing (only when the shot has soldiers, king, crowd, scholar, monk, farmer or merchant): " + ", ".join(ACTIONS) + ". Optional, but vary it from shot to shot")
     view: Optional[ViewT] = Field(default=None, description="Which way those people face: front (toward the viewer), side (in profile) or back (we see their backs, as they look at what is ahead). Optional: the action picks the natural one")
+    camera: Optional[CameraT] = Field(default=None, description="How the shot is filmed: wide (the whole place: opens a new place), medium (the group), close (the hero's face: emotion, a decision), push (moves in to the hero: tension), pull (moves back to reveal the place: a consequence), follow (tracks the hero walking or running). Optional: chosen from the story when empty")
 
 
 class MotionSceneModel(BaseModel):
@@ -414,6 +417,9 @@ Match the action to the narration: "the army charged" = soldiers + run; "they be
 STORY FIRST. The drawings are the story and the words are only a hint: the viewer must understand what happens by WATCHING the characters. Choose one PROTAGONIST (a named character such as legionary, knight, pharaoh, sailor or a group such as soldiers or crowd)
 and let that character appear in at least three shots, living the story beat by beat: arriving, hesitating, deciding, fighting, falling, celebrating. Every shot with people has an `action` that is what THEY are doing at that moment of the narration (use at least four different actions), and a `view`
 when it helps. Put at least 60% of the shots on people, with the hero person first in `subjects`; use structures, animals and props as the stage around them. Prefer two shots per scene so the picture follows each phase of the sentence.
+FILM IT LIKE A MOVIE. The shots play as ONE continuous film under the narration, cut where the narrator moves on: write them as a storyboard. Consecutive shots in the SAME place and time are one continuous scene of the film
+(the set stays, only the action changes), so keep the place for two or three beats while the action unfolds there, then move. Give each shot a `camera`: open a new place `wide`, follow a journey with `follow`, go `close` on the hero's face
+for fear, anger, a decision or grief, `push` in when tension rises, `pull` back to reveal the result (the burned city, the empty colony). A good beat: wide (we arrive) -> medium (they act) -> close (the decision) -> pull (the consequence).
 ON-SCREEN TEXT IS SMALL AND SHORT: `text` at most 6 words and `accentText` at most 3: the picture carries the story, the narration carries the detail.
 Rules: never repeat the same scene type back to back (except versus and verdict); on-screen text is short and readable in 2 seconds; no emojis.
 Metadata: title <= 80 characters + 2-3 hashtags (#history first, then one-word tags such as #ancientrome); the title is a specific question, a claim or a duel ("What If Rome Never Fell?", "The Day Rome Fell"), never a catalogue line;

@@ -20,6 +20,8 @@ export const ACTIONS = [
 ] as const;
 /** Which way the people are turned: toward us, in profile or away from us. */
 export const VIEWS = ['front', 'side', 'back'] as const;
+/** How the shot is filmed: wide (the whole place), medium (the group), close (the hero's face), push (moves in to the hero), pull (moves back to reveal the place), follow (tracks the hero walking). Optional: art/Stage.tsx picks one from the story. */
+export const CAMERAS = ['wide', 'medium', 'close', 'push', 'pull', 'follow'] as const;
 
 export const SUBJECTS = [...STRUCTURES, ...ACTORS, ...PEOPLE, ...ANIMALS, ...PROPS, ...EFFECTS] as const;
 
@@ -34,6 +36,7 @@ export type Prop = (typeof PROPS)[number];
 export type Effect = (typeof EFFECTS)[number];
 export type Action = (typeof ACTIONS)[number];
 export type View = (typeof VIEWS)[number];
+export type Camera = (typeof CAMERAS)[number];
 export type Subject = (typeof SUBJECTS)[number];
 
 export interface ArtShot {
@@ -44,6 +47,8 @@ export interface ArtShot {
   /** What the people in the picture are doing (soldiers, king, crowd, scholar, monk, farmer, merchant) and which way they face; both optional. */
   action?: Action;
   view?: View;
+  /** How it is filmed (CAMERAS); optional. */
+  camera?: Camera;
 }
 
 export const kindOf = (s: Subject): 'structure' | 'actor' | 'prop' | 'effect' =>

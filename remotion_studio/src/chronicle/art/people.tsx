@@ -19,6 +19,8 @@ interface PersonProps extends Drawn {
   stool?: boolean;
   /** Costume extras: a breastplate colour, a skin tone (0 light .. 3 dark), a forced beard, long hair, a shield on the far arm, the colour of cloth hats. */
   armor?: string; skin?: number; beard?: boolean; female?: boolean; shield?: boolean; hatColor?: string;
+  /** Seconds since the shot began (with `delay`, for a companion who reacts a beat later): the figure eases from standing into its action instead of starting mid-gesture. */
+  since?: number; delay?: number;
 }
 
 type XY = [number, number];
@@ -86,20 +88,33 @@ const specFor = (P: Pose, side: boolean, t: number, seed: number, held: Hold): S
     default: return base;
   }
 };
+/** Between two poses: positions and angles glide, the discrete parts (legs, held thing, face) switch half-way. */
+const lerp = (a: number, b: number, u: number) => a + (b - a) * u;
+const lerpXY = (a: XY, b: XY, u: number): XY => [lerp(a[0], b[0], u), lerp(a[1], b[1], u)];
+const blendSpec = (A: Spec, B: Spec, u: number): Spec => ({
+  ...(u < 0.5 ? A : B),
+  drop: lerp(A.drop, B.drop, u), bend: lerp(A.bend, B.bend, u), rot: lerp(A.rot, B.rot, u), lift: lerp(A.lift, B.lift, u), amp: lerp(A.amp, B.amp, u),
+  itemRot: lerp(A.itemRot, B.itemRot, u), itemDy: lerp(A.itemDy, B.itemDy, u), tilt: lerp(A.tilt, B.tilt, u), shake: B.shake * u,
+  near: lerpXY(A.near, B.near, u), far: lerpXY(A.far, B.far, u), brow: lerpXY(A.brow, B.brow, u),
+  item: u < 0.35 ? A.item : B.item, extra: u < 0.9 ? undefined : B.extra,
+});
+const easeInOut = (x: number) => { const u = Math.max(0, Math.min(1, x)); return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; };
 const ease01 = (x: number) => (x < 0.6 ? (x / 0.6) * 0.25 : 0.25 + ((x - 0.6) / 0.4) * 0.75);
 
 /** One figure in the flat storybook style, 112 px tall with its feet at the origin. It can face us, turn to the side or show its back, and it can do any of the 37 actions of art/vocab.ts: stand, walk, run, sit, kneel, bow, pray, fight, fall, lie, dig, hammer, write, read, think, shout, dance, shoot and more. It breathes, blinks and talks; cloaks and flames move. */
-export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, body, cloak, hold = 'none', walk = false, cheer = false, scale = 1, face = true, view, pose, stool = true, armor, skin: skinIdx, beard: beardProp, female = false, shield = false, hatColor }) => {
+export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, body, cloak, hold = 'none', walk = false, cheer = false, scale = 1, face = true, view, pose, stool = true, armor, skin: skinIdx, beard: beardProp, female = false, shield = false, hatColor, since, delay = 0 }) => {
   const P: Pose = pose ?? (cheer ? 'cheer' : walk ? 'walk' : 'stand');
   const V: View = view ?? (P === 'ride' || (SIDE_POSES as string[]).includes(P) ? 'side' : 'front');
   const side = V === 'side', back = V === 'back';
-  const S = specFor(P, side, t, seed, hold);
+  const target = specFor(P, side, t, seed, hold);
+  const into = since === undefined || P === 'stand' ? 1 : easeInOut((since - delay) / 0.55); // about half a second to get into the action
+  const S = into >= 1 ? target : blendSpec(specFor('stand', side, t, seed, hold), target, into);
   const p = t * (P === 'run' ? 11 : P === 'push' || P === 'sneak' ? 5 : P === 'dance' ? 6 : 7) + seed;
   const sw = S.moving ? Math.sin(p) * S.amp : 0;
   const sitting = S.legs === 'sit';
   const cheering = P === 'cheer' || P === 'lift' || P === 'dance';
   const bob = S.moving ? -Math.abs(Math.sin(p)) * (P === 'run' ? 6 : 4) * Math.min(1, S.amp + 0.3) : -Math.sin(t * 2 + seed) * 1.2 - (cheering ? Math.abs(Math.sin(t * 6 + seed)) * 10 : 0);
-  const jit = S.shake ? Math.sin(t * 40 + seed) * S.shake : 0;
+  const jit = S.shake ? (Math.sin(t * 22 + seed) * 0.7 + Math.sin(t * 13 + seed * 2) * 0.3) * S.shake : 0; // a tremble, not a buzz
   const cloth = body ?? c.mid;
   const dark = mix(cloth, c.shadow, 0.35);
   const ol = mix(c.shadow, cloth, 0.3);
@@ -111,14 +126,25 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
   const beard = female ? false : beardProp ?? ((k === 0 || k === 3) && hat !== 'crown' ? true : hat === 'crown');
   const blinking = Math.sin(t * 1.3 + seed * 5) > 0.97;
   const eyes: Eyes = S.eyes === 'open' && blinking ? 'closed' : S.eyes;
-  const talk = Math.max(0, Math.sin(t * 9 + seed * 3)) * (S.moving ? 0 : 1);
-  const mouth: Mouth = S.mouth === 'smile' && talk > 0.3 ? 'open' : S.mouth === 'flat' && talk > 0.6 ? 'open' : S.mouth;
+  const talk = Math.max(0, Math.sin(t * 7.5 + seed * 3) * 0.7 + Math.sin(t * 11 + seed) * 0.3) * (S.moving ? 0 : 1);
+  const mouth: Mouth = S.mouth === 'smile' && talk > 0.25 ? 'open' : S.mouth === 'flat' && talk > 0.5 ? 'open' : S.mouth;
+  const jaw = 0.55 + talk * 0.75; // the open mouth follows the syllables instead of snapping open and shut
+  const gaze = 0.9 * Math.tanh(3 * Math.sin(t * 0.55 + seed * 2)); // the eyes glance around, smoothly
   const HY = -92;
   const drop = S.drop;
   const hip = -44 + drop;
   const sh = side ? 3 : 13;
   const [nearX, nearY] = S.near, [farX, farY] = S.far;
-  const sleeve = (x1: number, y1: number, x2: number, y2: number, col: string) => <path d={`M${x1} ${y1} L${x2} ${y2}`} stroke={col} strokeWidth={side ? 7.5 : 8.5} strokeLinecap="round" />;
+  // an arm with an elbow: a soft bend toward the outside and down, straight only at full reach
+  const sleeve = (x1: number, y1: number, x2: number, y2: number, col: string) => {
+    const dx = x2 - x1, dy = y2 - y1, d = Math.hypot(dx, dy) || 1;
+    const bendBy = Math.min(9, Math.sqrt(Math.max(0, 23 * 23 - (d / 2) ** 2)));
+    let nx = -dy / d, ny = dx / d;
+    const out = side ? -0.4 : Math.sign(x1) || 1;
+    if (nx * out + ny * 0.6 < 0) { nx = -nx; ny = -ny; }
+    const ex = x1 + dx / 2 + nx * bendBy * 2, ey = y1 + dy / 2 + ny * bendBy * 2;
+    return <path d={`M${x1} ${y1} Q${ex} ${ey} ${x2} ${y2}`} stroke={col} strokeWidth={side ? 7.5 : 8.5} strokeLinecap="round" fill="none" />;
+  };
   const hand = (x: number, y: number) => <circle cx={x} cy={y} r={4.4} fill={skin} stroke={skinD} strokeWidth={0.8} />;
   const boot = mix(c.shadow, '#000000', 0.3);
   const rb = drop > 0 ? -drop : 0; // robe hem rises with the body so it still ends at the ground
@@ -143,13 +169,15 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
   const eyeF = (cx: number) => eyes === 'closed' ? <path d={`M${cx - 3} ${HY} Q${cx} ${HY + 2.4} ${cx + 3} ${HY}`} stroke="#2a1d18" strokeWidth={1.4} fill="none" strokeLinecap="round" /> : (
     <>
       <ellipse cx={cx} cy={HY} rx={eyes === 'wide' ? 2.9 : 2.3} ry={eyes === 'wide' ? 3.6 : 2.9} fill="#fffaf0" />
-      <circle cx={cx + 0.3} cy={HY + 0.3 + (eyes === 'down' ? 1.2 : eyes === 'up' ? -1.3 : 0)} r={eyes === 'wide' ? 1.4 : 1.7} fill="#2a1d18" />
-      <circle cx={cx + 0.8} cy={HY - 0.4 + (eyes === 'down' ? 1.2 : eyes === 'up' ? -1.3 : 0)} r={0.6} fill="#fff" />
+      <circle cx={cx + 0.3 + gaze * 0.7} cy={HY + 0.3 + (eyes === 'down' ? 1.2 : eyes === 'up' ? -1.3 : 0)} r={eyes === 'wide' ? 1.4 : 1.7} fill="#2a1d18" />
+      <circle cx={cx + 0.8 + gaze * 0.7} cy={HY - 0.4 + (eyes === 'down' ? 1.2 : eyes === 'up' ? -1.3 : 0)} r={0.6} fill="#fff" />
+      {/* the upper lid: heavier when the brow is down (anger, effort), so the face reads from far away */}
+      <path d={`M${cx - 2.8} ${HY - 1.8 + Math.max(0, S.brow[1]) * 0.5} Q${cx} ${HY - 3.6} ${cx + 2.8} ${HY - 1.8 + Math.max(0, S.brow[1]) * 0.5}`} stroke={skinD} strokeWidth={1.1} fill="none" strokeLinecap="round" />
     </>
   );
   const mouthF = () => {
     switch (mouth) {
-      case 'open': return <ellipse cx={0} cy={HY + 10.5} rx={3} ry={2.4} fill="#5a1f1f" />;
+      case 'open': return <ellipse cx={0} cy={HY + 10.5} rx={3} ry={2.4 * jaw} fill="#5a1f1f" />;
       case 'shout': return <ellipse cx={0} cy={HY + 11} rx={4.4} ry={4} fill="#5a1f1f" />;
       case 'flat': return <path d={`M-3.5 ${HY + 10.5} L3.5 ${HY + 10.5}`} stroke={beard ? c.light : '#7a2c2c'} strokeWidth={1.5} strokeLinecap="round" />;
       case 'sad': return <path d={`M-4 ${HY + 12.5} Q0 ${HY + 8.5} 4 ${HY + 12.5}`} stroke={beard ? c.light : '#7a2c2c'} strokeWidth={1.5} fill="none" strokeLinecap="round" />;
@@ -158,7 +186,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
   };
   const mouthS = () => {
     switch (mouth) {
-      case 'open': return <ellipse cx={10} cy={HY + 10.5} rx={2.2} ry={2.2} fill="#5a1f1f" />;
+      case 'open': return <ellipse cx={10} cy={HY + 10.5} rx={2.2} ry={2.2 * jaw} fill="#5a1f1f" />;
       case 'shout': return <ellipse cx={10} cy={HY + 11} rx={3} ry={3.8} fill="#5a1f1f" />;
       case 'flat': return <path d={`M7 ${HY + 10.5} L13 ${HY + 10.5}`} stroke={beard ? c.light : '#7a2c2c'} strokeWidth={1.5} strokeLinecap="round" />;
       case 'sad': return <path d={`M6 ${HY + 12.5} Q10 ${HY + 9} 13 ${HY + 12}`} stroke={beard ? c.light : '#7a2c2c'} strokeWidth={1.5} fill="none" strokeLinecap="round" />;
@@ -183,6 +211,8 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
             <>
               <path d={side ? `M-10 -78 Q-14 -38 ${-17 + sw * 2} ${rb} L${19 + sw * 2} ${rb} Q12 -38 10 -78 Q0 -83 -10 -78Z` : `M-14 -78 Q-18 -38 ${-23 + sw * 2} ${rb} L${23 + sw * 2} ${rb} Q18 -38 14 -78 Q0 -84 -14 -78Z`} fill={robe} stroke={ol} strokeWidth={1.4} />
               {!back && <path d={`M${side ? 4 : 0} -74 L${sw * 2 + (side ? 4 : 0)} ${rb + 2}`} stroke={mix(robe, c.shadow, 0.3)} strokeWidth={1.6} />}
+              <path d={side ? `M-10 -78 Q-14 -38 ${-17 + sw * 2} ${rb} L${-6 + sw * 2} ${rb} Q-6 -40 -4 -79Z` : `M-14 -78 Q-18 -38 ${-23 + sw * 2} ${rb} L${-11 + sw * 2} ${rb} Q-9 -40 -6 -80Z`} fill={c.shadow} opacity={0.2} />
+              {!back && <path d={`M${side ? 3 : -8} -70 Q${side ? 0 : -10} -30 ${side ? -2 : -12 + sw} ${rb - 4}`} stroke={mix(robe, c.shadow, 0.35)} strokeWidth={1.2} fill="none" opacity={0.8} />}
               <path d={side ? 'M-11 -56 Q0 -50 11 -56 L11 -50 Q0 -44 -11 -50Z' : 'M-15 -56 Q0 -50 15 -56 L15 -50 Q0 -44 -15 -50Z'} fill={c.gold} stroke={ol} strokeWidth={0.8} />
               {!back && !side && <path d="M-5 -78 L0 -68 L5 -78Z" fill={mix(skin, robe, 0.3)} />}
               {drop > 0 && <>{foot(side ? 8 : -9, -2 - drop, 9)}{foot(side ? 20 : 9, -2 - drop, 9)}</>}
@@ -191,6 +221,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
             <>
               <path d={side ? 'M-9 -78 Q-11 -60 -9 -42 L9 -42 Q11 -60 9 -78 Q0 -83 -9 -78Z' : 'M-14 -78 Q-17 -60 -14 -42 L14 -42 Q17 -60 14 -78 Q0 -84 -14 -78Z'} fill={cloth} stroke={ol} strokeWidth={1.4} />
               {!back && !side && <path d="M-6 -80 L0 -68 L6 -80Z" fill={skin} />}
+              <path d={side ? 'M-9 -78 Q-11 -60 -9 -42 L-3 -42 Q-4 -60 -3 -80Z' : 'M-14 -78 Q-17 -60 -14 -42 L-6 -42 Q-8 -60 -6 -80Z'} fill={c.shadow} opacity={0.2} />
               <rect x={side ? -10 : -14} y={-52} width={side ? 20 : 28} height={6} fill={c.shadow} opacity={0.55} />
               {!back && <rect x={side ? 2 : -4.5} y={-53} width={9} height={8} rx={2} fill={c.gold} stroke={ol} strokeWidth={0.8} />}
             </>
@@ -248,6 +279,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
                 <ellipse cx={-15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} stroke={skinD} strokeWidth={0.8} />
                 <ellipse cx={15} cy={HY + 2} rx={2.8} ry={3.8} fill={skin} stroke={skinD} strokeWidth={0.8} />
                 <ellipse cx={0} cy={HY} rx={15} ry={16} fill={skin} stroke={skinD} strokeWidth={1} />
+                <path d={`M-5 ${HY - 15.5} Q-15.5 ${HY - 8} -14.5 ${HY + 3} Q-12 ${HY + 13} -2 ${HY + 15.8} Q-10 ${HY + 6} -5 ${HY - 15.5}Z`} fill={c.shadow} opacity={0.14} />
                 {!NOHAIR.includes(hat) && <path d={`M-15 ${HY - 3} Q-14 ${HY - 17} 0 ${HY - 17} Q14 ${HY - 17} 15 ${HY - 3} Q9 ${HY - 12} 0 ${HY - 11} Q-9 ${HY - 12} -15 ${HY - 3}Z`} fill={hair} />}
                 {beard && face && <path d={`M-14 ${HY + 3} Q-13 ${HY + 20} 0 ${HY + 20} Q13 ${HY + 20} 14 ${HY + 3} Q8 ${HY + 8} 0 ${HY + 8} Q-8 ${HY + 8} -14 ${HY + 3}Z`} fill={hair} />}
                 {eyeF(-5.5)}{eyeF(5.5)}
@@ -317,11 +349,11 @@ export const Cavalry: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir }) =>
   </g>
 );
 
-export const King: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir, act, view }) => (
+export const King: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir, act, view, since }) => (
   <g transform={`scale(${dir} 1)`}>
     <g transform="translate(-70 0)"><Person c={c} t={t} seed={seed + 1} hat="helmet" hold="spear" body={c.mid} scale={0.9} view="side" /></g>
     <g transform="translate(70 0) scale(-1 1)"><Person c={c} t={t} seed={seed + 2} hat="helmet" hold="spear" body={c.mid} scale={0.9} view="side" /></g>
-    <Person c={c} t={t} seed={seed} hat="crown" cloak={c.accent} robe={c.accent2} scale={1.18} pose={act} view={view} />
+    <Person c={c} t={t} seed={seed} hat="crown" cloak={c.accent} robe={c.accent2} scale={1.18} pose={act} view={view} since={since} />
   </g>
 );
 
@@ -361,12 +393,12 @@ export const Caravan: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir }) =>
   </g>
 );
 
-export const Scholar: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir, act, view }) => (
-  <g transform={`scale(${dir} 1)`}><Person c={c} t={t} seed={seed} hat="cap" robe={c.accent2} hold="scroll" scale={1.1} pose={act} view={view} /></g>
+export const Scholar: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir, act, view, since }) => (
+  <g transform={`scale(${dir} 1)`}><Person c={c} t={t} seed={seed} hat="cap" robe={c.accent2} hold="scroll" scale={1.1} pose={act} view={view} since={since} /></g>
 );
-export const Monk: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir, act, view }) => (
+export const Monk: React.FC<Drawn & { c: Colors }> = ({ c, t, seed, dir, act, view, since }) => (
   <g transform={`scale(${dir} 1)`}>
-    <Person c={c} t={t} seed={seed} hat="hood" robe={mix(c.near, c.accent2, 0.35)} scale={1.1} pose={act} view={view} />
+    <Person c={c} t={t} seed={seed} hat="hood" robe={mix(c.near, c.accent2, 0.35)} scale={1.1} pose={act} view={view} since={since} />
     <g transform="translate(-60 0)"><Person c={c} t={t} seed={seed + 3} hat="hood" robe={mix(c.mid, c.accent2, 0.3)} scale={0.95} pose="sit" view="side" /></g>
   </g>
 );

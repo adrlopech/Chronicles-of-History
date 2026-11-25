@@ -5,14 +5,14 @@ import { Look } from '../looks';
 import { Backdrop, sunWorld } from './places';
 import { Cavalry, Caravan, Crowd, Elephants, Farmer, King, Merchant, Monk, Scholar, Soldiers } from './people';
 import { Banner, Birds, Bridge, Cannon, Castle, Chest, Comet, Crown, Eclipse, Factory, Fire, Fleet, Galley, Gate, Lighthouse, MapTable, Plane, Ruins, Scroll, Ship, Smoke, Sword, Tank, Temple, Tents, Throne, Torch, Tower, Train, Volcano, Windmill, Pyramids } from './things';
-import { Action, ArtShot, Subject, View, kindOf, PEOPLE, PersonKind } from './vocab';
+import { Action, ArtShot, Camera, Subject, View, kindOf, PEOPLE, PersonKind } from './vocab';
 import { PersonGroup } from './costumes';
 import { NEW_ANIMALS } from './animals';
 import { NEW_STRUCTURES } from './structures2';
 import { STRUCTURES3, VEHICLES3 } from './structures3';
 import { hash, rng } from '../ink';
 
-type Dr = { c: Colors; t: number; seed: number; dir: 1 | -1; act?: Action; view?: View };
+type Dr = { c: Colors; t: number; seed: number; dir: 1 | -1; act?: Action; view?: View; since?: number };
 const DRAW: Record<string, React.FC<Dr>> = {
   castle: Castle, temple: Temple, pyramids: Pyramids, tower: Tower, gate: Gate, windmill: Windmill, factory: Factory, lighthouse: Lighthouse, tents: Tents, bridge: Bridge, ruins: Ruins,
   soldiers: Soldiers, cavalry: Cavalry, king: King, crowd: Crowd, caravan: Caravan, scholar: Scholar, monk: Monk, farmer: Farmer, merchant: Merchant,
@@ -61,10 +61,8 @@ const Atmosphere: React.FC<{ c: Colors; time: string; place: string; t: number; 
       <defs>
         <radialGradient id="bloom"><stop offset="0" stopColor={c.sun} stopOpacity={c.night ? 0.3 : 0.5} /><stop offset="0.35" stopColor={c.sun} stopOpacity={c.night ? 0.08 : 0.16} /><stop offset="1" stopColor={c.sun} stopOpacity={0} /></radialGradient>
         <radialGradient id="vig" cx="50%" cy="46%" r="75%"><stop offset="0.55" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" stopOpacity={0.62} /></radialGradient>
-        <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={c.skyBottom} stopOpacity={0} /><stop offset="0.5" stopColor={c.skyBottom} stopOpacity={0.4} /><stop offset="1" stopColor={c.skyBottom} stopOpacity={0} /></linearGradient>
         <filter id="grainF" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed={5} /><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.45" /></filter>
       </defs>
-      {!indoor && <rect y={GY - 170} width={1080} height={300} fill="url(#haze)" />}
       {!indoor && <circle cx={sx} cy={sy} r={520} fill="url(#bloom)" style={{ mixBlendMode: 'screen' }} />}
       {rays && Array.from({ length: 7 }, (_, i) => {
         const a = 1.15 + i * 0.16 + Math.sin(t * 0.4 + i) * 0.03;
@@ -85,14 +83,21 @@ const Atmosphere: React.FC<{ c: Colors; time: string; place: string; t: number; 
 interface Slot { x: number; d: keyof typeof DEPTH; s: number }
 
 /** One shot: the place, the subjects laid out in depth, the camera sliding across the layers, the weather over everything. Pure function of `frame`. */
-export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look: Look; seed: number; bare?: boolean }> = ({ shot, frame, dur, look, seed: seed0, bare }) => {
+/** A camera framing: the world point `f` is drawn at the screen point `a`, magnified `z` times. */
+type Frame = { fx: number; fy: number; z: number; ax: number; ay: number };
+const lerpFrame = (A: Frame, B: Frame, u: number): Frame => ({ fx: A.fx + (B.fx - A.fx) * u, fy: A.fy + (B.fy - A.fy) * u, z: A.z + (B.z - A.z) * u, ax: A.ax + (B.ax - A.ax) * u, ay: A.ay + (B.ay - A.ay) * u });
+const smooth = (u: number) => { const x = Math.max(0, Math.min(1, u)); return x * x * (3 - 2 * x); };
+
+export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look: Look; seed: number; bare?: boolean; set?: number; camera?: Camera }> = ({ shot, frame, dur, look, seed: seed0, bare, set, camera }) => {
   const seed = (seed0 + hash(shot.subjects.join())) % 1000;
+  const setSeed = set ?? seed; // the place itself (hills, clouds, walls): shared by consecutive shots of one place so the set does not jump
   const t = frame / 30;
   const c = makeColors(look, shot.time, shot.weather ?? 'clear');
   const prog = frame / Math.max(1, dur);
   const dirCam = seed % 2 ? 1 : -1;
-  const cam = dirCam * (prog * 2 - 1) * 0.9;
-  const zoom = 1.28 + 0.07 * prog;
+  const close = camera === 'close' || camera === 'push' || camera === 'pull' || camera === 'follow';
+  const cam = dirCam * (smooth(prog) * 2 - 1) * (close ? 0.25 : 0.9); // the pan eases in and out; a close shot barely pans
+  const zoom = 1.28 + 0.07 * smooth(prog);
   const subj = shot.subjects;
   const structures = subj.filter((s) => kindOf(s) === 'structure');
   const actors = subj.filter((s) => kindOf(s) === 'actor');
@@ -103,6 +108,7 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
   const aS: Slot[] = structures.length ? [{ x: 720, d: 'mid', s: 1.1 }, { x: 400, d: 'near', s: 0.9 }, { x: 1140, d: 'near', s: 0.85 }] : [{ x: 800, d: 'mid', s: 1.25 }, { x: 460, d: 'near', s: 1.0 }, { x: 1150, d: 'far', s: 1.0 }];
   const pS: Slot[] = [{ x: 340, d: 'fore', s: 1.1 }, { x: 1250, d: 'fore', s: 1.0 }];
   const items: { z: number; key: string; node: React.ReactNode }[] = [];
+  let hero: { x: number; head: number; feet: number } | null = null; // where the hero stands, for the camera
   const put = (sj: Subject, slot: Slot, k: number, travel: boolean) => {
     const D = DEPTH[slot.d];
     const C = DRAW[sj];
@@ -114,7 +120,9 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     if (WATER.has(sj)) y = GY + (place === 'sea' || place === 'coast' ? 300 : 260);
     if (sj === 'plane') y = GY - 230 + Math.sin(t) * 14;
     const lx = -260 + cam * 200 * D.f;
-    items.push({ z: y + (slot.d === 'far' ? -500 : 0), key: `${sj}${k}`, node: <g transform={`translate(${x + lx} ${y}) scale(${slot.s * D.s * (HUMAN.has(sj) && k === 10 ? 1.3 : 1)})`}><C c={c} t={t} seed={seed + k * 3} dir={dir} act={shot.action} view={shot.view} /></g> });
+    const sc = slot.s * D.s * (HUMAN.has(sj) && k === 10 ? 1.3 : 1);
+    if (k === 10 && HUMAN.has(sj)) hero = { x: x + lx, head: y - 100 * sc * (isPerson ? 1.15 : 1), feet: y };
+    items.push({ z: y + (slot.d === 'far' ? -500 : 0), key: `${sj}${k}`, node: <g transform={`translate(${x + lx} ${y}) scale(${sc})`}><C c={c} t={t} seed={seed + k * 3} dir={dir} act={shot.action} view={shot.view} since={t} /></g> });
   };
   structures.slice(0, 2).forEach((sj, i) => put(sj, sS[i], i, false));
   actors.slice(0, 3).forEach((sj, i) => put(sj, aS[i], 10 + i, true));
@@ -127,9 +135,23 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     items.push({ z: sj === 'fire' ? y + 100 : y - 600, key: `fx${i}`, node: <g transform={`translate(${x + lx} ${y}) scale(${s})`}><C c={c} t={t} seed={seed + i} dir={1} /></g> });
   });
   items.sort((a, b) => a.z - b.z);
-  // the bloom is drawn over the zoomed picture, so the sun's world position goes through the same zoom (it used to land on the hero's face)
-  const [wx, wy] = sunWorld(shot.time, seed, cam);
-  const sunScreen = [540 + (wx - 540) * zoom, GY + 150 + (wy - (GY + 150)) * zoom];
+  // the camera: a framing at the start of the shot and one at the end, joined with an ease in and out
+  const medium: Frame = { fx: 540, fy: GY + 150, z: zoom, ax: 540, ay: GY + 150 };
+  const wide: Frame = { fx: 540, fy: GY + 150, z: 1.14 + 0.05 * smooth(prog), ax: 540, ay: GY + 150 };
+  const h = hero as { x: number; head: number; feet: number } | null;
+  const face = (z: number): Frame => (h ? { fx: h.x, fy: h.head + 30, z, ax: 540 + (h.x - 540) * 0.25, ay: 600 } : medium);
+  const half = (z: number): Frame => (h ? { fx: h.x, fy: (h.head + h.feet) / 2 - 40, z, ax: 540 + (h.x - 540) * 0.3, ay: 760 } : medium);
+  const u = smooth(prog);
+  const F: Frame = camera === 'wide' ? wide
+    : camera === 'close' ? face(2.05 + 0.12 * u)
+    : camera === 'push' ? lerpFrame(medium, face(2.1), u)
+    : camera === 'pull' ? lerpFrame(face(2.1), wide, u)
+    : camera === 'follow' ? half(1.65)
+    : medium;
+  const view = `translate(${F.ax} ${F.ay}) scale(${F.z}) translate(${-F.fx} ${-F.fy})`;
+  // the bloom is drawn over the framed picture, so the sun's world position goes through the same camera (it used to land on the hero's face)
+  const [wx, wy] = sunWorld(shot.time, setSeed, cam);
+  const sunScreen = [F.ax + (wx - F.fx) * F.z, F.ay + (wy - F.fy) * F.z];
   if (bare) {
     // the web portal: only the buildings and the people, no sky, ground or atmosphere; every item is a group the page can animate
     const cls = (key: string) => (key.startsWith('fx') ? 'it fx' : (Number(key.match(/(\d+)$/)?.[1]) >= 20 ? 'it pr' : Number(key.match(/(\d+)$/)?.[1]) >= 10 ? 'it act' : 'it st'));
@@ -143,8 +165,10 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
   }
   return (
     <svg width={1080} height={H} viewBox={`0 0 1080 ${H}`} style={{ display: 'block' }}>
-      <g transform={`translate(540 ${GY + 150}) scale(${zoom}) translate(-540 ${-(GY + 150)})`}>
-        <Backdrop place={place} time={shot.time} c={c} t={t} seed={seed} cam={cam} era={look.name} />
+      <g transform={view}>
+        <Backdrop place={place} time={shot.time} c={c} t={t} seed={setSeed} cam={cam} era={look.name} />
+        {/* the haze of the horizon lives in the world, behind the people (drawn over them it made everyone look see-through) */}
+        {place !== 'interior' && <><defs><linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={c.skyBottom} stopOpacity={0} /><stop offset="0.5" stopColor={c.skyBottom} stopOpacity={0.4} /><stop offset="1" stopColor={c.skyBottom} stopOpacity={0} /></linearGradient></defs><rect x={-200} y={GY - 170} width={W + 400} height={300} fill="url(#haze)" /></>}
         {items.map((it) => <g key={it.key}>{it.node}</g>)}
         <Weather kind={shot.weather ?? (place === 'snow' ? 'snow' : 'clear')} t={t} c={c} />
       </g>
