@@ -21,7 +21,7 @@ const Page: React.FC<{ children: React.ReactNode; gap?: number; justify?: 'cente
   if (!art) return <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 100px ${SAFE_BOTTOM + CAPTION_SPACE}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: justify, gap }}>{children}</AbsoluteFill>;
   return (
     <AbsoluteFill style={{ padding: `${CONTENT_TOP}px 56px ${SAFE_BOTTOM + CAPTION_SPACE - 10}px`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end' }}>
-      <div style={card ? { width: 968, padding: '28px 36px 30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 16), position: 'relative', background: `linear-gradient(165deg, ${look.paper}F4, ${look.paper2}F7)`, border: `3px solid ${look.accent2}`, outline: `1.5px solid ${look.accent2}88`, outlineOffset: -14, borderRadius: 6, boxShadow: '0 28px 70px rgba(0,0,0,0.7), inset 0 0 90px rgba(0,0,0,0.5)' } : { width: 968, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 14), textShadow: '0 4px 0 rgba(0,0,0,0.55), 0 8px 30px rgba(0,0,0,0.8)' }}>{card && <Corners color={look.accent2} size={46} inset={7} />}{children}</div>
+      <div style={card ? { width: 968, padding: '28px 36px 30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 16), position: 'relative', background: `linear-gradient(165deg, ${look.paper}F4, ${look.paper2}F7)`, border: `3px solid ${look.accent2}`, outline: `1.5px solid ${look.accent2}88`, outlineOffset: -14, borderRadius: 6, boxShadow: '0 28px 70px rgba(0,0,0,0.7), inset 0 0 90px rgba(0,0,0,0.5)' } : { width: 968, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: Math.min(gap, 14), textShadow: '0 4px 0 rgba(0,0,0,0.55), 0 8px 30px rgba(0,0,0,0.8)', WebkitTextStroke: '7px rgba(16,11,7,0.82)', paintOrder: 'stroke fill' }}>{card && <Corners color={look.accent2} size={46} inset={7} />}{children}</div>
     </AbsoluteFill>
   );
 };
@@ -104,7 +104,7 @@ export const DateScene: React.FC<{ scene: MotionScene }> = ({ scene }) => {
           {!art && <div style={{ position: 'absolute', left: 9, top: 9, color: look.accent, opacity: 0.4 * ghost }}>{shown}</div>}
           {shown}
         </div>
-        {scene.unit && <div style={{ fontFamily: look.date, fontWeight: 600, fontSize: size * 0.26, color: look.accent, marginTop: size * 0.06, letterSpacing: size * 0.02 }}>{scene.unit.toUpperCase()}</div>}
+        {scene.unit && (bc || !valid || year < 1000) && <div style={{ fontFamily: look.date, fontWeight: 600, fontSize: size * 0.26, color: look.accent, marginTop: size * 0.06, letterSpacing: size * 0.02 }}>{scene.unit.toUpperCase()}</div>}
       </div>
       <Ornament width={680} at={20} />
       {scene.accentText && <InkWords text={scene.accentText} size={fit(scene.accentText, 78, W, 3, 0.46, 44)} color={look.accent} font={look.italic} weight={400} delay={26} lh={1.12} />}
@@ -417,6 +417,6 @@ export const Callout: React.FC<{ scene: MotionScene }> = ({ scene }) => {
   const out = interpolate(frame, [at + 70, at + 84], [1, 0], clamp);
   if (frame < at || out <= 0) return null;
   return (
-    <div style={{ position: 'absolute', right: 70, top: SAFE_TOP - 10, transform: `rotate(2.5deg) scale(${pop})`, opacity: out, padding: '10px 26px', background: look.paper, border: `3px solid ${look.accent}`, boxShadow: '0 10px 22px rgba(0,0,0,0.4)', fontFamily: look.italic, fontSize: fit(scene.callout, 50, 520, 1, 0.5, 28), color: look.accent, whiteSpace: 'nowrap' }}>{scene.callout}</div>
+    <div style={{ position: 'absolute', right: 70, top: SAFE_TOP + 30, transform: `rotate(2.5deg) scale(${pop})`, opacity: out, padding: '12px 30px', background: look.paper, border: `4px solid ${look.accent}`, boxShadow: '0 10px 22px rgba(0,0,0,0.5)', fontFamily: look.italic, fontSize: fit(scene.callout, 64, 600, 1, 0.5, 40), color: look.ink, whiteSpace: 'nowrap' }}>{scene.callout}</div>
   );
 };

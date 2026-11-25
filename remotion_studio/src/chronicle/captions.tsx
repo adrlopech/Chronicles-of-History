@@ -66,11 +66,11 @@ export const Captions: React.FC<{ chunks: Chunk[] }> = ({ chunks }) => {
         <div style={{ width: 14, height: 14, background: rule, transform: 'rotate(45deg)', boxShadow: `0 0 14px ${rule}` }} />
         <div style={{ height: 3, flex: 1, background: `linear-gradient(270deg, transparent, ${rule})` }} />
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 26px', transform: `scale(${0.95 + 0.05 * pop})` }}>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: `0 ${Math.max(26, Math.round(size * 0.55))}px`, transform: `scale(${0.95 + 0.05 * pop})` }}>
         {chunk.words.map((w, i) => {
           const on = frame >= w.s - 1 && frame <= w.e + 2;
           return (
-            <span key={i} style={{ position: 'relative', fontFamily: look.head, fontWeight: look.weight, fontSize: size, lineHeight: 1.12, textTransform: 'uppercase', letterSpacing: 1.5, color: on ? '#FFE08A' : '#FFF8EA', transform: on ? 'scale(1.1)' : 'none', WebkitTextStroke: `${Math.round(size / 8)}px ${edge}`, paintOrder: 'stroke fill', textShadow: on ? '0 3px 0 #D9A021, 0 6px 0 #8a5a0c, 0 0 30px rgba(255,200,90,0.75), 0 12px 22px rgba(0,0,0,0.7)' : '0 5px 0 rgba(0,0,0,0.65), 0 10px 22px rgba(0,0,0,0.75)' }}>
+            <span key={i} style={{ position: 'relative', fontFamily: look.head, fontWeight: look.weight, fontSize: size, lineHeight: 1.12, textTransform: 'uppercase', letterSpacing: 1.5, color: on ? '#FFE08A' : '#FFF8EA', transform: on ? 'scale(1.05)' : 'none', margin: on ? `0 ${Math.round(size * 0.12)}px` : 0, WebkitTextStroke: `${Math.round(size / 8)}px ${edge}`, paintOrder: 'stroke fill', textShadow: on ? '0 3px 0 #D9A021, 0 6px 0 #8a5a0c, 0 0 30px rgba(255,200,90,0.75), 0 12px 22px rgba(0,0,0,0.7)' : '0 5px 0 rgba(0,0,0,0.65), 0 10px 22px rgba(0,0,0,0.75)' }}>
               {w.w}
             </span>
           );

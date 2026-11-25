@@ -2,7 +2,7 @@ import React from 'react';
 import { Colors, makeColors, mix } from './palette';
 import { GY, H, W } from './draw';
 import { Look } from '../looks';
-import { Backdrop } from './places';
+import { Backdrop, sunWorld } from './places';
 import { Cavalry, Caravan, Crowd, Elephants, Farmer, King, Merchant, Monk, Scholar, Soldiers } from './people';
 import { Banner, Birds, Bridge, Cannon, Castle, Chest, Comet, Crown, Eclipse, Factory, Fire, Fleet, Galley, Gate, Lighthouse, MapTable, Plane, Ruins, Scroll, Ship, Smoke, Sword, Tank, Temple, Tents, Throne, Torch, Tower, Train, Volcano, Windmill, Pyramids } from './things';
 import { Action, ArtShot, Subject, View, kindOf, PEOPLE, PersonKind } from './vocab';
@@ -59,7 +59,7 @@ const Atmosphere: React.FC<{ c: Colors; time: string; place: string; t: number; 
   return (
     <g style={{ pointerEvents: 'none' }}>
       <defs>
-        <radialGradient id="bloom"><stop offset="0" stopColor={c.sun} stopOpacity={0.75} /><stop offset="0.35" stopColor={c.sun} stopOpacity={0.22} /><stop offset="1" stopColor={c.sun} stopOpacity={0} /></radialGradient>
+        <radialGradient id="bloom"><stop offset="0" stopColor={c.sun} stopOpacity={c.night ? 0.3 : 0.5} /><stop offset="0.35" stopColor={c.sun} stopOpacity={c.night ? 0.08 : 0.16} /><stop offset="1" stopColor={c.sun} stopOpacity={0} /></radialGradient>
         <radialGradient id="vig" cx="50%" cy="46%" r="75%"><stop offset="0.55" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" stopOpacity={0.62} /></radialGradient>
         <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={c.skyBottom} stopOpacity={0} /><stop offset="0.5" stopColor={c.skyBottom} stopOpacity={0.4} /><stop offset="1" stopColor={c.skyBottom} stopOpacity={0} /></linearGradient>
         <filter id="grainF" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed={5} /><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.45" /></filter>
@@ -127,6 +127,9 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
     items.push({ z: sj === 'fire' ? y + 100 : y - 600, key: `fx${i}`, node: <g transform={`translate(${x + lx} ${y}) scale(${s})`}><C c={c} t={t} seed={seed + i} dir={1} /></g> });
   });
   items.sort((a, b) => a.z - b.z);
+  // the bloom is drawn over the zoomed picture, so the sun's world position goes through the same zoom (it used to land on the hero's face)
+  const [wx, wy] = sunWorld(shot.time, seed, cam);
+  const sunScreen = [540 + (wx - 540) * zoom, GY + 150 + (wy - (GY + 150)) * zoom];
   if (bare) {
     // the web portal: only the buildings and the people, no sky, ground or atmosphere; every item is a group the page can animate
     const cls = (key: string) => (key.startsWith('fx') ? 'it fx' : (Number(key.match(/(\d+)$/)?.[1]) >= 20 ? 'it pr' : Number(key.match(/(\d+)$/)?.[1]) >= 10 ? 'it act' : 'it st'));
@@ -141,11 +144,11 @@ export const Diorama: React.FC<{ shot: ArtShot; frame: number; dur: number; look
   return (
     <svg width={1080} height={H} viewBox={`0 0 1080 ${H}`} style={{ display: 'block' }}>
       <g transform={`translate(540 ${GY + 150}) scale(${zoom}) translate(-540 ${-(GY + 150)})`}>
-        <Backdrop place={place} time={shot.time} c={c} t={t} seed={seed} cam={cam} />
+        <Backdrop place={place} time={shot.time} c={c} t={t} seed={seed} cam={cam} era={look.name} />
         {items.map((it) => <g key={it.key}>{it.node}</g>)}
         <Weather kind={shot.weather ?? (place === 'snow' ? 'snow' : 'clear')} t={t} c={c} />
       </g>
-      <Atmosphere c={c} time={shot.time} place={place} t={t} sx={640 + ((seed % 5) - 2) * 90 + 260 - 260 + cam * 30} sy={shot.time === 'day' ? GY - 190 : shot.time === 'night' ? GY - 200 : GY - 50} embers={subj.includes('fire') || subj.includes('volcano') || subj.includes('cannon') || place === 'battlefield' || shot.weather === 'smoke'} weather={shot.weather ?? 'clear'} />
+      <Atmosphere c={c} time={shot.time} place={place} t={t} sx={sunScreen[0]} sy={sunScreen[1]} embers={subj.includes('fire') || subj.includes('volcano') || subj.includes('cannon') || place === 'battlefield' || shot.weather === 'smoke'} weather={shot.weather ?? 'clear'} />
       <rect width={1080} height={H} fill={c.night ? '#0f0905' : c.shadow} opacity={c.night ? 0.12 : 0.06} />
     </svg>
   );

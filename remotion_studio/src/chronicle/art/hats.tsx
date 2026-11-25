@@ -6,7 +6,7 @@ export const HATS = [
   'nemes', 'laurel', 'crest', 'horned', 'conical', 'straw', 'tricorn', 'bicorne', 'top', 'feather', 'miter', 'greathelm', 'kabuto', 'beret',
   'cowboy', 'bandana', 'wig', 'fur', 'headdress', 'mongol', 'imperial', 'mandarin', 'wide', 'morion', 'bearskin', 'bonnet', 'phrygian', 'flatcap',
   'miner', 'brodie', 'peaked', 'aviator', 'fedora', 'nurse', 'sailor', 'astro', 'jester', 'beak',
-  'topknot', 'geisha', 'antlers', 'bowler',
+  'topknot', 'geisha', 'antlers', 'bowler', 'nasal',
 ] as const;
 export type Hat = (typeof HATS)[number];
 
@@ -36,6 +36,8 @@ export const HatShape: React.FC<HatProps> = ({ hat, c, t, seed, HY, side, back, 
     case 'laurel': return <>{Array.from({ length: 9 }, (_, i) => { const a = Math.PI * (1.05 + i * 0.112); return <ellipse key={i} cx={Math.cos(a) * 15} cy={y - 1 + Math.sin(a) * 16} rx={4.2} ry={1.9} fill={mix('#8a773a', c.gold, i % 2 ? 0.55 : 0.1)} transform={`rotate(${(a * 180) / Math.PI + 90} ${Math.cos(a) * 15} ${y - 1 + Math.sin(a) * 16})`} />; })}</>;
     case 'crest': return <><path d={`M-16 ${y - 1} Q-16 ${y - 20} 0 ${y - 20} Q16 ${y - 20} 16 ${y - 1}Z`} fill={steel} stroke={ol} strokeWidth={1.5} /><path d={`M-16 ${y - 1} L-14 ${y + 12} L-9 ${y + 12} L-9 ${y - 1}M16 ${y - 1} L14 ${y + 12} L9 ${y + 12} L9 ${y - 1}`} fill={steel} stroke={ol} strokeWidth={1.2} /><path d={`M-14 ${y - 16} Q0 ${y - 36} 14 ${y - 16}`} stroke={c.accent} strokeWidth={7} fill="none" strokeLinecap="round" /></>;
     case 'horned': return <><path d={`M-16 ${y - 2} Q-16 ${y - 19} 0 ${y - 19} Q16 ${y - 19} 16 ${y - 2}Z`} fill={steel} stroke={ol} strokeWidth={1.5} /><path d={`M-14 ${y - 8} Q-28 ${y - 12} -24 ${y - 30} Q-20 ${y - 18} -12 ${y - 14}Z`} fill="#efe6cf" stroke={ol} strokeWidth={1} /><path d={`M14 ${y - 8} Q28 ${y - 12} 24 ${y - 30} Q20 ${y - 18} 12 ${y - 14}Z`} fill="#efe6cf" stroke={ol} strokeWidth={1} /><path d={`M-16 ${y - 3} L16 ${y - 3}`} stroke={bronze} strokeWidth={2.4} /></>;
+    // the real Viking helmet (Gjermundbu): a rounded iron cap with a ridge, a brow band and a nose guard. No horns: those are a 19th-century stage invention.
+    case 'nasal': return <><path d={`M-16 ${y - 2} Q-17 ${y - 24} 0 ${y - 25} Q17 ${y - 24} 16 ${y - 2}Z`} fill={steel} stroke={ol} strokeWidth={1.5} /><path d={`M0 ${y - 25} V${y - 3}`} stroke={bronze} strokeWidth={2.4} /><path d={`M-16 ${y - 3} L16 ${y - 3}`} stroke={bronze} strokeWidth={3} /><path d={`M-2.5 ${y - 3} L-2 ${y + 9} L2 ${y + 9} L2.5 ${y - 3}Z`} fill={steel} stroke={ol} strokeWidth={1} /></>;
     case 'conical': return <path d={`M-16 ${y - 7} L0 ${y - 42} L16 ${y - 7} Q0 ${y - 13} -16 ${y - 7}Z`} fill={col} stroke={mix(ol, col, 0.4)} strokeWidth={1.3} />;
     case 'straw': return <><ellipse cx={0} cy={y - 8} rx={26} ry={5} fill={mix('#d9b866', c.mid, 0.25)} stroke={ol} strokeWidth={1.1} /><path d={`M-13 ${y - 9} Q-12 ${y - 24} 0 ${y - 24} Q12 ${y - 24} 13 ${y - 9}Z`} fill={mix('#e5c878', c.mid, 0.25)} stroke={ol} strokeWidth={1} /></>;
     case 'tricorn': return <><path d={`M-24 ${y - 6} Q-14 ${y - 26} 0 ${y - 15} Q14 ${y - 26} 24 ${y - 6} Q0 ${y - 11} -24 ${y - 6}Z`} fill={blk} stroke={c.gold} strokeWidth={1.4} /><circle cx={0} cy={y - 15} r={2} fill={c.gold} /></>;

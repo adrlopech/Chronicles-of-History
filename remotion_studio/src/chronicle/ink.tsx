@@ -132,7 +132,7 @@ export const Kicker: React.FC<{ text: string; at?: number; color?: string }> = (
   const look = useLook();
   const c = color ?? look.accent;
   const p = interpolate(frame, [at, at + 14], [0, 1], { ...clamp, easing: EASE_OUT });
-  const size = fit(text, 38, 760, 1, 0.78, 24);
+  const size = fit(text, 40, 820, 1, 0.74, 30); // never under 30 px: the kicker names the place and must read on a phone
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 22, opacity: p, transform: `translateY(${(1 - p) * 10}px)` }}>
       <div style={{ width: 70 * p, height: 3, background: look.accent2 }} />

@@ -4,7 +4,14 @@ import { GY, H, W, rect, ridge, tri, wave } from './draw';
 import { rng } from '../ink';
 import { Place, TimeOfDay } from './vocab';
 
-interface BackProps { place: Place; time: TimeOfDay; c: Colors; t: number; seed: number; cam: number }
+interface BackProps { place: Place; time: TimeOfDay; c: Colors; t: number; seed: number; cam: number; era?: string }
+
+/** Where the sun or the moon sits in the world (before the shot's zoom). High in the sky by day and night, so it never sits behind the heads of the people (they reach about GY - 230); low on the horizon at dawn and dusk. */
+export const sunWorld = (time: TimeOfDay, seed: number, cam: number): [number, number] => [640 + ((seed % 5) - 2) * 90 + cam * 30, time === 'day' ? GY - 380 : time === 'night' ? GY - 360 : GY - 50];
+
+/** The room of an interior shot, by era: round arches only where they belong (Rome, the Renaissance, palaces); timber halls, cave rock, paper screens or panelled walls elsewhere. */
+const interiorKind = (era?: string): 'arches' | 'timber' | 'cave' | 'shoji' | 'panel' =>
+  era === 'prehistory' ? 'cave' : era === 'orient' ? 'shoji' : era === 'industrial' || era === 'wartime' || era === 'spaceage' ? 'panel' : era === 'antiquity' || era === 'renaissance' || era === 'empire' ? 'arches' : 'timber';
 const shift = (cam: number, f: number) => `translate(${-260 + cam * 200 * f} 0)`;
 
 const Trees: React.FC<{ seed: number; y: number; size: number; fill: string; n: number; t: number; pine?: boolean }> = ({ seed, y, size, fill, n, t, pine = true }) => {
@@ -67,9 +74,10 @@ const Clouds: React.FC<{ c: Colors; t: number; seed: number; cam: number }> = ({
 };
 
 /** Sky, sun or moon, clouds and the layered ground of one place. Each layer slides at its own speed with the camera (parallax). */
-export const Backdrop: React.FC<BackProps> = ({ place, time, c, t, seed, cam }) => {
+export const Backdrop: React.FC<BackProps> = ({ place, time, c, t, seed, cam, era }) => {
   const indoor = place === 'interior';
-  const sunY = time === 'day' ? GY - 190 : time === 'night' ? GY - 200 : GY - 50;
+  const room = interiorKind(era);
+  const sunY = sunWorld(time, seed, 0)[1];
   const sunX = 640 + ((seed % 5) - 2) * 90;
   const horizon = place === 'sea' || place === 'coast';
   return (
@@ -168,16 +176,55 @@ export const Backdrop: React.FC<BackProps> = ({ place, time, c, t, seed, cam }) 
       {indoor && (
         <>
           <rect width={1080} height={H} fill={mix(c.skyMid, c.shadow, 0.55)} />
-          <g transform={shift(cam, 0.5)}>
-            {Array.from({ length: 7 }, (_, i) => (
-              <g key={i} transform={`translate(${i * 250 - 40} 0)`}>
-                <path d={`M0 ${GY} V${GY - 380} A110 110 0 0 1 220 ${GY - 380} V${GY}Z`} fill={mix(c.skyBottom, c.shadow, 0.55)} />
-                <path d={`M30 ${GY} V${GY - 360} A80 80 0 0 1 190 ${GY - 360} V${GY}Z`} fill={c.night ? mix(c.skyTop, '#000', 0.4) : mix(c.skyBottom, '#ffffff', 0.25)} opacity={0.9} />
-                <path d={`M80 ${GY - 330} L${240 + i * 12} ${GY + 330} L${60 + i * 12} ${GY + 330}Z`} fill={c.glow} opacity={c.night ? 0.07 : 0.14} />
-              </g>
-            ))}
-          </g>
-          <g transform={shift(cam, 0.8)}>{[160, 560, 960, 1360].map((x, i) => <path key={x} d={rect(x - 26, GY - 420, 52, 430)} fill={mix(c.near, c.light, 0.15)} stroke={c.shadow} strokeWidth={3} />)}</g>
+          {room === 'arches' && (
+            <>
+            <g transform={shift(cam, 0.5)}>
+              {Array.from({ length: 7 }, (_, i) => (
+                <g key={i} transform={`translate(${i * 250 - 40} 0)`}>
+                  <path d={`M0 ${GY} V${GY - 380} A110 110 0 0 1 220 ${GY - 380} V${GY}Z`} fill={mix(c.skyBottom, c.shadow, 0.55)} />
+                  <path d={`M30 ${GY} V${GY - 360} A80 80 0 0 1 190 ${GY - 360} V${GY}Z`} fill={c.night ? mix(c.skyTop, '#000', 0.4) : mix(c.skyBottom, '#ffffff', 0.25)} opacity={0.9} />
+                  <path d={`M80 ${GY - 330} L${240 + i * 12} ${GY + 330} L${60 + i * 12} ${GY + 330}Z`} fill={c.glow} opacity={c.night ? 0.07 : 0.14} />
+                </g>
+              ))}
+            </g>
+            <g transform={shift(cam, 0.8)}>{[160, 560, 960, 1360].map((x, i) => <path key={x} d={rect(x - 26, GY - 420, 52, 430)} fill={mix(c.near, c.light, 0.15)} stroke={c.shadow} strokeWidth={3} />)}</g>
+            </>
+          )}
+          {room === 'timber' && (
+            <g transform={shift(cam, 0.6)}>
+              {Array.from({ length: 22 }, (_, i) => <path key={i} d={rect(i * 80 - 40, GY - 520, 78, 520)} fill={mix(mix(c.near, c.accent2, 0.2), c.light, 0.06 + (i % 3) * 0.04)} stroke={c.shadow} strokeWidth={2} opacity={0.95} />)}
+              {[GY - 470, GY - 250].map((y) => <path key={y} d={rect(-40, y, W + 80, 34)} fill={mix(c.shadow, c.accent2, 0.25)} />)}
+              {[200, 700, 1200].map((x) => <path key={x} d={rect(x - 22, GY - 520, 44, 520)} fill={mix(c.shadow, c.accent2, 0.3)} />)}
+              {[450, 950].map((x) => <g key={x}><path d={rect(x - 70, GY - 400, 140, 110)} fill={c.night ? mix(c.skyTop, '#000', 0.4) : mix(c.skyBottom, '#ffffff', 0.2)} stroke={c.shadow} strokeWidth={6} /><path d={`M${x} ${GY - 400} V${GY - 290} M${x - 70} ${GY - 345} H${x + 70}`} stroke={c.shadow} strokeWidth={5} /></g>)}
+            </g>
+          )}
+          {room === 'cave' && (
+            <g transform={shift(cam, 0.6)}>
+              <path d={`M-40 ${GY} L-40 ${GY - 560} ${Array.from({ length: 9 }, (_, i) => `Q${i * 210 + 60} ${GY - 640 + ((seed + i * 37) % 90)} ${i * 210 + 170} ${GY - 590 + ((seed * 3 + i * 53) % 80)}`).join(' ')} L${W + 40} ${GY}Z`} fill={mix(c.near, c.shadow, 0.35)} />
+              {Array.from({ length: 6 }, (_, i) => <ellipse key={i} cx={120 + i * 270} cy={GY - 330 + ((seed + i * 41) % 120)} rx={110 + (i % 3) * 30} ry={70} fill={mix(c.mid, c.light, 0.12)} opacity={0.35} />)}
+              <path d={`M-40 ${GY - 30} Q${W / 2} ${GY - 120} ${W + 40} ${GY - 30}`} stroke={c.shadow} strokeWidth={4} fill="none" opacity={0.4} />
+            </g>
+          )}
+          {room === 'shoji' && (
+            <g transform={shift(cam, 0.6)}>
+              {Array.from({ length: 8 }, (_, i) => (
+                <g key={i} transform={`translate(${i * 220 - 40} ${GY - 470})`}>
+                  <path d={rect(0, 0, 210, 470)} fill={mix(c.light, c.skyBottom, 0.25)} stroke={mix(c.shadow, c.accent2, 0.2)} strokeWidth={10} />
+                  {[1, 2].map((k) => <path key={k} d={`M${k * 70} 0 V470`} stroke={mix(c.shadow, c.accent2, 0.2)} strokeWidth={4} />)}
+                  {[1, 2, 3, 4].map((k) => <path key={k} d={`M0 ${k * 94} H210`} stroke={mix(c.shadow, c.accent2, 0.2)} strokeWidth={4} />)}
+                </g>
+              ))}
+              <path d={rect(-40, GY - 520, W + 80, 50)} fill={mix(c.shadow, c.accent, 0.15)} />
+            </g>
+          )}
+          {room === 'panel' && (
+            <g transform={shift(cam, 0.6)}>
+              <path d={rect(-40, GY - 560, W + 80, 560)} fill={mix(c.mid, c.light, 0.1)} />
+              {[60, 460, 860, 1260].map((x) => <g key={x}><path d={rect(x, GY - 470, 220, 300)} fill={c.night ? mix(c.skyTop, '#000', 0.4) : mix(c.skyBottom, '#ffffff', 0.25)} stroke={c.shadow} strokeWidth={8} /><path d={`M${x + 110} ${GY - 470} V${GY - 170} M${x} ${GY - 320} H${x + 220}`} stroke={c.shadow} strokeWidth={6} /></g>)}
+              <path d={rect(-40, GY - 130, W + 80, 130)} fill={mix(c.near, c.accent2, 0.25)} />
+              <path d={`M-40 ${GY - 130} H${W + 40}`} stroke={c.shadow} strokeWidth={5} />
+            </g>
+          )}
           <g transform={shift(cam, 1)}>
             <path d={`M-40 ${GY} L${W + 40} ${GY} L${W + 40} ${H} L-40 ${H}Z`} fill={mix(c.near, c.accent2, 0.18)} />
             {Array.from({ length: 14 }, (_, i) => <path key={i} d={`M${i * 130 - 40} ${GY} L${i * 260 - 1000} ${H}`} stroke={c.shadow} strokeWidth={2} opacity={0.18} />)}
