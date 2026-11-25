@@ -8,7 +8,7 @@
 | **YouTube Data API** | `videos().list(part="statistics")` | Views, likes, comments right now (no retention) |
 | **TikTok Studio** | Browser, `https://www.tiktok.com/tiktokstudio/content` | Views, likes, comments per post (no API here). The list loads lazily: scroll to see older posts |
 
-The token needs `youtube.upload`, `youtube.readonly` and `yt-analytics.readonly`. The Google Cloud app is in Production, so it does not expire weekly; to renew it see [Publishing](publishing.md#youtube-oauth).
+The token needs `youtube.upload`, `youtube.readonly` and `yt-analytics.readonly`. Publish the Google Cloud app to Production so the token does not expire weekly; see [Publishing](publishing.md#youtube-oauth).
 
 ## The retention report
 
@@ -31,33 +31,18 @@ and writes `notes/analytics_report_<date>.md` and `data/analytics_report.json` (
 A format counts as **proven** with at least one video and 100 views. The batch is the two best proven formats, one exploration and one weighted draw. With no data (token missing, offline) it prints
 `analytics unavailable` and falls back to `FORMAT_WEIGHTS`. Slots are re-ordered by average views once two slots have two or more videos each. Details in [Daily workflow](daily-workflow.md#1-plan).
 
-## What the channel has shown so far (Nov 2026, small samples)
+## What the channel has shown so far
 
-- Shorts feed is the main source of YouTube views (about 80 %).
-- Best average percentage viewed by format over 90 days: `evolution` (about 65 %), `versus` (58 %), classic explainer (57 %); `whatif` and `decode` sit around 45 %.
-- On TikTok almost every video flattens at about 750 views whatever the format; GTA VI videos did well on TikTok and poorly on YouTube.
-- Treat all of this as hypotheses: the channels are small and most videos are days old. The background studies are in the private `notes/` folder (`content_style_study_2026-11.md`, `niche_research_2026-11.md`, `viral_playbook.md`, `competitor_playbook.md`, `video_audit_2026-11.md`).
+Nothing yet: the first videos went up on 2026-11-24, and the YouTube Analytics API lags one to two days. Until each format has about **10 videos**, treat every average as noise.
+The first test wave (CLAUDE.md, next steps 3 and 5) is 2-3 banked scripts per format, then a 10-video pilot over 2-3 weeks compared with Silicon Verdict's retention.
+Once the numbers exist, set `FORMAT_WEIGHTS` (`services/motion_generator.py`) and `FALLBACK_ORDER` (`scripts/genera_batch.py`) from them, and write the findings here with dates and sample sizes.
 
-## Older tools
+## What to compare
 
-
-## What the numbers say
-
-Read them with `scripts/report_retention.py`: besides format and look it groups the videos by **title pattern** ("Spec Duel", "What If", "Every X (prices)"...), **publish hour** and **weekday**, with views per video.
+Read them with `scripts/report_retention.py`: besides format and look (era) it groups the videos by **title pattern** (the series prefixes "Unsolved", "Turning Point", "History Duel"... and plain "Why / How / What" titles), **publish hour** and **weekday**, with views per video.
 Fewer than about ten videos per group is noise, so use the groups to decide what to test next, not to declare winners.
 
-Lessons of the reference channel analysed on 2026-11-23 (a tech account with 3 videos, 472K views on one of them and only 287 followers):
-
-- The hit was a **product-intent list** ("Every RTX 50 Series Graphics Card Explained": name, memory, launch price, use and games for each card, 98 s, 5,272 saves, 588 comments, 935 shares).
-  Search keeps feeding it weeks later. That is the shape of the "Every X at today's price" videos ([Prices](prices.md)).
-- **Comments:** people list the card they own or want, ask for the one that was left out ("where is the 5050?") and complain about prices; the left-out card's comment got 3,285 likes. A product list should leave out, or only mention,
-  the product people argue about, and the pinned comment should ask which one they own.
-- **Followers come from identity, not reach:** 472K views gave 0.06 % followers; the channel had no bio, a generic name and, in its third video, changed subject. Keep one niche, one series name on screen
-  (the title strip already does it), a bio that says what the channel does and an outro that names the series ("follow for every processor explained").
-- Their second video of the same kind got 17.6K (4 % of the first): reach belongs to the topic, so each product family is a new bet and the family that is searched most gets the first slot.
-
-Ideas that need the account owner (the API token cannot change them): the YouTube channel description and the TikTok bio, for example
-*"Every GPU, CPU and spec decoded in 60 seconds, with today's real prices. New videos daily."*
+Things that need the account owner (the API token cannot change them): the YouTube channel description and the TikTok bio. Keep them on one niche, the way the brand describes it ([Branding](branding.md)).
 
 ## First-three-days numbers and the cover test
 

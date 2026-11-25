@@ -5,7 +5,7 @@
 // Everything else is done here. Define the helpers once per page load (paste this file's body), then:
 //
 //   tt.focusCaption()                                   -> then: key cmd+a, key Delete, type the caption, type " #tag" ... (see guide/publishing.md)
-//   await tt.pickHashtag('#siliconverdict')             -> {ok, suggestions}   (call after typing the tag, once the dropdown is up)
+//   await tt.pickHashtag('#history')             -> {ok, suggestions}   (call after typing the tag, once the dropdown is up)
 //   await tt.schedule({ date: '2026-11-24', time: '20:00' })   -> {ok, value}  (minutes must be a multiple of 5; Madrid time = the page's "(GMT+1) Hora local")
 //   tt.state()                                          -> caption, picked hashtags, mode, date, time, the buttons that exist
 //   await tt.press('Programar')                         -> clicks the button with that text; then:  await tt.confirmReview()  if the "Seguir con la publicación" dialog appears

@@ -8,6 +8,9 @@
 
 ## Install
 
+On the reference machine `.venv` and `remotion_studio/node_modules` are symlinks to the Silicon Verdict ones (about 2 GB saved; updating a dependency there changes both projects).
+On a fresh machine, or to make this repository standalone, delete those two symlinks and install:
+
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cd remotion_studio && npm install && cd ..
@@ -20,12 +23,14 @@ Fill `.env`. The variables that matter:
 |---|---|
 | `GEMINI_API_KEY`, `GEMINI_MODEL` | Scripts and fact-check. First choice of the LLM layer |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_MODELS` | Optional fallback provider (Workers AI) |
-| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_1..3` | Narration. Voice 1 is Daniel (retired from rotation), 2 is Adam, 3 is Liam |
+| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_1..3` | Narration. Voice 1 is Daniel (unused), 2 is Adam, 3 is Liam ([Voice](voice.md)) |
 | `MOTION_VOICE_ROTATION` | `true` rotates the narrator by format, `false` always uses Liam |
 | `TTS_BACKEND`, `LOCAL_TTS_FALLBACK` | `elevenlabs` (default) or `local`; whether to use the local clone when ElevenLabs fails |
 | `YOUTUBE_TOKEN_PATH`, `YOUTUBE_CLIENT_SECRETS_PATH` | OAuth files. The token is looked up in `data/`, the project root and `tokens/` |
-| `YOUTUBE_PRIVACY_STATUS`, `YOUTUBE_CATEGORY_ID` | Default privacy and category (28, Science and Technology) |
+| `YOUTUBE_PRIVACY_STATUS`, `YOUTUBE_CATEGORY_ID` | Default privacy and category (27, Education) |
+| `YOUTUBE_CHANNEL_ID` | The only channel uploads may go to (default: the Chronicles channel). A Silicon Verdict token is always refused |
 
+Secrets (`.env`, `client_secrets.json`, `token.json`, `tokens/`) are git-ignored and belong to this project only: never copy them from Silicon Verdict.
 Authorize YouTube once (see [Publishing](publishing.md#youtube-oauth)):
 
 ```bash
@@ -38,7 +43,7 @@ Authorize YouTube once (see [Publishing](publishing.md#youtube-oauth)):
 Render only, nothing is uploaded:
 
 ```bash
-.venv/bin/python main.py --motion-format myth --export-only
+.venv/bin/python main.py --motion-format mystery --export-only
 ```
 
 The result is `output/youtube/<title>/<date-time>.mp4` plus a copy and a `.txt` with metadata in `output/tiktok/<title>/`.
@@ -48,8 +53,8 @@ Some more first commands:
 ```bash
 .venv/bin/python main.py help                                   # command reference
 .venv/bin/python main.py --motion-format any    # a weighted random format
-.venv/bin/python main.py --motion-kind curiosity --topic "How TRIM keeps SSDs fast"
-.venv/bin/python scripts/render_silent_preview.py data/scripts/sample_top5.json --out /tmp/preview   # silent preview, no voice credits
+.venv/bin/python main.py --motion-format turning --topic "Caesar crosses the Rubicon"
+.venv/bin/python scripts/render_silent_preview.py data/scripts/caesar_rubicon.json --out /tmp/preview   # silent preview, no voice credits
 ```
 
 ## Preview the design live
@@ -58,11 +63,7 @@ Some more first commands:
 cd remotion_studio && npx remotion studio
 ```
 
-Open the **MotionGraphic** composition and edit its props. Sample props live next to the code: `remotion_studio/src/motion/sample.json`, `sample_formats.json`, `sample_ui.json`.
-
-## Optional: game videos
-
-Game videos need footage and source dossiers prepared first. See [Game videos](games.md).
+Open the **MotionGraphic** composition (or **Cover**) and edit its props. Sample props live next to the code: `remotion_studio/src/chronicle/sample.json`.
 
 ## Optional: local backup voice
 

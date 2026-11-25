@@ -62,7 +62,7 @@ def topics_in_bank(series: str) -> list:
 
 
 def count_ready(series: str, fmt: Optional[str] = None) -> int:
-    """Unused scripts of a series. For 'motion', `fmt` narrows to one content format ('auto' = the classic explainer; hardware, simple, myth, tier...)."""
+    """Unused scripts of a series. For 'motion', `fmt` narrows to one content format ('auto' = a free-form history; mystery, turning, duel...)."""
     _ensure()
     with get_db_connection() as conn:
         if series != "motion" or fmt is None:
@@ -75,7 +75,7 @@ def count_ready(series: str, fmt: Optional[str] = None) -> int:
 
 
 def ready_by_format(series: str = "motion") -> Dict[str, int]:
-    """Unused scripts of a series per content format ('auto' = the classic explainer)."""
+    """Unused scripts of a series per content format ('auto' = a free-form history)."""
     _ensure()
     out: Dict[str, int] = {}
     with get_db_connection() as conn:

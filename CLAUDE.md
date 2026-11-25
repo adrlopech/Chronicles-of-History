@@ -13,7 +13,7 @@ Ningún vídeo dura menos de **1 minuto** (monetización; y es la norma del cana
 
 ## Status
 
-The visual style is new (an illustrated archive with eleven era looks (antiquity, manuscript, seachart, empire, industrial, wartime, prehistory, renaissance, orient, frontier, spaceage): `guide/motion-engine.md`). The eight history formats (`guide/formats.md`: mystery, dayinlife, turning, lies, whatif, duel, journey, portrait) and their generator, validators and prompts are new; the tech formats, games, prices and news are gone. The rest of `guide/` and the brand assets (done: `guide/branding.md`, `node scripts/make_brand_assets.mjs`) are still the tech channel's. Next steps, in order:
+The visual style is new (an illustrated archive with eleven era looks (antiquity, manuscript, seachart, empire, industrial, wartime, prehistory, renaissance, orient, frontier, spaceage): `guide/motion-engine.md`). The eight history formats (`guide/formats.md`: mystery, dayinlife, turning, lies, whatif, duel, journey, portrait) and their generator, validators and prompts are new; the tech formats, games, prices and news are gone. The whole of `guide/` now describes this channel (`guide/README.md` is the index) and the brand assets are done (`guide/branding.md`, `node scripts/make_brand_assets.mjs`). Next steps, in order:
 
 1. ~~Brand assets~~ done: Chronicler mascot, avatar, YouTube banner and watermark in `assets/brand/` (`node scripts/make_brand_assets.mjs`, rules in `guide/branding.md`). Still to do by hand: upload them to the YouTube and TikTok profiles.
 2. Illustrations are animated vector art drawn in code (`remotion_studio/src/chronicle/art/`): grow the kit (more subjects, places, characters) by adding to `art/vocab.ts` AND `services/motion_generator.py`. No photographs and no AI images, by decision. The `image` scene is unused.
@@ -28,4 +28,4 @@ The visual style is new (an illustrated archive with eleven era looks (antiquity
 - Facts in history scripts must be verifiable; no invented dates or quotes.
 - Commit and push straight to `main`, no branches.
 
-Commands: `.venv/bin/python main.py --motion-format <format>`, `scripts/genera_batch.py`, `scripts/refill_story_bank.py`, `scripts/render_silent_preview.py`; `python main.py help` lists them. The old guides in `guide/` still describe Silicon Verdict except `formats.md` and `motion-engine.md`.
+Commands: `.venv/bin/python main.py --motion-format <format>`, `scripts/genera_batch.py`, `scripts/refill_story_bank.py`, `scripts/render_silent_preview.py`; `python main.py help` lists them. Every upload passes two checks in `services/youtube.py`: the one-minute floor and the channel (`YOUTUBE_CHANNEL_ID`, the Chronicles channel; a Silicon Verdict token is always refused).

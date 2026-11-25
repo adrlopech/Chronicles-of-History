@@ -7,17 +7,15 @@ Three ElevenLabs voices are configured (`ELEVENLABS_VOICE_1..3` in `.env`): **Da
 
 | Narrator | Role | Formats |
 |---|---|---|
-| **Adam** (voice 2) | judges and explains | versus, myth, tier, hardware, evolution, fails, numbers, rumor, review, news |
-| **Liam** (voice 3) | punches and guides | whatif, fix, simple, decode, top5, eli5, quiz, stop, the classic explainer, easter, every game video |
-| **Daniel** (voice 1) | retired (2026-11-15) | no format uses him any more; his formats moved to Adam or Liam |
-
-Videos uploaded before 15 Nov (some GTA VI ones) still carry Daniel's voice.
+| **Adam** (voice 2) | the grave chronicler | mystery, turning, duel, journey |
+| **Liam** (voice 3) | the lively guide | dayinlife, lies, whatif, portrait, the free-form history (`auto`) |
+| **Daniel** (voice 1) | not used | configured but no format uses him |
 
 ## How the narration is made
 
 - ElevenLabs model `eleven_turbo_v2_5`, **one continuous take** per video with word-level timestamps, sliced per scene at the pause between two words. No time-stretching, so the voice always sounds natural.
-- The timestamps drive each scene's length, the captions, the accent pulse and the cursor. A scene starts 0.12 s before the narrator speaks.
-- Numbers are written in the script the way they are spoken.
+- The timestamps drive each scene's length, the captions and the accent pulse. A scene starts 0.12 s before the narrator speaks.
+- Numbers and years are written in the script the way they are spoken ("fourteen ninety-two", "four seventy-six A.D.").
 - A robotic system voice is never published.
 
 ## Local backup voice

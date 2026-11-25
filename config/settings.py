@@ -62,7 +62,7 @@ class Settings(BaseSettings):
     YOUTUBE_CLIENT_SECRETS_PATH: str = "client_secrets.json"
     YOUTUBE_PRIVACY_STATUS: str = "public"  # "public", "private", "unlisted"
     YOUTUBE_CATEGORY_ID: str = "27"  # 27: Education (history); 28 was the tech channel's Science & Technology
-    YOUTUBE_CHANNEL_ID: str = ""  # the Chronicles channel id (UC...): when set, an upload with a token of any other channel is refused
+    YOUTUBE_CHANNEL_ID: str = "UCgD3S0sVUW-HWYm9b8PiRRA"  # @chroniclesofhistorytv: an upload with a token of any other channel is refused ("" = only Silicon Verdict is blocked)
 
     def resolve_token_path(self) -> Path:
         """Resolves token.json location checking data/ first, then root and tokens/."""

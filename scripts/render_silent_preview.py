@@ -5,7 +5,7 @@ Each scene lasts what its narration would need at a natural pace (~2.5 words per
 the 62 s monetisation floor, and the soundtrack is only the project's own ambient bed and scene whooshes.
 
 Usage:
-  python scripts/render_silent_preview.py docs/generated_scripts/bank/fix/fix_001.json [more.json ...] [--out output/previews]
+  python scripts/render_silent_preview.py data/scripts/caesar_rubicon.json [more.json ...] [--out output/previews]
 Output: <out>/<script name>_silent.mp4 (1080x1920, H.264, 30 fps)
 """
 import argparse
