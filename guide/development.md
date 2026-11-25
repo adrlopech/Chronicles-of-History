@@ -58,7 +58,7 @@ A second workflow, `latest-video.yml`, runs every 15 minutes, reads the channel'
 
 ## The portal
 
-`docs/` is a static site (GitHub Pages, `.nojekyll`): `index.html` (hero, formats, cursor, looks), `changelog.html` (built from `git log` by `scripts/build_updates_page.py`), `terms.html`, `privacy.html`,
+`docs/` is a static site (GitHub Pages, `.nojekyll`): `index.html` (hero, formats, cursor, looks), `terms.html`, `privacy.html`,
 `callback.html` and the TikTok developer verification files. Pages rebuild on every push. After editing, run `python3 docs/check_portal.py`.
 Assets of the portal come from `scripts/make_portal_assets.py` and `scripts/make_brand_assets.py`.
 

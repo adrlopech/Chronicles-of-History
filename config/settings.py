@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     # Base Paths
     BASE_DIR: Path = BASE_DIR
-    TMP_DIR: str = "/tmp/yt_automation"
+    TMP_DIR: str = "/tmp/chronicle_automation"  # its own folder: Silicon Verdict uses /tmp/yt_automation and the cleaner empties run_* folders here
 
     # Hard ceiling for the length of ANY video (every series): 3 minutes
     MAX_VIDEO_SECONDS: float = 180.0
@@ -61,7 +61,8 @@ class Settings(BaseSettings):
     YOUTUBE_TOKEN_PATH: str = "token.json"
     YOUTUBE_CLIENT_SECRETS_PATH: str = "client_secrets.json"
     YOUTUBE_PRIVACY_STATUS: str = "public"  # "public", "private", "unlisted"
-    YOUTUBE_CATEGORY_ID: str = "28"  # 28: Science & Technology
+    YOUTUBE_CATEGORY_ID: str = "27"  # 27: Education (history); 28 was the tech channel's Science & Technology
+    YOUTUBE_CHANNEL_ID: str = ""  # the Chronicles channel id (UC...): when set, an upload with a token of any other channel is refused
 
     def resolve_token_path(self) -> Path:
         """Resolves token.json location checking data/ first, then root and tokens/."""

@@ -32,6 +32,18 @@ RETRIABLE_EXCEPTIONS = (
 )
 MAX_RETRIES = 10
 DEFAULT_CHUNK_SIZE = 5 * 1024 * 1024  # 5MB chunks for resumable upload
+FORBIDDEN_CHANNELS = {"UCm0Xb9KY_Hu12j1CijF2KHQ"}  # Silicon Verdict (@SiliconVerdictHQ): the sibling project, never a target from here
+
+
+def check_floor(video_path: Path) -> None:
+    """The one-minute rule at the last door: no upload path (pipeline, batch, upload_existing, retries) can publish a video under FLOOR_SECONDS."""
+    from services.motion_generator import FLOOR_SECONDS
+    from services.voice import ffmpeg_duration
+    seconds = ffmpeg_duration(video_path)
+    if seconds is None:
+        logger.warning("Could not read the length of %s before uploading", video_path)
+    elif seconds < FLOOR_SECONDS:
+        raise ValueError(f"{video_path.name} lasts {seconds:.1f} s, under the {FLOOR_SECONDS:.0f} s floor: it is not published (lengthen the script or remake it)")
 
 
 class YouTubeService:
@@ -44,6 +56,7 @@ class YouTubeService:
             self.token_file = settings.resolve_token_path()
 
         self._client: Optional[Resource] = None
+        self._channel_ok = False
 
     def get_authenticated_client(self) -> Resource:
         """Loads credentials from token.json, auto-refreshes expired tokens, and builds the YouTube client."""
@@ -83,6 +96,29 @@ class YouTubeService:
         self._client = build("youtube", "v3", credentials=credentials)
         return self._client
 
+    def check_channel(self) -> None:
+        """Refuses to upload with the token of the wrong channel (the sibling project uses the same code and the same Google login).
+        Blocked: the Silicon Verdict channel always; with YOUTUBE_CHANNEL_ID set, any channel but that one."""
+        if self._channel_ok:
+            return
+        expected = settings.YOUTUBE_CHANNEL_ID.strip()
+        try:
+            items = self.get_authenticated_client().channels().list(part="id,snippet", mine=True).execute().get("items", [])
+        except Exception as exc:  # a token without youtube.readonly cannot tell which channel it is
+            if expected:
+                raise PermissionError(f"cannot confirm the token's channel ({exc}); YOUTUBE_CHANNEL_ID is set, so nothing is uploaded") from exc
+            logger.warning("Could not confirm which channel the token belongs to (%s). Set YOUTUBE_CHANNEL_ID to make this check strict.", exc)
+            return
+        ids = [c["id"] for c in items]
+        names = ", ".join(c.get("snippet", {}).get("title", c["id"]) for c in items) or "none"
+        if FORBIDDEN_CHANNELS & set(ids):
+            raise PermissionError(f"the YouTube token belongs to Silicon Verdict ({names}): never upload Chronicles videos there. Run scripts/authenticate_yt.py with the Chronicles channel.")
+        if expected and expected not in ids:
+            raise PermissionError(f"the YouTube token belongs to {names} ({', '.join(ids)}), not to YOUTUBE_CHANNEL_ID {expected}")
+        if not expected:
+            logger.warning("Uploading to %s; set YOUTUBE_CHANNEL_ID=%s in .env to pin it.", names, ids[0] if ids else "UC...")
+        self._channel_ok = True
+
     def upload_video(
         self,
         file_path: str,
@@ -111,8 +147,10 @@ class YouTubeService:
         video_path = Path(file_path)
         if not video_path.is_file():
             raise FileNotFoundError(f"Video file to upload does not exist: {file_path}")
+        check_floor(video_path)
 
         youtube = self.get_authenticated_client()
+        self.check_channel()
 
         # Format title & description for Shorts compliance
         final_title = title.strip()
@@ -135,7 +173,7 @@ class YouTubeService:
                 "title": safe_title,
                 "description": safe_description,
                 "tags": safe_tags,
-                "categoryId": settings.YOUTUBE_CATEGORY_ID,  # Category 28: Science & Technology
+                "categoryId": settings.YOUTUBE_CATEGORY_ID,  # 27: Education
             },
             "status": {
                 "privacyStatus": privacy_status,

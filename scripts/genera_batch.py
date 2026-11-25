@@ -10,7 +10,7 @@ What it does
     shorts_history); formats with no data yet count as "unknown" and keep their FORMAT_WEIGHTS prior. The batch is 4 DIFFERENT formats:
     the 2 best proven ones, 1 exploration (the format with the fewest published videos) and 1 weighted draw. No data at all = weighted draws.
  2. Hours (UTC): data/batches/log.json remembers the slot of every scheduled video; once a slot has 2+ videos with views, slots are ranked by average views.
-    Until then the default slots below are used (English-speaking tech/gaming audience: US morning/lunch/evening and EU evening).
+    Until then the default slots below are used (English-speaking audience: US morning/lunch/evening and EU evening).
  3. Renders each video with the normal Motion pipeline (export only), uploads it to YouTube as private + publishAt (scripts/upload_existing.py) and writes
     data/batches/latest.json: title, joined hashtags, TikTok caption, a <10 MB copy for the TikTok upload and the slot in UTC and in Madrid time.
  TikTok has no API here: the assistant finishes it in TikTok Studio (see .claude/commands/genera.md): upload the copy, caption + each hashtag picked from the dropdown,
@@ -27,6 +27,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
+from zoneinfo import ZoneInfo
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
@@ -36,6 +37,7 @@ LOG = BASE_DIR / "data" / "batches" / "log.json"
 LATEST = BASE_DIR / "data" / "batches" / "latest.json"
 SMALL_DIR = BASE_DIR / "output" / "tiktok_small"
 FORMAT_ALIASES: Dict[str, str] = {}
+MADRID = ZoneInfo("Europe/Madrid")  # UTC+1 in winter, UTC+2 in summer
 
 
 def format_stats() -> Dict[str, Dict[str, float]]:
@@ -211,7 +213,10 @@ def run_plan(plan: List[Dict[str, Any]], prepare_fn: Callable, finish_fn: Callab
             uploads.append(uploader.submit(publish_fn, p, res, public_first and p is plan[0]))
             kick(i + 1)
         for u in uploads:
-            u.result()
+            try:
+                u.result()
+            except Exception as exc:  # one failed upload must not hide the others or skip the final report
+                print(f"  upload step FAILED: {str(exc)[:300]}")
 
 
 def main() -> int:
@@ -239,9 +244,9 @@ def main() -> int:
     for pick, slot in zip(picks, slots):  # the best formats take the best-ranked slots (a topics file may pin a slot with "slot": "HH:MM")
         slot = pick.get("slot", slot)
         when = datetime.strptime(f"{day} {slot}", "%Y-%m-%d %H:%M").replace(tzinfo=timezone.utc)
-        plan.append({**pick, "slot": slot, "publish_at": when.strftime("%Y-%m-%dT%H:%M:00Z"), "madrid": (when + timedelta(hours=1)).strftime("%H:%M")})
+        plan.append({**pick, "slot": slot, "publish_at": when.strftime("%Y-%m-%dT%H:%M:00Z"), "madrid": when.astimezone(MADRID).strftime("%H:%M")})
     plan.sort(key=lambda p: p["slot"])
-    print(f"\nPlan for {day} (UTC; Madrid = UTC+1):")
+    print(f"\nPlan for {day} (UTC; Madrid = {datetime.combine(day, datetime.min.time(), MADRID).strftime('UTC%z')[:-2]}):")
     for p in plan:
         print(f"  {p['slot']} UTC / {p['madrid']} Madrid  {p['format']:<10} {p['why']}")
     if args.plan:
@@ -263,6 +268,9 @@ def main() -> int:
     def publish(p: Dict[str, Any], res: Dict[str, Any], now: bool) -> None:
         """Uploads one finished video to YouTube, makes its TikTok copy and saves the manifest. Runs in a worker thread while the next video renders."""
         video = res["youtube_video"]
+        if res.get("qa_failures"):  # an objective failure (under the minute, no audio, wrong size): the video stays local, the slot stays empty
+            print(f"  NOT uploaded, QA failed: {'; '.join(res['qa_failures'])}")
+            return
         flags = ["--privacy", "public"] if now else ["--publish-at", p["publish_at"]]  # a slot that already passed: public now, no publishAt
         up = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "upload_existing.py"), video, *flags], cwd=BASE_DIR, capture_output=True, text=True, env={**os.environ, "PYTHONPATH": str(BASE_DIR)})
         m = re.search(r"youtu\.be/([\w-]+)", up.stdout)
@@ -278,7 +286,7 @@ def main() -> int:
             LOG.write_text(json.dumps(log + [{"video_id": entry["video_id"], "slot": entry["slot"], "format": entry["format"], "cover_style": entry.get("cover_style"), "date": str(day), **({"family": entry["family"]} if entry.get("family") else {})}], indent=1))
 
     run_plan(plan, lambda item: prepare_with_fallback(item, plan), lambda prep: finish_motion_video(prep, export_only=True), publish, args.public_first)
-    failed = len(plan) - len(done)
+    failed = len(plan) - sum(1 for d in done if d.get("video_id"))  # an entry without a video id is a failed upload
     notify("Chronicles: batch " + ("finished" if not failed else "finished with gaps"), f"{len(done)} of {len(plan)} videos scheduled on YouTube for {day}" + (" - rerun the failed ones" if failed else " - TikTok is next"))
     print(f"\nYouTube is scheduled ({len(done)} of {len(plan)}{'; rerun the failed ones with --topics and a pinned slot' if failed else ''}). TikTok: finish in TikTok Studio from {out} (caption, hashtags picked from the dropdown, Programación at each slot).")
     return 0

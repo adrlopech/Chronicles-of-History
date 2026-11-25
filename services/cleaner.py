@@ -95,7 +95,7 @@ def _purge_temp_files(t: _Tally, temp_dir: Path) -> None:
 
 
 def _purge_scratch_dirs(t: _Tally, roots: List[Path]) -> None:
-    """Render work folders (run_*, test_*) in temp/ and /tmp/yt_automation/."""
+    """Render work folders (run_*, test_*) in temp/ and settings.TMP_DIR (this project's own, never the sibling's /tmp/yt_automation)."""
     for root in roots:
         if not root.is_dir():
             continue
@@ -131,7 +131,7 @@ def execute_comprehensive_cleanup(
     if clean_frames_and_scratch and (root / "temp").is_dir():
         _purge_temp_files(t, root / "temp")
     if clean_temp_dirs:
-        _purge_scratch_dirs(t, [root / "temp", Path("/tmp/yt_automation")])
+        _purge_scratch_dirs(t, [root / "temp", Path(settings.TMP_DIR)])
 
     freed_mb = t.freed / MB
     logger.info("Limpieza finalizada: %d vídeos | %d frames | %d carpetas | liberado: %.2f MB", len(t.videos), len(t.frames), len(t.dirs), freed_mb)
