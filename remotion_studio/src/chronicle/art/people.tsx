@@ -228,24 +228,15 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
   const hairStyle = Math.floor(seed * 7 + 2) % 4; // crop, curls, swept, long
   const beardStyle = Math.floor(seed * 5 + 1) % 3; // full, short, long
   const aged = k === 3 && !female;
-  const iris = mix(['#5a3a22', '#6e4a28', '#3f2a1a', '#7a5a30'][(k + 2) % 4], c.shadow, 0.15);
-  const eyeF = (cx: number, small = false) => {
-    const w = (small ? 2.8 : 3.5) * (eyes === 'wide' ? 1.12 : 1), h = (small ? 2.6 : 3.1) * (eyes === 'wide' ? 1.25 : 1);
-    if (eyes === 'closed') return <path d={`M${cx - w} ${HY} Q${cx} ${HY + 2.6} ${cx + w} ${HY}`} stroke="#2a1d18" strokeWidth={1.5} fill="none" strokeLinecap="round" />;
-    const ey = HY + (eyes === 'down' ? 1 : eyes === 'up' ? -1.1 : 0);
-    const gx = cx + gaze * 0.9;
-    const lid = Math.max(0, S.brow[1]) * 0.55;
-    return (
-      <>
-        <path d={`M${cx - w} ${HY} Q${cx} ${HY - h} ${cx + w} ${HY} Q${cx} ${HY + h * 0.85} ${cx - w} ${HY}Z`} fill="#fbf4e6" />
-        <circle cx={gx} cy={ey + 0.2} r={small ? 1.6 : 2} fill={iris} />
-        <circle cx={gx} cy={ey + 0.2} r={small ? 0.85 : 1.05} fill="#1a120c" />
-        <circle cx={gx + 0.7} cy={ey - 0.6} r={0.6} fill="#fff" />
-        <path d={`M${cx - w - 0.3} ${HY + 0.3 + lid} Q${cx} ${HY - h - 0.4 + lid} ${cx + w + 0.3} ${HY + 0.3 + lid}`} stroke="#2a1d18" strokeWidth={1.5} fill="none" strokeLinecap="round" />
-        {lid > 0.2 && <path d={`M${cx - w} ${HY + lid} Q${cx} ${HY - h + lid * 1.6} ${cx + w} ${HY + lid}Z`} fill={skin} />}
-      </>
-    );
-  };
+  // the eyes as they were: a white oval, a dark pupil with a catch-light, a soft lid line
+  const eyeF = (cx: number, _small = false) => eyes === 'closed' ? <path d={`M${cx - 3} ${HY} Q${cx} ${HY + 2.4} ${cx + 3} ${HY}`} stroke="#2a1d18" strokeWidth={1.4} fill="none" strokeLinecap="round" /> : (
+    <>
+      <ellipse cx={cx} cy={HY} rx={eyes === 'wide' ? 2.9 : 2.3} ry={eyes === 'wide' ? 3.6 : 2.9} fill="#fffaf0" />
+      <circle cx={cx + 0.3 + gaze * 0.7} cy={HY + 0.3 + (eyes === 'down' ? 1.2 : eyes === 'up' ? -1.3 : 0)} r={eyes === 'wide' ? 1.4 : 1.7} fill="#2a1d18" />
+      <circle cx={cx + 0.8 + gaze * 0.7} cy={HY - 0.4 + (eyes === 'down' ? 1.2 : eyes === 'up' ? -1.3 : 0)} r={0.6} fill="#fff" />
+      <path d={`M${cx - 2.8} ${HY - 1.8 + Math.max(0, S.brow[1]) * 0.5} Q${cx} ${HY - 3.6} ${cx + 2.8} ${HY - 1.8 + Math.max(0, S.brow[1]) * 0.5}`} stroke={skinD} strokeWidth={1.1} fill="none" strokeLinecap="round" />
+    </>
+  );
   const mouthF = () => {
     switch (mouth) {
       case 'open': return <ellipse cx={0} cy={HY + 10.5} rx={3} ry={2.4 * jaw} fill="#5a1f1f" />;
@@ -392,7 +383,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
                 {beard && <path d={`M-4 ${HY + 8} Q-3 ${HY + (beardStyle === 2 ? 30 : 20)} ${beardStyle === 2 ? 4 : 8} ${HY + (beardStyle === 2 ? 30 : 18.5)} Q15 ${HY + 14} 13 ${HY + 9} Q8 ${HY + 11.5} 4 ${HY + 7} Q0 ${HY + 3} -4 ${HY + 8}Z`} fill={hair} opacity={beardStyle === 1 ? 0.55 : 1} />}
                 <path d={`M-4.5 ${HY - 1} Q-9 ${HY - 1.5} -8.5 ${HY + 3.5} Q-8 ${HY + 8} -3.5 ${HY + 7}`} fill={skin} stroke={ol2} strokeWidth={1} />
                 <path d={`M-5.5 ${HY + 1} Q-7 ${HY + 3.5} -5.5 ${HY + 5.5}`} stroke={skinD} strokeWidth={0.9} fill="none" />
-                {eyeF(8, true)}
+                {eyeF(7)}
                 <path d={`M4.5 ${HY - 5.8 + S.brow[1]} Q8 ${HY - 8.4 + (S.brow[0] + S.brow[1]) / 2} 12 ${HY - 6 + S.brow[0]}`} stroke={hair} strokeWidth={2.2} fill="none" strokeLinecap="round" />
                 <path d={`M14.6 ${HY + 4.4} Q13.4 ${HY + 5.2} 14 ${HY + 6}`} stroke={skinD} strokeWidth={0.9} fill="none" />
                 {mouthS()}
@@ -416,7 +407,7 @@ export const Person: React.FC<PersonProps> = ({ c, t, seed, hat = 'none', robe, 
                 {beard && face && beardStyle === 1 && <path d={`M-14 ${HY + 3} Q-13 ${HY + 17} 0 ${HY + 17.5} Q13 ${HY + 17} 14 ${HY + 3} Q8 ${HY + 8} 0 ${HY + 8} Q-8 ${HY + 8} -14 ${HY + 3}Z`} fill={hair} opacity={0.55} />}
                 {beard && face && beardStyle === 2 && <path d={`M-14 ${HY + 3} Q-13 ${HY + 18} -5 ${HY + 26} L0 ${HY + 33} L5 ${HY + 26} Q13 ${HY + 18} 14 ${HY + 3} Q8 ${HY + 8} 0 ${HY + 8} Q-8 ${HY + 8} -14 ${HY + 3}Z`} fill={hair} />}
                 {beard && face && beardStyle !== 1 && <path d={`M-4 ${HY + 14} Q0 ${HY + 18} 4 ${HY + 14} M-8 ${HY + 11} Q-6 ${HY + 18} -2 ${HY + 20} M8 ${HY + 11} Q6 ${HY + 18} 2 ${HY + 20}`} stroke={mix(hair, '#ffffff', 0.18)} strokeWidth={0.9} fill="none" opacity={0.7} />}
-                {eyeF(-5.6)}{eyeF(5.6)}
+                {eyeF(-5.5)}{eyeF(5.5)}
                 {browF(-1)}{browF(1)}
                 <path d={`M0.6 ${HY - 1.5} Q-0.6 ${HY + 3.5} -2.8 ${HY + 5.4} Q-1.6 ${HY + 7.6} 1 ${HY + 7} Q3.4 ${HY + 6.4} 3 ${HY + 4.4}`} fill={mix(skin, c.shadow, 0.08)} stroke={skinD} strokeWidth={1.1} strokeLinecap="round" strokeLinejoin="round" />
                 <circle cx={0.4} cy={HY + 4.6} r={0.8} fill="#fff" opacity={0.45} />
