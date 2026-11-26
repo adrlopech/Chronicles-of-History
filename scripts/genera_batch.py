@@ -293,7 +293,7 @@ def main() -> int:
     run_plan(plan, lambda item: prepare_with_fallback(item, plan), lambda prep: finish_motion_video(prep, export_only=True), publish, args.public_first)
     failed = len(plan) - sum(1 for d in done if d.get("video_id") or args.skip_youtube)  # an entry without a video id is a failed upload
     notify("Chronicles: batch " + ("finished" if not failed else "finished with gaps"), f"{len(done)} of {len(plan)} videos scheduled on YouTube for {day}" + (" - rerun the failed ones" if failed else " - TikTok is next"))
-    print(f"\nYouTube is scheduled ({len(done)} of {len(plan)}{'; rerun the failed ones with --topics and a pinned slot' if failed else ''}). TikTok: finish in TikTok Studio from {out} (caption, hashtags picked from the dropdown, Programación at each slot).")
+    print(f"\nYouTube {'skipped (--skip-youtube): upload later with scripts/upload_existing.py' if args.skip_youtube else 'is scheduled'} ({len(done)} of {len(plan)}{'; rerun the failed ones with --topics and a pinned slot' if failed else ''}). TikTok: finish in TikTok Studio from {out} (caption, hashtags picked from the dropdown, Programación at each slot).")
     return 0
 
 
