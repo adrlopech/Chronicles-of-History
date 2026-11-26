@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""The `genera` command: 4 Motion videos (The Chronicles of History) picked from the channel's own numbers, rendered, and scheduled for TOMORROW at the best hours.
+"""The `genera` command: 2 Motion videos (The Chronicles of History) picked from the channel's own numbers, rendered, and scheduled for TOMORROW at the best hours.
 
   python scripts/genera_batch.py --plan            # only show the plan (formats, hours, why) and stop
-  python scripts/genera_batch.py                   # plan + render 4 + schedule them on YouTube + prepare the TikTok copies
+  python scripts/genera_batch.py                   # plan + render 2 + schedule them on YouTube + prepare the TikTok copies
   python scripts/genera_batch.py --date 2026-11-12 # another day (UTC date)
 
 What it does
  1. Formats: scores every format with the YouTube Analytics numbers (average % viewed 60 %, engaged views 40 %, views-weighted, joined with
-    shorts_history); formats with no data yet count as "unknown" and keep their FORMAT_WEIGHTS prior. The batch is 4 DIFFERENT formats:
-    the 2 best proven ones, 1 exploration (the format with the fewest published videos) and 1 weighted draw. No data at all = weighted draws.
+    shorts_history); formats with no data yet count as "unknown" and keep their FORMAT_WEIGHTS prior. The batch is 2 DIFFERENT formats:
+    the best proven one and 1 exploration (the format with the fewest published videos). No data at all = explorations.
+    A bigger --count keeps the same mix: half proven, one exploration, the rest weighted draws.
  2. Hours (UTC): data/batches/log.json remembers the slot of every scheduled video; once a slot has 2+ videos with views, slots are ranked by average views.
-    Until then the default slots below are used (English-speaking audience: US morning/lunch/evening and EU evening).
+    Until then the default slots below are used (English-speaking audience: US late morning and US end of the working day / EU evening).
  3. Renders each video with the normal Motion pipeline (export only), uploads it to YouTube as private + publishAt (scripts/upload_existing.py) and writes
     data/batches/latest.json: title, joined hashtags, TikTok caption, a <10 MB copy for the TikTok upload and the slot in UTC and in Madrid time.
  TikTok has no API here: the assistant finishes it in TikTok Studio (see .claude/commands/genera.md): upload the copy, caption + each hashtag picked from the dropdown,
@@ -32,7 +33,7 @@ from zoneinfo import ZoneInfo
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
-DEFAULT_SLOTS_UTC = ["13:00", "16:00", "19:00", "22:00"]  # 8-9 am / noon / 3 pm / 6 pm New York; 2 pm / 5 pm / 8 pm / 11 pm Madrid
+DEFAULT_SLOTS_UTC = ["16:00", "22:00"]  # 11 am / 5 pm New York; 5 pm / 11 pm Madrid (winter). Two videos a day since 2026-11-26 (was four)
 LOG = BASE_DIR / "data" / "batches" / "log.json"
 LATEST = BASE_DIR / "data" / "batches" / "latest.json"
 SMALL_DIR = BASE_DIR / "output" / "tiktok_small"
@@ -66,7 +67,7 @@ def format_stats() -> Dict[str, Dict[str, float]]:
     return out
 
 
-def pick_formats(stats: Dict[str, Dict[str, float]], rng: random.Random, n: int = 4, avoid: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+def pick_formats(stats: Dict[str, Dict[str, float]], rng: random.Random, n: int = 2, avoid: Optional[List[str]] = None) -> List[Dict[str, Any]]:
     from services.motion_generator import FORMAT_WEIGHTS, FORMATS
     pool = [f for f in FORMATS if f in FORMAT_WEIGHTS and f not in (avoid or [])]
     chosen: List[Dict[str, Any]] = []
@@ -76,12 +77,12 @@ def pick_formats(stats: Dict[str, Dict[str, float]], rng: random.Random, n: int 
             chosen.append({"format": fmt, "why": why})
 
     proven = sorted([f for f in pool if stats.get(f, {}).get("videos", 0) >= 1 and stats[f]["views"] >= 100], key=lambda f: (-stats[f].get("early_per_video", 0.0), -stats[f]["score"]))
-    for f in proven[:2]:
+    for f in proven[:n // 2]:  # 2 videos: 1 proven; 4 videos: 2 proven
         early = f", {stats[f]['early_per_video']:.0f} views per video in 3 days (n={stats[f]['early_videos']})" if stats[f].get("early_videos") else ""
         add(f, f"proven: {stats[f]['score']:.0f} points over {stats[f]['videos']} video(s), {stats[f]['views']:.0f} views{early}")
     explore = sorted(pool, key=lambda f: (stats.get(f, {}).get("videos", 0), -FORMAT_WEIGHTS.get(f, 1)))
     for f in explore:
-        if len(chosen) >= 3:
+        if len(chosen) >= n // 2 + 1:  # then one exploration
             break
         add(f, f"exploration: only {stats.get(f, {}).get('videos', 0):.0f} published")
     rest = [f for f in pool if f not in [c["format"] for c in chosen]]
@@ -108,7 +109,7 @@ def ranked_slots() -> List[str]:
     known = {s: sum(v) / len(v) for s, v in per.items() if len(v) >= 2}
     if len(known) < 2:
         return DEFAULT_SLOTS_UTC
-    return sorted(set(DEFAULT_SLOTS_UTC) | set(known), key=lambda s: -known.get(s, 0))[:4]
+    return sorted(set(DEFAULT_SLOTS_UTC) | set(known), key=lambda s: -known.get(s, 0))[:len(DEFAULT_SLOTS_UTC)]
 
 
 def small_copy(src: str, dst: Path) -> Path:
@@ -226,9 +227,11 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--public-first", action="store_true", help="the first video of the plan (its slot already passed) is uploaded PUBLIC right away instead of scheduled")
     ap.add_argument("--avoid", default="", help="comma-separated formats to leave out (e.g. the ones of the previous day)")
-    ap.add_argument("--count", type=int, default=4, choices=range(1, 5), metavar="1-4", help="how many videos to make (default 4); fewer take the best-ranked slots")
+    ap.add_argument("--count", type=int, default=len(DEFAULT_SLOTS_UTC), choices=range(1, len(DEFAULT_SLOTS_UTC) + 1), metavar=f"1-{len(DEFAULT_SLOTS_UTC)}",
+                    help=f"how many videos to make (default {len(DEFAULT_SLOTS_UTC)}, one per slot); fewer take the best-ranked slots")
+    ap.add_argument("--skip-youtube", action="store_true", help="render and prepare the TikTok copies only: no YouTube upload (for example while the channel has no token yet)")
     ap.add_argument("--out", default=None, help="where to write the batch manifest (default data/batches/latest.json)")
-    ap.add_argument("--topics", default=None, help="JSON file with the 4 videos to make instead of the data-picked formats: [{format, topic, source (path to a text file), why}]; "
+    ap.add_argument("--topics", default=None, help="JSON file with the videos to make instead of the data-picked formats: [{format, topic, source (path to a text file), why}]; "
                                                   "format 'classic' = the classic explainer. Slots are assigned in file order (first = best slot)")
     args = ap.parse_args()
 
@@ -254,7 +257,7 @@ def main() -> int:
 
     from scripts.health_check import FAIL, run as health
     from services.notify import notify
-    blockers = [f"{n}: {d}" for st, n, d in health() if st == FAIL]
+    blockers = [f"{n}: {d}" for st, n, d in health() if st == FAIL and not (args.skip_youtube and n.startswith("YouTube"))]
     if blockers:  # a batch that cannot finish (dead token, no voice credits) is better stopped now than 15 minutes in
         print("Health check failed:", *blockers, sep="\n  - ")
         notify("Chronicles: batch not started", "; ".join(blockers)[:200])
@@ -271,22 +274,24 @@ def main() -> int:
         if res.get("qa_failures"):  # an objective failure (under the minute, no audio, wrong size): the video stays local, the slot stays empty
             print(f"  NOT uploaded, QA failed: {'; '.join(res['qa_failures'])}")
             return
-        flags = ["--privacy", "public"] if now else ["--publish-at", p["publish_at"]]  # a slot that already passed: public now, no publishAt
-        up = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "upload_existing.py"), video, *flags], cwd=BASE_DIR, capture_output=True, text=True, env={**os.environ, "PYTHONPATH": str(BASE_DIR)})
-        m = re.search(r"youtu\.be/([\w-]+)", up.stdout)
-        if not m:
+        m = None
+        if not args.skip_youtube:
+            flags = ["--privacy", "public"] if now else ["--publish-at", p["publish_at"]]  # a slot that already passed: public now, no publishAt
+            up = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "upload_existing.py"), video, *flags], cwd=BASE_DIR, capture_output=True, text=True, env={**os.environ, "PYTHONPATH": str(BASE_DIR)})
+            m = re.search(r"youtu\.be/([\w-]+)", up.stdout)
+        if not m and not args.skip_youtube:
             print("  YouTube upload failed:", (up.stdout + up.stderr)[-300:])
         small = small_copy(res["tiktok_video"], SMALL_DIR / f"{Path(video).parent.name[:40].replace(' ', '_')}.mp4")
         entry = {**p, **({"public_now": True} if now else {}), "title": res["title"], **tiktok_caption(res["title"]), "video": video, "tiktok_copy": str(small), "cover": res.get("tiktok_cover") or None, "cover_style": res.get("cover_style"), "video_id": m[1] if m else None}
         done.append(entry)
-        print(f"  {res['title']}\n  YouTube: {m[0] if m else 'FAILED'}  | TikTok copy: {small}")
+        print(f"  {res['title']}\n  YouTube: {m[0] if m else 'skipped' if args.skip_youtube else 'FAILED'}  | TikTok copy: {small}")
         out.write_text(json.dumps(done, ensure_ascii=False, indent=1))  # saved after every video
         if entry["video_id"]:
             log = json.loads(LOG.read_text()) if LOG.is_file() else []
             LOG.write_text(json.dumps(log + [{"video_id": entry["video_id"], "slot": entry["slot"], "format": entry["format"], "cover_style": entry.get("cover_style"), "date": str(day), **({"family": entry["family"]} if entry.get("family") else {})}], indent=1))
 
     run_plan(plan, lambda item: prepare_with_fallback(item, plan), lambda prep: finish_motion_video(prep, export_only=True), publish, args.public_first)
-    failed = len(plan) - sum(1 for d in done if d.get("video_id"))  # an entry without a video id is a failed upload
+    failed = len(plan) - sum(1 for d in done if d.get("video_id") or args.skip_youtube)  # an entry without a video id is a failed upload
     notify("Chronicles: batch " + ("finished" if not failed else "finished with gaps"), f"{len(done)} of {len(plan)} videos scheduled on YouTube for {day}" + (" - rerun the failed ones" if failed else " - TikTok is next"))
     print(f"\nYouTube is scheduled ({len(done)} of {len(plan)}{'; rerun the failed ones with --topics and a pinned slot' if failed else ''}). TikTok: finish in TikTok Studio from {out} (caption, hashtags picked from the dropdown, Programación at each slot).")
     return 0

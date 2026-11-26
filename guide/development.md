@@ -34,7 +34,7 @@ the upload guards (one-minute floor, channel check), output layout, notification
 | `services/voice.py`, `voice_synthesizer.py`, `local_tts.py` | ElevenLabs and the local backup |
 | `services/output_layout.py`, `services/cleaner.py` | Folders per video; the `limpieza` cleaner |
 | `remotion_studio/src/chronicle/` | The video: scenes, looks, captions, and the vector art kit in `art/` (see [Motion engine](motion-engine.md)) |
-| `scripts/genera_batch.py` | The four-videos-a-day command |
+| `scripts/genera_batch.py` | The two-videos-a-day command |
 | `scripts/` (others) | Upload, bank, footage, analytics, auth, previews, brand assets, portal tools (see `main.py help`) |
 | `data/` | `history.db`, manifests (`batches/`, git-ignored), `scripts/` (hand-written MotionProjects), `topics/` (source texts), token (git-ignored) |
 | `assets/` | Fonts, audio beds and effects, voice references, brand art (`assets/brand/`, [Branding](branding.md)) |

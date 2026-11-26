@@ -78,9 +78,7 @@ If TikTok changes its page, the selectors to fix are the ones at the top of `tik
 
 | Slot (UTC) | Madrid winter (UTC+1) | Madrid summer (UTC+2) | New York (winter) |
 |---|---|---|---|
-| 13:00 | 14:00 | 15:00 | 8 am |
 | 16:00 | 17:00 | 18:00 | 11 am |
-| 19:00 | 20:00 | 21:00 | 2 pm |
 | 22:00 | 23:00 | 00:00 | 5 pm |
 
 The plan prints the Madrid hour for the batch's own date (`Europe/Madrid`, so summer time is handled). If the computer clock is in another zone (for example on a trip), the plan is still in UTC.

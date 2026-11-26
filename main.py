@@ -4,7 +4,7 @@
     .venv/bin/python main.py --motion-format any --topic "The fall of Constantinople"
     .venv/bin/python main.py help
 
-The daily batch of four videos is `scripts/genera_batch.py`; this is the single-video entry point.
+The daily batch of two videos is `scripts/genera_batch.py`; this is the single-video entry point.
 """
 import argparse
 import logging

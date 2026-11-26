@@ -1,6 +1,6 @@
 # Daily workflow: `genera`
 
-`genera` makes **four videos of four different formats** and schedules them on YouTube and TikTok at the best hours. It is the normal way to publish.
+`genera` makes **two videos of two different formats** a day (four until 2026-11-26) and schedules them on YouTube and TikTok at the best hours. It is the normal way to publish.
 In a chat with Claude Code the word `genera` (or `/genera`) runs the whole flow without questions: the operator has authorized publishing.
 The steps the assistant follows are in `.claude/commands/genera.md`; this page explains what each step does and how to do it by hand.
 
@@ -11,14 +11,14 @@ PYTHONPATH=. .venv/bin/python scripts/genera_batch.py --plan                   #
 PYTHONPATH=. .venv/bin/python scripts/genera_batch.py --plan --date 2026-11-17 # a given UTC date (use today's date to publish today)
 ```
 
-The plan shows four rows: hour in UTC and Madrid, format and why it was chosen.
+The plan shows two rows: hour in UTC and Madrid, format and why it was chosen.
 
-**How formats are chosen** (see [Analytics](analytics.md)): the two best proven formats (score = 60 % average percentage viewed + 40 % engaged views, with at least 100 views),
-one exploration (the format with the fewest published videos) and one weighted draw (`FORMAT_WEIGHTS`), from the eight formats of [Formats](formats.md).
-While the channel has no numbers (or no token) the batch is three explorations and one weighted draw. Pass `--avoid mystery,duel` to leave out the formats of the previous day.
+**How formats are chosen** (see [Analytics](analytics.md)): the best proven format (score = 60 % average percentage viewed + 40 % engaged views, with at least 100 views)
+and one exploration (the format with the fewest published videos), from the eight formats of [Formats](formats.md).
+While the channel has no numbers (or no token) both are explorations. `--count 1` makes a single video in the best slot. Pass `--avoid mystery,duel` to leave out the formats of the previous day.
 
-**How hours are chosen:** the default slots are 13:00, 16:00, 19:00 and 22:00 UTC (14:00, 17:00, 20:00 and 23:00 in Madrid in winter, one hour later in summer; the plan computes it for the batch's date).
-`data/batches/log.json` remembers the slot of every scheduled video; once two or more slots have at least two videos with views, slots are ranked by average views.
+**How hours are chosen:** the default slots are 16:00 and 22:00 UTC (17:00 and 23:00 in Madrid in winter, one hour later in summer; the plan computes it for the batch's date).
+`data/batches/log.json` remembers the slot of every scheduled video; once two or more slots have at least two videos with views, slots are ranked by average views and the best two are used.
 The best formats get the best slots.
 
 ## 2. Produce and schedule on YouTube
@@ -28,7 +28,7 @@ PYTHONPATH=. .venv/bin/python scripts/genera_batch.py --date 2026-11-17 > /tmp/g
 ```
 
 It first runs the health check (`scripts/health_check.py`: token, voice credits, Gemini, bank, disk) and stops if something would make the batch fail.
-Then it takes ten to twenty minutes and nothing needs watching. For every slot it renders the video with the normal pipeline (export only), uploads it to YouTube as **private with `publishAt`**
+Then it takes five to ten minutes and nothing needs watching. For every slot it renders the video with the normal pipeline (export only), uploads it to YouTube as **private with `publishAt`**
 (YouTube publishes it at that time), sets the cover as the thumbnail, makes a copy under 10 MB for TikTok, and appends the entry to `data/batches/latest.json`:
 title, TikTok caption, hashtags, TikTok copy, cover, slot and YouTube id. The manifest is saved after every video, so a crash loses nothing.
 A video that fails the [QA gate](pipeline.md#6-qa-gate) (for example under 61 s) is **not uploaded**: the slot stays empty and the log says `NOT uploaded, QA failed`.
@@ -44,7 +44,6 @@ If a slot is still lost (`FAILED (nothing uploaded for this slot)`), fill the ga
 
 ```json
 [
-  {"format": "mystery", "why": "retry", "slot": "13:00"},
   {"format": "turning", "why": "hand-written script", "slot": "16:00", "script": "data/scripts/caesar_rubicon.json"},
   {"format": "portrait", "topic": "Leonardo da Vinci", "source": "data/topics/da_vinci.txt", "slot": "22:00"}
 ]
@@ -66,7 +65,7 @@ Every video must be `private` with the right `publishAt`:
 PYTHONPATH=. .venv/bin/python - <<'EOF'
 from services.youtube import youtube_service
 y = youtube_service.get_authenticated_client()
-for v in y.videos().list(part="status,snippet", id="ID1,ID2,ID3,ID4").execute()["items"]:
+for v in y.videos().list(part="status,snippet", id="ID1,ID2").execute()["items"]:
     print(v["id"], v["status"]["privacyStatus"], v["status"].get("publishAt"), v["snippet"]["title"][:50])
 EOF
 ```
@@ -75,7 +74,7 @@ EOF
 
 TikTok has no API access here, so the assistant drives TikTok Studio in the browser with Claude in Chrome, one entry of `data/batches/latest.json` at a time:
 upload `tiktok_copy`, write `caption`, pick every hashtag from the dropdown, upload `cover`, choose "Programación" and the hour, press "Programar".
-The exact clicks and the traps are in [Publishing](publishing.md#tiktok-studio-step-by-step). Finally check `tiktokstudio/content`: all four must appear with their hour.
+The exact clicks and the traps are in [Publishing](publishing.md#tiktok-studio-step-by-step). Finally check `tiktokstudio/content`: both must appear with their hour.
 
 ## 5. Report
 
