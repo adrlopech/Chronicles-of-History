@@ -1,0 +1,362 @@
+{
+  "topic": "The Mary Celeste, the ship found with no one aboard",
+  "screen_title": "The Empty Ship",
+  "title": "The Ship Found With No One Aboard #history #maryceleste",
+  "description": "In December 1872 a British crew found the Mary Celeste sailing on her own between the Azores and Portugal. Ten people were gone, and the lifeboat with them. Here is what we know, and the two theories.",
+  "tags": [
+    "history",
+    "mary celeste",
+    "ghost ship",
+    "mystery",
+    "maritime history",
+    "1872",
+    "unsolved"
+  ],
+  "pinned_comment": "Fumes or flooding? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "Ten people gone",
+      "kicker": "Mary Celeste",
+      "accentText": "Not one body",
+      "icon": "key",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "navigator",
+            "ship"
+          ],
+          "action": "point",
+          "view": "side"
+        },
+        {
+          "place": "sea",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "navigator",
+            "galley"
+          ],
+          "action": "watch",
+          "view": "back"
+        }
+      ],
+      "narration": "A ship drifts on with months of food aboard, and not one person.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "1872",
+      "accentText": "She leaves New York",
+      "kicker": "New York harbor",
+      "value": 1872.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "coast",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "navigator",
+            "sailor",
+            "harbor"
+          ],
+          "action": "wave",
+          "view": "front"
+        }
+      ],
+      "narration": "On the seventh of November, eighteen seventy-two, the Mary Celeste leaves New York for Genoa.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "A family aboard",
+      "accentText": "Captain Briggs",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "navigator",
+            "lady",
+            "chest"
+          ],
+          "action": "sit",
+          "view": "front"
+        },
+        {
+          "place": "coast",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "navigator",
+            "sailor",
+            "ship"
+          ],
+          "action": "carry",
+          "view": "side"
+        }
+      ],
+      "narration": "Captain Briggs brings his wife and little daughter. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Barrels in the hold",
+      "accentText": "raw alcohol",
+      "value": 1701.0,
+      "unit": "barrels",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "merchant",
+            "chest"
+          ],
+          "action": "lift",
+          "view": "side"
+        }
+      ],
+      "narration": "Below deck she carries one thousand seven hundred and one barrels of alcohol.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "Her last days",
+      "items": [
+        "Nov 7|Leaves New York",
+        "Nov 25|Last log entry",
+        "Dec 4|Found drifting"
+      ],
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "navigator",
+            "sailor",
+            "galley"
+          ],
+          "action": "write",
+          "view": "front"
+        }
+      ],
+      "narration": "The last entry in the log is written on the twenty-fifth of November, near the Azores.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "date",
+      "text": "4 December",
+      "accentText": "Found adrift",
+      "kicker": "Between the Azores and Portugal",
+      "value": 1872.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "sea",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "navigator",
+            "ship"
+          ],
+          "action": "sneak",
+          "view": "side"
+        },
+        {
+          "place": "sea",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "explorer",
+            "galley"
+          ],
+          "action": "crouch",
+          "view": "front"
+        }
+      ],
+      "narration": "On the fourth of December, the crew of the Dei Gratia spots her drifting, and climbs aboard.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "What they found",
+      "items": [
+        "Months of food",
+        "Clothes left behind",
+        "The lifeboat missing"
+      ],
+      "art": [
+        {
+          "place": "interior",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "explorer",
+            "chest"
+          ],
+          "action": "read",
+          "view": "front"
+        }
+      ],
+      "narration": "They find months of food and water, clothes left behind, and the lifeboat gone.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "map",
+      "text": "Where it happened",
+      "accentText": "Three points of the voyage",
+      "items": [
+        "New York|40.71|-74.01",
+        "Santa Maria Island|36.97|-25.10",
+        "Found adrift|38.33|-17.25"
+      ],
+      "narration": "She was found far east of her last logged position.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Theory one",
+      "accentText": "The fumes",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "navigator",
+            "sailor",
+            "smoke"
+          ],
+          "action": "shout",
+          "view": "front"
+        }
+      ],
+      "narration": "One theory: alcohol fumes made Briggs fear an explosion, so they took the lifeboat.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Empty barrels in Genoa",
+      "accentText": "leaked or lost",
+      "value": 9.0,
+      "unit": "barrels",
+      "art": [
+        {
+          "place": "coast",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "merchant",
+            "sailor",
+            "harbor"
+          ],
+          "action": "point",
+          "view": "side"
+        }
+      ],
+      "narration": "In Genoa, nine of the barrels turned out to be empty.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Theory two",
+      "accentText": "Water in the hold",
+      "art": [
+        {
+          "place": "sea",
+          "time": "dusk",
+          "weather": "storm",
+          "subjects": [
+            "sailor",
+            "navigator",
+            "galley"
+          ],
+          "action": "push",
+          "view": "side"
+        }
+      ],
+      "narration": "Another theory: a faulty pump made them believe she was sinking.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "People never found",
+      "accentText": "no trace",
+      "value": 10.0,
+      "unit": "people",
+      "art": [
+        {
+          "place": "sea",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "sailor",
+            "navigator",
+            "ship"
+          ],
+          "action": "cower",
+          "view": "back"
+        }
+      ],
+      "narration": "The lifeboat and the ten people in it were never seen again.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "A famous fake",
+      "accentText": "Conan Doyle, 1884",
+      "art": [
+        {
+          "place": "interior",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "gentleman",
+            "scholar",
+            "library"
+          ],
+          "action": "write",
+          "view": "front"
+        }
+      ],
+      "narration": "Later, a young Arthur Conan Doyle invented details, like warm meals left on the table.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Adrift",
+      "narration": "Still adrift, still unsolved.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Fumes or flooding?",
+      "items": [
+        "The fumes",
+        "Flooding"
+      ],
+      "narration": "So was it the fumes, or the fear of sinking?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "mystery",
+  "look": "seachart",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}

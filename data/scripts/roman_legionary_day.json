@@ -1,0 +1,349 @@
+{
+  "topic": "A day in the life of a Roman legionary in 100 AD",
+  "screen_title": "A Legionary's Day",
+  "title": "A Day as a Roman Legionary in 100 AD #history #ancientrome",
+  "description": "March twenty Roman miles, then dig a fortified camp before you can sleep. One day in the life of a Roman legionary under the emperor Trajan, from the trumpet at dawn to the night watch.",
+  "tags": [
+    "history",
+    "ancient rome",
+    "roman legion",
+    "legionary",
+    "roman army",
+    "trajan",
+    "day in the life"
+  ],
+  "pinned_comment": "Sign up or stay home? Reply with one word.",
+  "scenes": [
+    {
+      "type": "statement",
+      "text": "Twenty miles first",
+      "kicker": "Roman legion",
+      "accentText": "Then dig a fort",
+      "icon": "key",
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "soldiers"
+          ],
+          "action": "walk",
+          "view": "side"
+        },
+        {
+          "place": "plains",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "soldiers",
+            "palisade"
+          ],
+          "action": "dig",
+          "view": "front"
+        }
+      ],
+      "narration": "Before you can sleep tonight, you will march twenty miles and dig a fort.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "date",
+      "text": "100",
+      "accentText": "Under emperor Trajan",
+      "kicker": "The Roman Empire",
+      "value": 100.0,
+      "unit": "AD",
+      "art": [
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "triumphal_arch"
+          ],
+          "action": "salute",
+          "view": "front"
+        }
+      ],
+      "narration": "It is the year one hundred AD, and you serve emperor Trajan as a legionary.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Twenty-five years",
+      "accentText": "One contract",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "scroll"
+          ],
+          "action": "write",
+          "view": "front"
+        },
+        {
+          "place": "city",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "soldiers",
+            "gate"
+          ],
+          "action": "stand",
+          "view": "side"
+        }
+      ],
+      "narration": "You signed up for twenty-five years. Stay to the end, the catch comes last.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "timeline",
+      "text": "Your day on campaign",
+      "items": [
+        "Dawn|Trumpet call",
+        "Morning|March",
+        "Midday|Dig the camp",
+        "Evening|Grind grain",
+        "Night|Stand watch"
+      ],
+      "art": [
+        {
+          "place": "plains",
+          "time": "dawn",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "soldiers",
+            "tents"
+          ],
+          "action": "stand",
+          "view": "front"
+        }
+      ],
+      "narration": "Your day: the trumpet at dawn, the march, the ditch, supper, and the night watch.",
+      "durationInFrames": 150
+    },
+    {
+      "type": "statement",
+      "text": "On your back",
+      "accentText": "About 30 kg",
+      "art": [
+        {
+          "place": "plains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "soldiers",
+            "wagon"
+          ],
+          "action": "carry",
+          "view": "side"
+        }
+      ],
+      "narration": "You carry your armor, tools and food, around thirty kilos on your back.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "The marching pace",
+      "accentText": "Roman miles in five hours",
+      "value": 20.0,
+      "unit": "miles",
+      "art": [
+        {
+          "place": "mountains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "soldiers"
+          ],
+          "action": "run",
+          "view": "side"
+        }
+      ],
+      "narration": "Recruits trained to cover twenty Roman miles in five hours.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Then you dig",
+      "accentText": "Every single night",
+      "art": [
+        {
+          "place": "plains",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "soldiers",
+            "palisade"
+          ],
+          "action": "dig",
+          "view": "back"
+        },
+        {
+          "place": "plains",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "palisade"
+          ],
+          "action": "hammer",
+          "view": "side"
+        }
+      ],
+      "narration": "When the march ends, you dig a ditch and raise a wall around the camp.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "list",
+      "text": "Your supper",
+      "items": [
+        "Wheat you grind",
+        "Bread or porridge",
+        "Posca to drink"
+      ],
+      "art": [
+        {
+          "place": "interior",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "soldiers",
+            "tents"
+          ],
+          "action": "drink",
+          "view": "front"
+        }
+      ],
+      "narration": "Supper is wheat you grind and bake yourself, with sour wine and water called posca.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "Eight to a tent",
+      "accentText": "A contubernium",
+      "art": [
+        {
+          "place": "plains",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "soldiers",
+            "tents"
+          ],
+          "action": "sit",
+          "view": "front"
+        }
+      ],
+      "narration": "You share one leather tent and one mule with seven other men.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Your yearly pay",
+      "accentText": "denarii a year",
+      "value": 300.0,
+      "unit": "denarii",
+      "art": [
+        {
+          "place": "interior",
+          "time": "day",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "chest"
+          ],
+          "action": "think",
+          "view": "front"
+        }
+      ],
+      "narration": "Your pay is three hundred denarii a year, and food and gear come out of it.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "statement",
+      "text": "The catch",
+      "accentText": "No legal marriage",
+      "art": [
+        {
+          "place": "city",
+          "time": "dusk",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "lady",
+            "village"
+          ],
+          "action": "plead",
+          "view": "front"
+        }
+      ],
+      "narration": "And here is the catch: for your whole service, the law forbids you to marry.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "ledger",
+      "text": "Night watches",
+      "accentText": "shifts until dawn",
+      "value": 4.0,
+      "unit": "watches",
+      "art": [
+        {
+          "place": "plains",
+          "time": "night",
+          "weather": "clear",
+          "subjects": [
+            "legionary",
+            "centurion",
+            "torch"
+          ],
+          "action": "watch",
+          "view": "back"
+        }
+      ],
+      "narration": "At night the watch is split in four, and a sleeping sentry faces death.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "flash",
+      "text": "Iron and dust",
+      "narration": "Iron, dust and discipline.",
+      "durationInFrames": 120
+    },
+    {
+      "type": "outro",
+      "text": "Sign up or stay home?",
+      "items": [
+        "Sign up",
+        "Stay home"
+      ],
+      "narration": "So would you march twenty miles a day for Rome, or stay home?",
+      "durationInFrames": 120
+    }
+  ],
+  "kind": "history",
+  "format": "dayinlife",
+  "look": "antiquity",
+  "fact_checked": true,
+  "gemini_input_tokens": 0,
+  "gemini_output_tokens": 0
+}
